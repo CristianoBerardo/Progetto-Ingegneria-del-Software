@@ -1,6 +1,7 @@
 \documentclass{scrartcl}
 \usepackage[a4paper,top=2cm,bottom=2.5cm,left=2.5cm,right=2.5cm,marginparwidth=0cm]{geometry}
 \usepackage[english]{babel}
+\usepackage[linguistics]{forest}
 
 \usepackage[
     doi=true,
@@ -90,7 +91,7 @@
 
 \usepackage{xcolor}
 \usepackage{titlesec}
-\definecolor{mycolor}{HTML}{6baefa}
+\definecolor{mycolor}{HTML}{2f5496}
 \titleformat{\section}
               {\normalfont\Large\bfseries\color{mycolor}} % Formatting
               {\thesection}            % Label
@@ -105,25 +106,48 @@
 \date{}
 
 
-
-\newcommand{\fulltitle}{Primo Deriverable}
-
-\author{%
-    Berardo Cristiano, mat. 234428\\
-    De Piccoli Martina, mat.  235165\\
-    Vettore Giacomo, mat. 240396
-}
-
-\usepackage[linguistics]{forest}
+\urlstyle{same}
 
 \hypersetup{
     colorlinks=false,
     linkcolor=blue,
     filecolor=magenta,      
     urlcolor=cyan,
-    pdftitle={Primo-deliverable-id3},
+    pdftitle={Deliverable-D1-Gruppo3},
     pdfpagemode=FullScreen,
     }
+\newcommand{\fulltitle}{\color{mycolor}Deriverable D1}
+
+\newenvironment{objitem}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{O\arabic{enumi}}}
+}
+{\end{enumerate}}
+
+\newenvironment{rfenum}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{RF\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{RF\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{RF\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+    
+}
+{\end{enumerate}}
+
+\newenvironment{rnfenum}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{RNF\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{RNF\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{RNF\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+
+}
+{\end{enumerate}}
+
+\author{%
+    \huge\color{mycolor}\textbf{Gruppo 3} \\\\
+    Berardo Cristiano - 234428\\
+    De Piccoli Martina - 235165\\
+    Vettore Giacomo - 240396
+}
 
 % --------------- Start Document  -----------------------------
 
@@ -131,10 +155,9 @@
 
 \maketitle
 \thispagestyle{titlepage}
-\pagestyle{scrheadings}
 
 \begin{abstract}
-\noindent\textbf{Idea di progetto:} Sviluppare una piattaforma web che faciliti la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti locali del e favorendo pratiche sostenibili a basso impatto ambientale.
+\noindent\textbf{Idea di progetto:} \textit{Sviluppare una piattaforma web che faciliti la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.}
 
 
 
@@ -151,6 +174,7 @@
 \input{requisiti-funzionali}
 \input{requisiti-non-funzionali}
 \input{use-case}
+\input{BPMN-diagram}
 
 
 
