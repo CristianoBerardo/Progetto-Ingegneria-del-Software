@@ -44,8 +44,8 @@
     {\small\addfontfeature{LetterSpace=10,Numbers=OldStyle}\scshape\sffamily}
 \clearpairofpagestyles{}
 \cfoot[\pagemark]{\pagemark}
-\rohead{\MakeLowercase{\emph{\shorttitle}}}
-\lohead{\MakeLowercase{\authorlast}}
+% \rohead{\MakeLowercase{\emph{\shorttitle}}}
+%\lohead{\MakeLowercase{\authorlast}}
 
 
 % Titlepage
@@ -96,6 +96,8 @@
               {\thesection}            % Label
               {2em}                   % Space after label
               {}  
+\titleformat{\paragraph}
+  {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 
 
 % title page
@@ -109,7 +111,7 @@
 \author{%
     Berardo Cristiano, mat. 234428\\
     De Piccoli Martina, mat.  235165\\
-    Vettore Giacomo, mat. XXXXXX
+    Vettore Giacomo, mat. 240396
 }
 
 \usepackage[linguistics]{forest}
@@ -123,6 +125,8 @@
     pdfpagemode=FullScreen,
     }
 
+% --------------- Start Document  -----------------------------
+
 \begin{document}
 
 \maketitle
@@ -130,8 +134,18 @@
 \pagestyle{scrheadings}
 
 \begin{abstract}
-    \noindent\textbf{Idea di progetto:} \\
+\noindent\textbf{Idea di progetto:} Sviluppare una piattaforma web che faciliti la prenotazione e la vendita diretta di frutta e verdura, incentivando il consumo di prodotti locali del mercato contadino di Trento e favorendo pratiche sostenibili a basso impatto ambientale.
+
+
+
+% I venditori possono gestire ordini, pagamenti e scorte in modo efficiente.
+
+% La piattaforma promuove la filiera corta, la trasparenza sulla provenienza dei prodotti e pratiche sostenibili come la riduzione degli imballaggi e l'ottimizzazione dei trasporti. Include funzionalità per fidelizzare i clienti, creare collaborazioni tra produttori e sensibilizzare sul consumo consapevole, sostenendo l'economia locale e riducendo l'impatto ambientale.
+
+
 \end{abstract}
+
+\input{obiettivi}
 
 \input{attori}
 \input{requisiti-funzionali}
