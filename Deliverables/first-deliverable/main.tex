@@ -91,22 +91,29 @@
 
 \usepackage{xcolor}
 \usepackage{titlesec}
-\definecolor{mycolor}{HTML}{2f5496}
+\definecolor{mycolor}{HTML}{2e6a1e}
 \titleformat{\section}
               {\normalfont\Large\bfseries\color{mycolor}} % Formatting
               {\thesection}            % Label
               {2em}                   % Space after label
               {}  
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\color{mycolor}}{\thesubsection}{1em}{} 
 \titleformat{\paragraph}
   {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
 
 
 % title page
+
 \title{\fulltitle}
 \date{}
 
 
 \urlstyle{same}
+
+\usepackage{svg}
+\usepackage{amsmath}
+
+\usepackage{pdflscape}
 
 \hypersetup{
     colorlinks=false,
@@ -116,7 +123,11 @@
     pdftitle={Deliverable-D1-Gruppo3},
     pdfpagemode=FullScreen,
     }
-\newcommand{\fulltitle}{\color{mycolor}Deriverable D1}
+\newcommand{\fulltitle}{
+                        \includesvg[width=0.6\linewidth]{../Logo/AgriTrentoSlogan.svg} \\
+                        \vspace{5cm}
+                        \color{mycolor}Deriverable D1 - Gruppo 3
+                        }
 
 \newenvironment{objitem}{
     \begin{enumerate}
@@ -138,12 +149,19 @@
     \renewcommand{\labelenumi}{\textbf{RNF\arabic{enumi}}}    
     \renewcommand{\labelenumii}{RNF\arabic{enumi}.\arabic{enumii}}
     \renewcommand{\labelenumiii}{RNF\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
-
 }
 {\end{enumerate}}
 
-\author{%
-    \huge\color{mycolor}\textbf{Gruppo 3} \\\\
+\newenvironment{attori}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{2.\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{2.\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{2.\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+}
+{\end{enumerate}}
+
+
+\author{
     Berardo Cristiano - 234428\\
     De Piccoli Martina - 235165\\
     Vettore Giacomo - 240396
@@ -153,19 +171,17 @@
 
 \begin{document}
 
+
 \maketitle
 \thispagestyle{titlepage}
 
+
+\vspace{9cm}
+
 \begin{abstract}
-\noindent\textbf{Idea di progetto:} \textit{Sviluppare una piattaforma web che faciliti la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.}
-
-
-
-% I venditori possono gestire ordini, pagamenti e scorte in modo efficiente.
-
-% La piattaforma promuove la filiera corta, la trasparenza sulla provenienza dei prodotti e pratiche sostenibili come la riduzione degli imballaggi e l'ottimizzazione dei trasporti. Include funzionalità per fidelizzare i clienti, creare collaborazioni tra produttori e sensibilizzare sul consumo consapevole, sostenendo l'economia locale e riducendo l'impatto ambientale.
-
-
+\noindent
+\centering
+\textbf{Idea di progetto:} \textit{Sviluppare una piattaforma web che faciliti la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.}
 \end{abstract}
 
 \input{obiettivi}
@@ -175,6 +191,7 @@
 \input{requisiti-non-funzionali}
 \input{use-case}
 \input{BPMN-diagram}
+\input{conclusioni}
 
 
 
