@@ -1,0 +1,149 @@
+\section{OCL Constraints}
+
+This section analyzes in OCL the constraints related to the class diagram.  
+These constraints represent invariants, preconditions, and postconditions on the class operations.
+
+\subsection{Class AuthenticationService}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} during registration, the email must contain “@” and the password must be between 8 and 32 characters long.\\
+    \hline
+    \texttt{context AuthenticationService::register(email:String, password:String): User}\\
+    \texttt{pre: password.size() >= 8 and password.size() <= 32}\\
+    \texttt{     and email.includes('@')}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} the login operation sets the user's \texttt{authenticated} attribute to \texttt{true}.\\
+    \hline
+    \texttt{context AuthenticationService::login(email:String, password:String): Boolean}\\
+    \texttt{post: User.allInstances()->select(u : User | u.email = email)->any(true).authenticated = true}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Class User}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} each user must have a valid email, password length between 8 and 32 characters, and a correct role.\\
+    \hline
+    \texttt{context User}\\
+    \texttt{inv validEmail: self.email.includes('@')}\\
+    \texttt{inv validPassword: self.password.size() >= 8 and self.password.size() <= 32}\\
+    \texttt{inv validRole: self.role = \#Customer or self.role = \#Producer or self.role = \#Administrator}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\newpage
+\subsection{Class Product}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} each product must have a positive price and non-negative availability.\\
+    \hline
+    \texttt{context Product}\\
+    \texttt{inv positivePrice: self.price > 0}\\
+    \texttt{inv nonNegativeAvailability: self.availability >= 0}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Class Order}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} the order confirmation is possible only if the status is \texttt{Pending}.\\
+    \hline
+    \texttt{context Order::confirmOrder()}\\
+    \texttt{pre: self.status = \#Pending}\\
+    \texttt{post: self.status = \#Confirmed}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} each order must be in one of the allowed states.\\
+    \hline
+    \texttt{context Order}\\
+    \texttt{inv validStatus: self.status = \#Pending}\\
+    \texttt{              or self.status = \#Confirmed}\\
+    \texttt{              or self.status = \#Payed}\\
+    \texttt{              or self.status = \#Delivered}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Class Review}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} each review must have a rating between 1 and 5 stars.\\
+    \hline
+    \texttt{context Review}\\
+    \texttt{inv validRating: self.rating >= 1 and self.rating <= 5}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} a customer can leave a review only if they have at least one delivered order to that producer.\\
+    \hline
+    \texttt{context Customer::leaveReview(prod:Producer, txt:String, vote:Integer)}\\
+    \texttt{pre: self.orders->select(o : Order | o.producer = prod and o.status = \#Delivered)->notEmpty()}\\
+    \hline 
+  \end{tabular}
+\end{table}
+
+\subsection{Class News}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} the news expiration date must be after the publication date.\\
+    \hline
+    \texttt{context News}\\
+    \texttt{inv expirationAfterPublication: self.expireDate > self.publishedDate}\\
+    \hline
+  \end{tabular}
+\end{table}
+
+\subsection{Class Date}
+
+\begin{table}[ht]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \hline
+    \textbf{Description:} each date must have a valid day, month, and year.\\
+    \hline
+    \texttt{context Date}\\
+    \texttt{inv validDay: self.day >= 1 and self.day <= 31}\\
+    \texttt{inv validMonth: self.month >= 1 and self.month <= 12}\\
+    \texttt{inv validYear: self.year >= 0}\\
+    \hline
+  \end{tabular}
+\end{table}

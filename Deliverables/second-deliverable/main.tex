@@ -1,0 +1,193 @@
+\documentclass{scrartcl}
+\usepackage[a4paper,top=2cm,bottom=2.5cm,left=2.5cm,right=2.5cm,marginparwidth=0cm]{geometry}
+\usepackage[english]{babel}
+\usepackage[linguistics]{forest}
+
+\usepackage[
+    doi=true,
+    language=english,
+    natbib=true,
+    sortcites,
+    style=unified,
+    useprefix=true,
+    ]{biblatex}
+
+
+% Fonts, languages
+\usepackage[warnings-off={mathtools-colon, mathtools-overbracket}]{unicode-math}
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\usepackage[sb]{libertinus-otf}
+\usepackage[scale=MatchLowercase]{FiraMono}
+\usepackage{fontawesome5}
+
+% Nicer tables
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage[nopatch=footnote]{microtype}
+\usepackage{tabularx}
+
+\usepackage[unicode,hidelinks]{hyperref}
+\usepackage[normalem]{ulem} % for strikethrough \sout
+
+\usepackage{scrlayer-scrpage}
+\newpairofpagestyles{titlepage}{%
+    \setkomafont{pageheadfoot}{%
+        \small\normalfont 
+    }
+    \rohead{}
+    \lohead{}
+}
+\pagestyle{scrheadings}
+\setkomafont{pagenumber}{\footnotesize}%\sffamily}
+\setkomafont{pageheadfoot}%
+    {\small\addfontfeature{LetterSpace=10,Numbers=OldStyle}\scshape\sffamily}
+\clearpairofpagestyles{}
+\cfoot[\pagemark]{\pagemark}
+% \rohead{\MakeLowercase{\emph{\shorttitle}}}
+%\lohead{\MakeLowercase{\authorlast}}
+
+
+% Titlepage
+\setkomafont{author}{\large\sffamily}
+
+
+% Chapter/section headings
+\setcounter{secnumdepth}{3}
+
+% Linguistics
+\usepackage{langsci-gb4e}
+\newcommand{\judgement}[1]{\makebox[0pt][r]{#1}}
+
+
+
+\usepackage{cleveref}
+\usepackage{enumitem}
+
+%% Line breaks
+\widowpenalty=10000
+\clubpenalty=10000
+
+% useful 
+\usepackage{orcidlink}
+\newcommand{\email}[1]{\href{mailto:#1}{#1}}
+
+% copyright notice at end
+\usepackage[framemethod=TikZ]{mdframed}
+\newenvironment{ccnotice}[1]{%
+    \begin{mdframed}[%
+        linewidth=0pt,
+        leftmargin=1pt,
+        rightmargin=1pt,
+        backgroundcolor=gray!10!white,
+        font=\sffamily,
+    ]\relax%
+}{\end{mdframed}}
+
+
+\usepackage[autostyle=true,english=american]{csquotes}
+\renewcommand*{\mkccitation}[1]{ (#1)}
+
+\usepackage{xcolor}
+\usepackage{titlesec}
+\definecolor{mycolor}{HTML}{2e6a1e}
+\titleformat{\section}
+              {\normalfont\Large\bfseries\color{mycolor}} % Formatting
+              {\thesection}            % Label
+              {2em}                   % Space after label
+              {}  
+\titleformat{\subsection}{\normalfont\normalsize\bfseries\color{mycolor}}{\thesubsection}{1em}{} 
+\titleformat{\paragraph}
+  {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+
+
+% title page
+
+\title{\fulltitle}
+\date{}
+
+
+\urlstyle{same}
+
+\usepackage{svg}
+\usepackage{amsmath}
+
+\usepackage{pdflscape}
+
+\hypersetup{
+    colorlinks=false,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Deliverable-D2-Gruppo3},
+    pdfpagemode=FullScreen,
+    }
+\newcommand{\fulltitle}{
+                        \includesvg[width=0.6\linewidth]{../Logo/AgriTrentoSlogan.svg} \\
+                        \vspace{5cm}
+                        \color{mycolor}Deriverable D2 - Gruppo 3
+                        }
+
+\newenvironment{objitem}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{O\arabic{enumi}}}
+}
+{\end{enumerate}}
+
+\newenvironment{rfenum}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{RF\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{RF\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{RF\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+    
+}
+{\end{enumerate}}
+
+\newenvironment{rnfenum}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{RNF\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{RNF\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{RNF\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+}
+{\end{enumerate}}
+
+\newenvironment{attori}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{2.\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{2.\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{2.\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+}
+{\end{enumerate}}
+
+
+\author{
+    Berardo Cristiano - 234428\\
+    De Piccoli Martina - 235165\\
+    Vettore Giacomo - 240396
+}
+
+% --------------- Start Document  -----------------------------
+
+\begin{document}
+
+
+\maketitle
+\thispagestyle{titlepage}
+
+
+\vspace{9cm}
+
+\begin{abstract}
+\noindent
+\centering
+\textbf{Idea di progetto:} \textit{Sviluppare una piattaforma web che faciliti la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.}
+\end{abstract}
+
+\input{Deliverables/second-deliverable/componentsDiagram}
+\input{Deliverables/second-deliverable/classDiagram}
+\input{Deliverables/second-deliverable/OCL}
+
+
+
+\end{document}
