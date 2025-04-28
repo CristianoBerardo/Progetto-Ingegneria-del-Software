@@ -1,149 +1,206 @@
-\section{OCL Constraints}
-
-This section analyzes in OCL the constraints related to the class diagram.  
-These constraints represent invariants, preconditions, and postconditions on the class operations.
-
-\subsection{Class AuthenticationService}
-
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} during registration, the email must contain “@” and the password must be between 8 and 32 characters long.\\
-    \hline
-    \texttt{context AuthenticationService::register(email:String, password:String): User}\\
-    \texttt{pre: password.size() >= 8 and password.size() <= 32}\\
-    \texttt{     and email.includes('@')}\\
-    \hline
-  \end{tabular}
-\end{table}
-
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} the login operation sets the user's \texttt{authenticated} attribute to \texttt{true}.\\
-    \hline
-    \texttt{context AuthenticationService::login(email:String, password:String): Boolean}\\
-    \texttt{post: User.allInstances()->select(u : User | u.email = email)->any(true).authenticated = true}\\
-    \hline
-  \end{tabular}
-\end{table}
-
-\subsection{Class User}
-
-\begin{table}[ht]
-  \centering
-  \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} each user must have a valid email, password length between 8 and 32 characters, and a correct role.\\
-    \hline
-    \texttt{context User}\\
-    \texttt{inv validEmail: self.email.includes('@')}\\
-    \texttt{inv validPassword: self.password.size() >= 8 and self.password.size() <= 32}\\
-    \texttt{inv validRole: self.role = \#Customer or self.role = \#Producer or self.role = \#Administrator}\\
-    \hline
-  \end{tabular}
-\end{table}
-
 \newpage
-\subsection{Class Product}
+\section{Constraint OCL}
 
-\begin{table}[ht]
+%----------------------------------------
+\subsection{Classe AuthenticationService}
+
+\begin{table}[H]
   \centering
   \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} each product must have a positive price and non-negative availability.\\
-    \hline
-    \texttt{context Product}\\
-    \texttt{inv positivePrice: self.price > 0}\\
-    \texttt{inv nonNegativeAvailability: self.availability >= 0}\\
-    \hline
+    \toprule
+    \textbf{Descrizione:} al termine di \texttt{register} l’utente creato è autenticato.\\
+    \midrule
+    context AuthenticationService::register()\\
+    \quad post: result.authenticated = true\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+
+
+
+
+%----------------------------------------
+\subsection{Classe User}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \toprule
+    \textbf{Descrizione:} \texttt{logout()} disconnette l’utente corrente.\\
+    \midrule
+    context User::logout():Void\\
+    \quad post: self.authenticated = false\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+
+%----------------------------------------
+\subsection{Classe Administrator}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \toprule
+    \textbf{Descrizione:} \texttt{publishNews(n)} pubblica una notizia con date coerenti.\\
+    \midrule
+    context Administrator::publishNews(n:News):Void\\
+    \quad pre: n.publishedDate <= n.expireDate\\
+    \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{Class Order}
 
-\begin{table}[ht]
+\FloatBarrier
+
+%----------------------------------------
+\subsection{Classe Customer}
+
+
+
+
+
+\begin{table}[H]
   \centering
   \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} the order confirmation is possible only if the status is \texttt{Pending}.\\
-    \hline
-    \texttt{context Order::confirmOrder()}\\
-    \texttt{pre: self.status = \#Pending}\\
-    \texttt{post: self.status = \#Confirmed}\\
-    \hline
+    \toprule
+    \textbf{Descrizione:} \texttt{deleteReview(r)} rimuove una recensione.\\
+    \midrule
+    context Customer::deleteReview(r:Review):Void\\
+    \quad pre: self.reviews->includes(r)\\
+    \quad post: not self.reviews->includes(r)\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+%----------------------------------------
+\subsection{Classe Producer}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \toprule
+    \textbf{Descrizione:} \texttt{confirmOrder(o)} conferma l’ordine se quantità disponibili.\\
+    \midrule
+    context Producer::confirmOrder(o:Order):Void\\
+    \quad pre: o.productList->forAll(item | self.inventory->exists(p | p = item.product \\ \hspace{6.5cm} and item.quantity <= p.availability))\\
+    \quad post: o.status = \#Confirmed\\
+    \bottomrule
   \end{tabular}
 \end{table}
 
-\begin{table}[ht]
+\begin{table}[H]
   \centering
   \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} each order must be in one of the allowed states.\\
-    \hline
-    \texttt{context Order}\\
-    \texttt{inv validStatus: self.status = \#Pending}\\
-    \texttt{              or self.status = \#Confirmed}\\
-    \texttt{              or self.status = \#Payed}\\
-    \texttt{              or self.status = \#Delivered}\\
-    \hline
+    \toprule
+    \textbf{Descrizione:} \texttt{cancelOrder(o)} annulla un ordine esistente.\\
+    \midrule
+    context Producer::cancelOrder(o:Order):Void\\
+    \quad pre: o.status = \#Pending or o.status = \#Confirmed\\
+    \quad post: o.status = \#Cancelled\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
+
+%----------------------------------------
+\subsection{Classe Product}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \toprule
+    \textbf{Descrizione:} prezzo > 0 e disponibilità ≥ 0.\\
+    \midrule
+    context Product\\
+    \quad inv: self.price > 0.0 and self.availability >= 0\\
+    \bottomrule
   \end{tabular}
 \end{table}
 
-\subsection{Class Review}
-
-\begin{table}[ht]
+\begin{table}[H]
   \centering
   \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} each review must have a rating between 1 and 5 stars.\\
-    \hline
-    \texttt{context Review}\\
-    \texttt{inv validRating: self.rating >= 1 and self.rating <= 5}\\
-    \hline
+    \toprule
+    \textbf{Descrizione:} \texttt{modifyPrice(p)} impone prezzo > 0.\\
+    \midrule
+    context Product::modifyPrice(p:Float):Void\\
+    \quad pre: p > 0.0\\
+    \quad post: self.price = p\\
+    \bottomrule
   \end{tabular}
 \end{table}
+\FloatBarrier
 
-\begin{table}[ht]
+%----------------------------------------
+\subsection{Classe Order}
+
+
+
+\begin{table}[H]
   \centering
   \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} a customer can leave a review only if they have at least one delivered order to that producer.\\
-    \hline
-    \texttt{context Customer::leaveReview(prod:Producer, txt:String, vote:Integer)}\\
-    \texttt{pre: self.orders->select(o : Order | o.producer = prod and o.status = \#Delivered)->notEmpty()}\\
-    \hline 
+    \toprule
+    \textbf{Descrizione:} \texttt{deliverOrder()} segna come consegnato solo se già pagato.\\
+    \midrule
+    context Order::deliverOrder():Void\\
+    \quad pre: self.status = \#Payed\\
+    \quad post: self.status = \#Delivered\\
+    \bottomrule
   \end{tabular}
 \end{table}
+\FloatBarrier
 
-\subsection{Class News}
+%----------------------------------------
+\subsection{Classe Review}
 
-\begin{table}[ht]
+\begin{table}[H]
   \centering
   \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} the news expiration date must be after the publication date.\\
-    \hline
-    \texttt{context News}\\
-    \texttt{inv expirationAfterPublication: self.expireDate > self.publishedDate}\\
-    \hline
+    \toprule
+    \textbf{Descrizione:} voto tra 1 e 5 stelle.\\
+    \midrule
+    context Review\\
+    \quad inv: self.rating >= 1 and self.rating <= 5\\
+    \bottomrule
   \end{tabular}
 \end{table}
+\FloatBarrier
 
-\subsection{Class Date}
+%----------------------------------------
+\subsection{Classe News}
 
-\begin{table}[ht]
+\begin{table}[H]
   \centering
   \begin{tabular}{p{0.9\textwidth}}
-    \hline
-    \textbf{Description:} each date must have a valid day, month, and year.\\
-    \hline
-    \texttt{context Date}\\
-    \texttt{inv validDay: self.day >= 1 and self.day <= 31}\\
-    \texttt{inv validMonth: self.month >= 1 and self.month <= 12}\\
-    \texttt{inv validYear: self.year >= 0}\\
-    \hline
+    \toprule
+    \textbf{Descrizione:} scadenza > data di pubblicazione.\\
+    \midrule
+    context News\\
+    \quad inv: self.expireDate > self.publishedDate\\
+    \bottomrule
   \end{tabular}
 \end{table}
+\FloatBarrier
+
+%----------------------------------------
+\subsection{Classe Date}
+
+\begin{table}[H]
+  \centering
+  \begin{tabular}{p{0.9\textwidth}}
+    \toprule
+    \textbf{Descrizione:} giorno, mese e anno validi.\\
+    \midrule
+    context Date\\
+    \quad inv: self.day >= 1 and self.day <= 31\\
+    \quad inv: self.month >= 1 and self.month <= 12\\
+    \quad inv: self.year >= 1900\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+\FloatBarrier
