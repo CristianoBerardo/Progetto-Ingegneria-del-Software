@@ -3,7 +3,7 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface IProducer extends Document {
   name: string;
-  // email: string;
+  email: string;
   // phone: string;
   // authenticated: boolean;
   // address: string;
@@ -12,7 +12,7 @@ export interface IProducer extends Document {
 
 export const ProducerSchema = new Schema<IProducer>({
   name: { type: String, required: true },
-  // email: { type: String, required: true },
+  email: { type: String, required: true },
   // phone: { type: String, required: true },
   // authenticated: { type: Boolean, default: false },
   // address: { type: String, required: true },

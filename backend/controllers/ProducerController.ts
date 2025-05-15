@@ -3,7 +3,7 @@ import Producer from "../models/ProducerModel";
 
 export const createProducer = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const producerData = req.body;
@@ -27,7 +27,7 @@ export const createProducer = async (
 
 export const readProducers = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const producers = await Producer.find();
@@ -36,6 +36,7 @@ export const readProducers = async (
       data: producers,
       message: "Producers retrieved successfully",
     });
+    return;
   } catch (error) {
     console.error("Error retrieving producers:", error);
     res.status(500).json({
@@ -48,7 +49,7 @@ export const readProducers = async (
 
 export const readProducer = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const producerId = req.params.id;
@@ -65,6 +66,7 @@ export const readProducer = async (
       data: producer,
       message: "Producer retrieved successfully",
     });
+    return;
   } catch (error) {
     console.error("Error retrieving producer:", error);
     res.status(500).json({
@@ -77,7 +79,7 @@ export const readProducer = async (
 
 export const deleteProducer = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const producerId = req.params.id;
@@ -100,6 +102,122 @@ export const deleteProducer = async (
     res.status(500).json({
       success: false,
       message: "Failed to delete producer",
+    });
+    return;
+  }
+};
+
+export const completeUpdateProducer = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const producerID = req.params.id;
+    if (!producerID) {
+      res.status(400).json({
+        success: false,
+        message: "Producer ID is required",
+      });
+      return;
+    }
+
+    const producerData = req.body;
+
+    if (!producerData) {
+      res.status(400).json({
+        success: false,
+        message: "Producer data is required",
+      });
+      return;
+    }
+
+    const newDocument = await Producer.findByIdAndUpdate(
+      producerID,
+      producerData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    if (!newDocument) {
+      res.status(404).json({
+        success: false,
+        message: "Producer not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: newDocument,
+      message: "Producer updated successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error updating producer:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update producer",
+    });
+    return;
+  }
+};
+
+export const partialUpdateProducer = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  console.log("Partial update producer");
+
+  try {
+    const producerID = req.params.id;
+
+    if (!producerID) {
+      res.status(400).json({
+        success: false,
+        message: "Producer ID is required",
+      });
+      return;
+    }
+
+    const producerData = req.body;
+    if (!producerData) {
+      res.status(400).json({
+        success: false,
+        message: "Producer data is required",
+      });
+      return;
+    }
+
+    const updatedProducer = await Producer.findByIdAndUpdate(
+      producerID,
+      producerData,
+      // { $set: producerData },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+    if (!updatedProducer) {
+      res.status(404).json({
+        success: false,
+        message: "Producer not found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: updatedProducer,
+      message: "Producer partially updated successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error partially updating producer:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to partially update producer",
     });
     return;
   }

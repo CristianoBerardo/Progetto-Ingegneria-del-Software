@@ -11,9 +11,9 @@ const port = process.env.PORT;
 app.use(express.json());
 app.use(cors());
 
-app.use("/api/producers", producerRouter);
+app.use("/api/v1/producers", producerRouter);
 
-app.use("/api/products", productRouter);
+app.use("/api/v1/products", productRouter);
 
 app.get("/api", (req, res) => {
   res.send(JSON.stringify(expressListEndpoints(app), null, 2));

@@ -1,9 +1,11 @@
 import { Router } from "express";
 import {
+  completeUpdateProduct,
   createProduct,
-  readProducts,
-  readProduct,
   deleteProduct,
+  partialUpdateProduct,
+  readProduct,
+  readProducts,
 } from "../controllers/ProductController";
 
 const productRouter = Router();
@@ -13,5 +15,7 @@ productRouter.get("/", readProducts);
 productRouter.get("/:id", readProduct);
 productRouter.delete("/:id", deleteProduct);
 
+productRouter.put("/:id", completeUpdateProduct);
+productRouter.patch("/:id", partialUpdateProduct);
 
 export default productRouter;

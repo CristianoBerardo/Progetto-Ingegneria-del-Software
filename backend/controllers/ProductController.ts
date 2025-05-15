@@ -4,7 +4,7 @@ import Product from "../models/ProductModel";
 
 export const createProduct = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   const productData = req.body;
   try {
@@ -26,7 +26,7 @@ export const createProduct = async (
 
 export const readProducts = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const products = await Product.find();
@@ -46,7 +46,10 @@ export const readProducts = async (
   }
 };
 
-export const readProduct = async (req: Request, res: Response): Promise<void> => {
+export const readProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const productId = req.params.id;
     const product = await Product.findById(productId);
@@ -73,11 +76,14 @@ export const readProduct = async (req: Request, res: Response): Promise<void> =>
   }
 };
 
-export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
+export const deleteProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const productId = req.params.id;
     const product = await Product.findByIdAndDelete(productId);
-    if(!product) {
+    if (!product) {
       res.status(404).json({
         success: false,
         message: "Product not found",
@@ -99,4 +105,75 @@ export const deleteProduct = async (req: Request, res: Response): Promise<void> 
     return;
   }
 };
-    
+
+export const completeUpdateProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const productId = req.params.id;
+    const productData = req.body;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      productData,
+      { new: true, runValidators: true }
+    );
+    if (!updatedProduct) {
+      res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      data: updatedProduct,
+      message: "Product updated successfully",
+    });
+
+    return;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update product",
+    });
+    return;
+  }
+};
+export const partialUpdateProduct = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const productId = req.params.id;
+    const productData = req.body;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      productData,
+      { new: true, runValidators: true }
+    );
+    if (!updatedProduct) {
+      res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      data: updatedProduct,
+      message: "Product partially updated successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error partially updating :", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to partially update ",
+    });
+    return;
+  }
+};
