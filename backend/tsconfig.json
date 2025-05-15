@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "module": "CommonJS",  // Usa CommonJS invece di ESNext
+      "target": "ESNext",
+      "moduleResolution": "Node",
+      "esModuleInterop": true,
+      "strict": true,
+      "outDir": "./dist",
+      "rootDir": "./",
+      "resolveJsonModule": true
+    },
+    "include": ["app.ts"]
+  }
+  
