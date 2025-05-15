@@ -227,3 +227,51 @@ export const partialUpdateProducer = async (
     return;
   }
 };
+
+//* ------------------ SEARCH ------------------ *//
+
+export const searchProducers = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  const { name, sort = "name:asc", page = 1, limit = 10 } = req.query;
+
+  try {
+    const sortOption: any = {};
+    if (sort) {
+      //MongoDB conventions --> 1 for ascending, -1 for descending
+      const [field, order] = String(sort).split(":");
+      sortOption[field] = order === "desc" ? -1 : 1;
+    }
+
+    const producers = await Producer.find({
+      name: { $regex: name, $options: "i" },
+    })
+      .sort(sortOption)
+      // .populate("products")
+      .limit(Number(limit))
+      .skip((Number(page) - 1) * Number(limit));
+
+    if (producers.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "No producers found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: producers,
+      message: "Producers retrieved successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error searching producers:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to search producers",
+    });
+    return;
+  }
+};
