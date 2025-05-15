@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Producer from "../models/ProducerModel";
+import Product from "../models/ProductModel";
 
 export const createProducer = async (
   req: Request,
@@ -91,10 +92,15 @@ export const deleteProducer = async (
       });
       return;
     }
+
+    for (const element of deletedProducer.products) {
+      await Product.findOneAndDelete(element);
+    }
+
     res.status(200).json({
       success: true,
       data: deletedProducer,
-      message: "Producer deleted successfully",
+      message: "Producer and relative products are deleted successfully",
     });
     return;
   } catch (error) {
@@ -193,7 +199,6 @@ export const partialUpdateProducer = async (
     const updatedProducer = await Producer.findByIdAndUpdate(
       producerID,
       producerData,
-      // { $set: producerData },
       {
         new: true,
         runValidators: true,
