@@ -9,7 +9,11 @@
 </template>
 <script setup>
 import { ref } from 'vue';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import {getAuth, 
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+} from 'firebase/auth';
 import { useRouter } from 'vue-router';
 
 const email = ref("");
@@ -23,7 +27,8 @@ const register = async () => {
         .then((data) => {
             // Signed in
             console.log("Successfully registered!");
-            console.log(auth.currentUser);
+            //console.log(auth.currentUser);
+            console.log(data.user);
             router.push('/feed');
         })
         .catch((error) => {
@@ -45,13 +50,24 @@ const register = async () => {
         });
 };
 const signInWithGoogle = async () => {
-    const response = await fetch('http://localhost:3000/api/auth/google', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    console.log(data);
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(getAuth(), provider)
+        .then((result) => {
+            console.log(result.user);
+            router.push('/feed');
+        }).catch((error) => {
+            console.log(error.code);
+            switch (error.code) {
+                case 'auth/popup-closed-by-user':
+                    errMsg.value = "Popup closed by user";
+                    break;
+                case 'auth/popup-blocked':
+                    errMsg.value = "Popup blocked";
+                    break;
+                default:
+                    errMsg.value = "Error signing in with Google";
+                    break;
+            }
+        });
 };
 </script>
