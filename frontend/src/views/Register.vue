@@ -2,16 +2,19 @@
     <head>
         <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     </head>
-    <div class="register-container">
-        <h3>Create an Account</h3>
-        <p><input type="text" placeholder="Email" v-model="email"/></p>
-        <p><input type="password" placeholder="Password" v-model="password"/></p>
-        <p v-if="errMsg" class="error-message"> {{ errMsg }}</p>
-        <p><button @click="register">Submit</button></p>
-        <p><button @click="signInWithGoogle">Sign In With Google</button></p>
+    <div class="page-center">
+        <div class="register-container">
+            <h3>Create an account</h3>
+            <p><input type="text" placeholder="Email" v-model="email"/></p>
+            <p><input type="password" placeholder="Password" v-model="password"/></p>
+            <p v-if="errMsg" class="error-message"> {{ errMsg }}</p>
+            <p><button @click="register">Submit</button></p>
+            <p><button class="sign-in-google" @click="signInWithGoogle">Sign In With Google</button></p>
+        </div>
+        <p class="signin-link">Already have an account? <router-link to="/sign-in">Sign In</router-link></p>
     </div>
 </template>
-// ...existing code...
+
 <script setup>
 import { ref } from 'vue';
 import {getAuth, 
@@ -79,8 +82,14 @@ const signInWithGoogle = async () => {
 
 <style scoped>
 body {
+    min-height: 100vh;
+    margin: 0;
     background: #f7f7f7;
     font-family: 'Quicksand', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .register-container, input, button, h3, p {
     font-family: 'Quicksand', Arial, sans-serif;
@@ -105,11 +114,18 @@ input[type="text"], input[type="password"] {
     border-radius: 6px;
     font-size: 1em;
 }
+.page-center {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 button {
     width: 80%;
     padding: 10px;
     margin-bottom: 10px;
-    background: #1a4301; /* theme color */
+    background: #145300; /* theme color */
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -118,7 +134,22 @@ button {
     transition: background 0.2s;
 }
 button:hover {
-    background: #145300; 
+    background: #0b2f00; 
+}
+.sign-in-google{
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #577c41; /* theme color */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.7em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.sign-in-google:hover {
+    background: #1a4301; 
 }
 p {
     text-align: center;
@@ -127,5 +158,20 @@ p {
     color: #1a4301;
     text-align: center;
     font-size: 0.8em;
+}
+.signin-link {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 1em;
+}
+.signin-link a {
+    color: #577c41;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.signin-link a:hover {
+    color: #145300;
+    text-decoration: underline;
 }
 </style>

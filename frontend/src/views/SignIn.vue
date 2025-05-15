@@ -2,20 +2,23 @@
     <head>
         <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
     </head>
-    <div class="sign-in-container">
-    <h3>Log in</h3>
-    <p><input type="text" placeholder="Email" v-model="email"/></p>
-    <p><input type="password" placeholder="Password" v-model="password"/></p>
-    <p v-if="errMsg" class="error-message"> {{ errMsg }}</p>
-    <p><button @click="signIn">Submit</button></p>
-    <p><button @click="signInWithGoogle">Sign In With Google</button></p>
+    <div class="page-center">
+        <div class="sign-in-container">
+            <h3>Sign in</h3>
+            <p><input type="text" placeholder="Email" v-model="email"/></p>
+            <p><input type="password" placeholder="Password" v-model="password"/></p>
+            <p v-if="errMsg" class="error-message"> {{ errMsg }}</p>
+            <p><button @click="signIn">Submit</button></p>
+            <p><button class="sign-in-google" @click="signInWithGoogle">Sign In With Google</button></p>
+        </div>
+        <p class="register-link">Don't have an account? <router-link to="/register">Register</router-link></p>
+        <!-- <p>Forgot your password? <router-link to="/reset-password">Reset Password</router-link></p> -->
     </div>
-    <p>Don't have an account? <router-link to="/register">Register</router-link></p>
-    <!-- <p>Forgot your password? <router-link to="/reset-password">Reset Password</router-link></p> -->
     </template>
 <script setup>
 import { ref } from 'vue';
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword,
+    GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 import { useRouter } from 'vue-router';
 
 const email = ref("");
@@ -55,23 +58,41 @@ const signIn = async () => {
             }
         });
 };
+
 const signInWithGoogle = async () => {
-    const response = await fetch('http://localhost:3000/api/auth/google', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    });
-    const data = await response.json();
-    console.log(data);
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(getAuth(), provider)
+        .then((result) => {
+            console.log(result.user);
+            router.push('/feed');
+        }).catch((error) => {
+            console.log(error.code);
+            switch (error.code) {
+                case 'auth/popup-closed-by-user':
+                    errMsg.value = "Popup closed by user";
+                    break;
+                case 'auth/popup-blocked':
+                    errMsg.value = "Popup blocked";
+                    break;
+                default:
+                    errMsg.value = "Error signing in with Google";
+                    break;
+            }
+        });
 };
 </script>
 
 
 <style scoped>
 body {
+    min-height: 100vh;
+    margin: 0;
     background: #f7f7f7;
     font-family: 'Quicksand', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 .sign-in-container, input, button, h3, p {
     font-family: 'Quicksand', Arial, sans-serif;
@@ -96,11 +117,18 @@ input[type="text"], input[type="password"] {
     border-radius: 6px;
     font-size: 1em;
 }
+.page-center {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 button {
     width: 80%;
     padding: 10px;
     margin-bottom: 10px;
-    background: #1a4301; /* theme color */
+    background: #145300; /* theme color */
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -109,15 +137,44 @@ button {
     transition: background 0.2s;
 }
 button:hover {
-    background: #145300; 
+    background: #0b2f00; 
+}
+.sign-in-google{
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #577c41; /* theme color */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.7em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.sign-in-google:hover {
+    background: #1a4301; 
 }
 p {
     text-align: center;
 }
 .error-message {
-    color: #1a4301;
+    color: #3c2202;
     text-align: center;
     font-size: 0.8em;
 }
-
+.register-link {
+    text-align: center;
+    margin-top: 18px;
+    font-size: 1em;
+}
+.register-link a {
+    color: #577c41;
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.register-link a:hover {
+    color: #145300;
+    text-decoration: underline;
+}
 </style>
