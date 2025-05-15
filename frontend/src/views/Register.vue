@@ -1,12 +1,17 @@
 <template>
-    <h1>Create an Account</h1>
-    <p><input type="text" placeholder="Email" v-model="email"/></p>
-    <p><input type="password" placeholder="Password" v-model="password"/></p>
-    <p v-if="errMsg"> {{ errMsg }}</p>
-    <p><button @click="register">Submit</button></p>
-    <p><button @click="signInWithGoogle">Sign In With Google</button></p>
-
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+    <div class="register-container">
+        <h3>Create an Account</h3>
+        <p><input type="text" placeholder="Email" v-model="email"/></p>
+        <p><input type="password" placeholder="Password" v-model="password"/></p>
+        <p v-if="errMsg" class="error-message"> {{ errMsg }}</p>
+        <p><button @click="register">Submit</button></p>
+        <p><button @click="signInWithGoogle">Sign In With Google</button></p>
+    </div>
 </template>
+// ...existing code...
 <script setup>
 import { ref } from 'vue';
 import {getAuth, 
@@ -71,3 +76,56 @@ const signInWithGoogle = async () => {
         });
 };
 </script>
+
+<style scoped>
+body {
+    background: #f7f7f7;
+    font-family: 'Quicksand', Arial, sans-serif;
+}
+.register-container, input, button, h3, p {
+    font-family: 'Quicksand', Arial, sans-serif;
+}
+h3 {
+    text-align: center;
+    color: #333;
+}
+form, .register-container {
+    max-width: 350px;
+    margin: 60px auto;
+    padding: 32px 24px;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 16px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+}
+button {
+    width: 80%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #1a4301; /* theme color */
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button:hover {
+    background: #145300; 
+}
+p {
+    text-align: center;
+}
+.error-message {
+    color: #1a4301;
+    text-align: center;
+    font-size: 0.8em;
+}
+</style>
