@@ -23,6 +23,8 @@ npm run test
 
 4. Check the console and open your browser and go to [http://localhost:3000](http://localhost:3000) to see the project running.
 
+5. To pull a remote branch and updae your current code you can use the git switch command.
+
 # Convenzioni
 
 1. Inglese (anche i commenti possibilmente)
