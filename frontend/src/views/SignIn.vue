@@ -20,6 +20,7 @@ import { ref } from 'vue';
 import { getAuth, signInWithEmailAndPassword,
     GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const email = ref("");
 const password = ref("");
@@ -30,12 +31,21 @@ const router = useRouter();
 const signIn = async () => {
     const auth = getAuth(); //saved in local storage by default
     signInWithEmailAndPassword(auth, email.value, password.value)
-        .then((data) => {
+        .then(async (data) => {
+            const idToken = await data.user.getIdToken();
+            console.log("Invio token al backend", idToken);
+            axios.post('http://localhost:3000/auth/login/firebase', { idToken })
+                .then(res => {
+                 console.log(res.data.token);
+                localStorage.setItem('token', res.data.token);
+                router.push('/feed');
+            });
+            /*
             // Signed in
             console.log("Successfully signed id!");
             //console.log(auth.currentUser);
             console.log(data.user);
-            router.push('/feed');
+            router.push('/feed');*/
         })
         .catch((error) => {
             console.log(error.code);
