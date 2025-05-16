@@ -12,7 +12,7 @@
         <div class="product-item" v-for="product in products" :key="product._id">
           <div class="product-info">
             <h3>{{ product.name }}</h3>
-            <p v-if="product.description">{{ product.description }}</p>
+            <p v-if="product.description"><strong>Descrizione: </strong>{{ product.description }}</p>
             <p><strong>Prezzo:</strong> {{ product.price }}€</p>
             <p><strong>Disponibilità:</strong> {{ product.available }}</p>
             <p><strong>Produttore:</strong> {{ product.producer }}</p>
@@ -47,7 +47,7 @@
     methods: {
       async fetchProducts() {
         try {
-          const response = await fetch('http://localhost:3000/api/products');
+          const response = await fetch('http://localhost:3000/api/v1/products');
           const result = await response.json();
   
           if (result.success) {
@@ -67,7 +67,7 @@
   
         try {
           const response = await fetch(
-            `http://localhost:3000/api/products/${productId}`,
+            `http://localhost:3000/api/v1/products/${productId}`,
             {
               method: 'DELETE',
               headers: { 'Content-Type': 'application/json' }

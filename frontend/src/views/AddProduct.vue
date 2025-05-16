@@ -99,7 +99,7 @@ export default {
 
       try {
         console.log('Invio prodotto:', product);
-        const response = await fetch('http://localhost:3000/api/products', {
+        const response = await fetch('http://localhost:3000/api/v1/products', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(product)
