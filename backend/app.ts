@@ -1,30 +1,25 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import { databaseProducts } from './connections/mongoDB/connections';
-import productRoutes from './routes/ProductEndPoint';
-
-async function run() {
-  try {
-    // await mongoose.connect(databaseProducts);
-      console.log("Pinged your deployment. You successfully connected to MongoDB!");
-      // const Model = mongoose.model('Pippo', new mongoose.Schema({ name: String }));
-      // await Model.createCollection();
-  } finally {
-    // await mongoose.disconnect();
-  }
-
-}
-run().catch(console.dir);
+import cors from "cors";
+import express from "express";
+import expressListEndpoints from "express-list-endpoints";
+import { startServer } from "./connections/mongoDB/connections";
+import producerRouter from "./routes/ProducerRouter";
+import productRouter from "./routes/ProductRouter";
 
 const app = express();
+const port = process.env.PORT;
+
 app.use(express.json());
+app.use(cors());
 
-// Use the product routes
-app.use('/api/products', productRoutes);
+app.use("/api/v1/producers", producerRouter);
 
-const port = 3000;
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+app.use("/api/v1/products", productRouter);
+
+app.get("/api", (req, res) => {
+  res.send(JSON.stringify(expressListEndpoints(app), null, 2));
 });
 
-export default app;
+app.listen(port, async () => {
+  console.log(`Server is running on http://localhost:${port}`);
+  await startServer();
+});

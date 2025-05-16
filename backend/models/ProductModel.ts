@@ -1,9 +1,9 @@
 import { Schema, model, Document, Types } from 'mongoose';
 
 export interface IProduct extends Document {
-  _id: string;
   name: string;
   description: string;
+  category: string;
   price: number;
   available: number;
   producer: Types.ObjectId; // This should be a reference to the Producer model
@@ -11,7 +11,8 @@ export interface IProduct extends Document {
 
 export const ProductSchema = new Schema<IProduct>({
   name: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
+  category: { type: String, required: false },
   price: { type: Number, required: true },
   available: { type: Number, required: true },
   producer: { type: Schema.Types.ObjectId, ref: 'Producer', required: true }
