@@ -6,7 +6,7 @@ import { useRouter } from 'vue-router'
 const isLoggedIn = ref(false)
 const router = useRouter()
 
-let auth
+let auth = getAuth()
 onMounted(() => {
   auth = getAuth()
   onAuthStateChanged(auth, (user) => {
