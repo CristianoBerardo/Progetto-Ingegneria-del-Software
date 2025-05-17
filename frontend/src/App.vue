@@ -1,20 +1,4 @@
-<script setup lang="ts"></script>
-
-<template>
-  <nav class="main-nav">
-    <router-link to="/">Home</router-link>
-    <router-link to="/feed">Feed</router-link>
-    <router-link to="/sign-in">Sign In</router-link>
-    <!--<router-link to="/register">Register</router-link>-->
-    <router-link to="/add-product"> Aggiungi Prodotto</router-link>
-    <router-link to="/delete-product/:id"> Rimuovi Prodotto </router-link>
-
-    <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
-  </nav>
-  <router-view />
-</template>
-
-<script setup>
+<script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
 import { useRouter } from 'vue-router'
@@ -48,12 +32,16 @@ const handleSignOut = async () => {
 }
 </script>
 
+
 <template>
   <nav class="main-nav">
     <router-link to="/">Home</router-link>
     <router-link to="/feed">Feed</router-link>
-    <router-link to="/sign-in">Sign In</router-link>
+    <router-link to="/sign-in" v-if="!isLoggedIn">Sign In</router-link>
     <!--<router-link to="/register">Register</router-link>-->
+    <router-link to="/add-product"> Aggiungi Prodotto</router-link>
+    <router-link to="/delete-product/:id"> Rimuovi Prodotto </router-link>
+
     <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
   </nav>
   <router-view />
