@@ -1,26 +1,12 @@
 <script setup lang="ts">
-</script>
-
-<template>
-  <nav class="main-nav">
-    <router-link to="/">Home</router-link>
-    <router-link to="/feed">Feed</router-link>
-    <router-link to="/sign-in">Sign In</router-link>
-    <!--<router-link to="/register">Register</router-link>-->
-    <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
-  </nav>
-  <router-view />
-</template>
-
-<script setup>
 import { onMounted, ref } from "vue";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, onAuthStateChanged, signOut, type Auth } from "firebase/auth";
 import { useRouter } from "vue-router";
 
 const isLoggedIn = ref(false);
 const router = useRouter();
 
-let auth;
+let auth: Auth;
 onMounted(() => {
   auth = getAuth();
   onAuthStateChanged(auth, (user) => {
@@ -46,3 +32,14 @@ const handleSignOut = async () => {
 };
 
 </script>
+
+<template>
+  <nav class="main-nav">
+    <router-link to="/">Home</router-link>
+    <router-link to="/feed">Feed</router-link>
+    <router-link to="/sign-in">Sign In</router-link>
+    <!--<router-link to="/register">Register</router-link>-->
+    <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
+  </nav>
+  <router-view />
+</template>
