@@ -1,14 +1,13 @@
-import './assets/main.css'
+import "./assets/main.css";
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createPinia } from "pinia";
+import { createApp } from "vue";
 
-import App from './App.vue'
-import router from './router'
+import App from "./App.vue";
+import router from "./router";
 
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,16 +20,16 @@ const firebaseConfig = {
   storageBucket: "agritrento-ee49c.firebasestorage.app",
   messagingSenderId: "265629131019",
   appId: "1:265629131019:web:d8cb065dedeaea109b420e",
-  measurementId: "G-ETEJWDTJJ6"
+  measurementId: "G-ETEJWDTJJ6",
 };
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
 //const analytics = getAnalytics(app);
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
+app.use(createPinia());
+app.use(router);
 
-app.mount('#app')
+app.mount("#app");

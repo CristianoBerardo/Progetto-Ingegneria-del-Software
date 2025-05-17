@@ -10,20 +10,12 @@
     <form @submit.prevent="submitProduct">
       <div>
         <label for="name">Nome Prodotto*</label>
-        <input
-          id="name"
-          type="text"
-          required
-          v-model="name"
-        />
+        <input id="name" type="text" required v-model="name" />
       </div>
 
       <div>
         <label for="description">Descrizione</label>
-        <textarea
-          id="description"
-          v-model="description"
-        ></textarea>
+        <textarea id="description" v-model="description"></textarea>
       </div>
 
       <div>
@@ -51,12 +43,7 @@
 
       <div>
         <label for="producer">Produttore*</label>
-        <input
-          id="producer"
-          type="text"
-          required
-          v-model="producer"
-        />
+        <input id="producer" type="text" required v-model="producer" />
       </div>
 
       <button type="submit">Salva Prodotto</button>
@@ -66,27 +53,27 @@
 
 <script>
 export default {
-  name: 'AddProduct',
+  name: "AddProduct",
   data() {
     return {
-      name: '',
-      description: '',
+      name: "",
+      description: "",
       price: 0,
       available: 0,
-      producer: '',
-      errorMessage: '',
-      successMessage: ''
+      producer: "",
+      errorMessage: "",
+      successMessage: "",
     }
   },
   methods: {
     async submitProduct() {
-      this.errorMessage = '';
-      this.successMessage = '';
-      
+      this.errorMessage = ""
+      this.successMessage = ""
+
       // Validazione base
       if (!this.name || !this.price || !this.available || !this.producer) {
-        this.errorMessage = 'Per favore compila tutti i campi obbligatori';
-        return;
+        this.errorMessage = "Per favore compila tutti i campi obbligatori"
+        return
       }
 
       const product = {
@@ -94,41 +81,41 @@ export default {
         description: this.description,
         price: this.price,
         available: this.available,
-        producer: this.producer // Ora è un semplice testo
-      };
+        producer: this.producer, // Ora è un semplice testo
+      }
 
       try {
-        console.log('Invio prodotto:', product);
-        const response = await fetch('http://localhost:3000/api/v1/products', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(product)
-        });
-        
-        const result = await response.json();
-        
+        console.log("Invio prodotto:", product)
+        const response = await fetch("http://localhost:3000/api/v1/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(product),
+        })
+
+        const result = await response.json()
+
         if (result.success) {
-          this.successMessage = 'Prodotto salvato con successo!';
+          this.successMessage = "Prodotto salvato con successo!"
           // Reset del form
-          this.name = '';
-          this.description = '';
-          this.price = 0;
-          this.available = 0;
-          this.producer = '';
-          
+          this.name = ""
+          this.description = ""
+          this.price = 0
+          this.available = 0
+          this.producer = ""
+
           // Attendi un secondo prima di reindirizzare
           setTimeout(() => {
-            this.$router.push('/');
-          }, 1000);
+            this.$router.push("/")
+          }, 1000)
         } else {
-          this.errorMessage = result.message || 'Errore nel salvataggio del prodotto';
+          this.errorMessage = result.message || "Errore nel salvataggio del prodotto"
         }
       } catch (err) {
-        console.error('Errore nel salvataggio del prodotto:', err);
-        this.errorMessage = 'Errore di connessione al server';
+        console.error("Errore nel salvataggio del prodotto:", err)
+        this.errorMessage = "Errore di connessione al server"
       }
-    }
-  }
+    },
+  },
 }
 </script>
 

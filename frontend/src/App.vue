@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
-import { useRouter } from 'vue-router'
+import { onMounted, ref } from "vue"
+import { getAuth, onAuthStateChanged, signOut } from "firebase/auth"
+import { useRouter } from "vue-router"
 
 const isLoggedIn = ref(false)
 const router = useRouter()
@@ -11,10 +11,10 @@ onMounted(() => {
   auth = getAuth()
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log('User is signed in:', user)
+      console.log("User is signed in:", user)
       isLoggedIn.value = true
     } else {
-      console.log('No user is signed in.')
+      console.log("No user is signed in.")
       isLoggedIn.value = false
     }
   })
@@ -23,15 +23,14 @@ onMounted(() => {
 const handleSignOut = async () => {
   signOut(auth)
     .then(() => {
-      console.log('User signed out.')
-      router.push('/')
+      console.log("User signed out.")
+      router.push("/")
     })
     .catch((error) => {
-      console.error('Error signing out:', error)
+      console.error("Error signing out:", error)
     })
 }
 </script>
-
 
 <template>
   <nav class="main-nav">

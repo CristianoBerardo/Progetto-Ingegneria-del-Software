@@ -1,10 +1,9 @@
 import { Request, Response } from "express";
-import admin from "../config/firebase";  // Assicurati di inizializzare Firebase Admin SDK
+import admin from "../config/firebase"; // Assicurati di inizializzare Firebase Admin SDK
 import User from "../models/UserModel";
 
-
 export const loginWithFirebase = async (req: Request, res: Response) => {
-  console.log("Ricevuta richiesta login con dati:", req.body);  // <-- Qui
+  console.log("Ricevuta richiesta login con dati:", req.body); // <-- Qui
   try {
     const { idToken } = req.body;
 

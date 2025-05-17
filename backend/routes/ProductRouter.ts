@@ -14,15 +14,12 @@ const productRouter = Router();
 productRouter.post("/", createProduct);
 productRouter.get("/", readProducts);
 
-
 productRouter.get("/search", searchProducts);
-
 
 productRouter.get("/:id", readProduct);
 productRouter.delete("/:id", deleteProduct);
 
 productRouter.put("/:id", completeUpdateProduct);
 productRouter.patch("/:id", partialUpdateProduct);
-
 
 export default productRouter;
