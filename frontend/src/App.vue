@@ -1,5 +1,4 @@
-<script setup lang="ts">
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <nav class="main-nav">
@@ -7,42 +6,44 @@
     <router-link to="/feed">Feed</router-link>
     <router-link to="/sign-in">Sign In</router-link>
     <!--<router-link to="/register">Register</router-link>-->
+    <router-link to="/add-product"> Aggiungi Prodotto</router-link>
+    <router-link to="/delete-product/:id"> Rimuovi Prodotto </router-link>
+
     <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
   </nav>
   <router-view />
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
-import { getAuth, onAuthStateChanged, signOut } from "firebase/auth";
-import { useRouter } from "vue-router";
+import { onMounted, ref } from 'vue'
+import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth'
+import { useRouter } from 'vue-router'
 
-const isLoggedIn = ref(false);
-const router = useRouter();
+const isLoggedIn = ref(false)
+const router = useRouter()
 
-let auth;
+let auth
 onMounted(() => {
-  auth = getAuth();
+  auth = getAuth()
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log("User is signed in:", user);
-      isLoggedIn.value = true;
+      console.log('User is signed in:', user)
+      isLoggedIn.value = true
     } else {
-      console.log("No user is signed in.");
-      isLoggedIn.value = false;
+      console.log('No user is signed in.')
+      isLoggedIn.value = false
     }
-  });
-});
+  })
+})
 
 const handleSignOut = async () => {
   signOut(auth)
     .then(() => {
-      console.log("User signed out.");
-      router.push("/");
+      console.log('User signed out.')
+      router.push('/')
     })
     .catch((error) => {
-      console.error("Error signing out:", error);
-    });
-};
-
+      console.error('Error signing out:', error)
+    })
+}
 </script>
