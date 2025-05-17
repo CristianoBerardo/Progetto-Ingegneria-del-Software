@@ -1,23 +1,20 @@
-import { Schema, model, Document } from 'mongoose';
+import { Schema, model, Document, Types } from 'mongoose';
 import { IProduct } from './ProductModel';
 
 export interface IProducer extends Document {
-  _id: string;
   name: string;
   email: string;
   phone: string;
-  authenticated: boolean;
   address: string;
-  inventory: IProduct[];
+  products: Types.ObjectId[]; // Array of product IDs
 }
 
 export const ProducerSchema = new Schema<IProducer>({
   name: { type: String, required: true },
   email: { type: String, required: true },
   phone: { type: String, required: true },
-  authenticated: { type: Boolean, default: false },
   address: { type: String, required: true },
-  inventory: [{ type: Schema.Types.ObjectId, ref: 'Product' }],
+  products: [{ type: Schema.Types.ObjectId, ref: "Product", required: false}],
 });
 
-export default model<IProducer>('Product', ProducerSchema);
+export default model<IProducer>('Producer', ProducerSchema);
