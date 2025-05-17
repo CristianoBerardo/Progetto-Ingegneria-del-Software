@@ -31,3 +31,6 @@ npm run test
 1. Nomi di file che contengono classi es. PascalCase
 1. Nomi di interfacce iniziano con es. IUser
 1. Nomi di classi PascalCase
+
+
+[I 10 comandi più comuni spiegati](https://dev.to/moibra/learning-git-and-github-the-10-most-common-commands-explained-3m6n)
