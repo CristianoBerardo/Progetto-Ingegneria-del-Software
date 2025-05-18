@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import admin from "../config/firebase";  // Assicurati di inizializzare Firebase Admin SDK
+import admin from "../config/firebase"; // Assicurati di inizializzare Firebase Admin SDK
 import User from "../models/UserModel";
 import { generateToken } from "../utils/jwt";
 
@@ -41,5 +41,6 @@ export const loginWithFirebase = async (req: Request, res: Response) => {
       success: false,
       message: "Login failed",
     });
+    return;
   }
 };
