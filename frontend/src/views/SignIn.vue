@@ -29,38 +29,34 @@ const router = useRouter();
 
 
 const signIn = async () => {
-    const auth = getAuth(); //saved in local storage by default
-    signInWithEmailAndPassword(auth, email.value, password.value)
-        .then(async (data) => {
-            const idToken = await data.user.getIdToken();
-            console.log("Invio token al backend", idToken);
-            axios.post(`http://localhost:3000/auth/${idToken}`)
-                .then(res => {
-                    console.log("Token received from backend", res.data.token);
-                    localStorage.setItem('token', res.data.token);
-                    router.push('/feed');
-                });
-        })
-        .catch((error) => {
-            console.log(error.code);
-            switch (error.code) {
-                case 'auth/invalid-email':
-                    errMsg.value = "Invalid email";
-                    break;
-                case 'auth/user-not-found':
-                    errMsg.value = "This email is not registered";
-                    break;
-                case 'auth/wrong-password':
-                    errMsg.value = "Incorrect password";
-                    break;
-                case 'auth/missing-password':
-                    errMsg.value = "Missing password";
-                    break;
-                default:
-                    errMsg.value = "Email or password was incorrect";
-                    break;
-            }
-        });
+    const auth = getAuth();
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+        const idToken = await userCredential.user.getIdToken();
+        // Invia il token al backend e ricevi JWT
+        const res = await axios.post(`http://localhost:3000/auth/login/${idToken}`);
+
+        // Salva il token JWT nel localStorage
+        localStorage.setItem('token', res.data.token);
+        console.log("Token ricevuto dal backend:", res.data.token);
+        router.push('/feed');
+    } catch (error) {
+        console.error("Errore durante login:", error.code);
+        switch (error.code) {
+            case 'auth/invalid-email':
+                errMsg.value = "Email non valida";
+                break;
+            case 'auth/user-not-found':
+                errMsg.value = "Utente non trovato";
+                break;
+            case 'auth/wrong-password':
+                errMsg.value = "Password errata";
+                break;
+            default:
+                errMsg.value = "Errore durante il login";
+                break;
+        }
+    }
 };
 
 const signInWithGoogle = async () => {

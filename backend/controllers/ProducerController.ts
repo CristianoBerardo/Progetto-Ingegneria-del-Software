@@ -5,22 +5,39 @@ import { generateToken } from "../utils/jwt";
 
 export const createProducer = async (
   req: Request,
+  res: Response,
+): Promise<void> => {
+  try {
+    const producerData = req.body;
+    console.log(producerData);
+    const newProducer = new Producer(producerData);
+    const savedProducer = await newProducer.save();
+    res.status(201).json({
+      success: true,
+      data: savedProducer,
+      message: "Producer created successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error creating producer:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create producer",
+    });
+  }
+};
+
+export const createProducerWithToken = async (
+  req: Request,
   res: Response
 ): Promise<void> => {
   try {
     const producerData = req.body;
-    //console.log(producerData);
-    console.log("Nuovo produttore registrato:", producerData);
     const newProducer = new Producer(producerData);
     const savedProducer = await newProducer.save();
     
-    // res.status(201).json({
-    //   success: true,
-    //   data: savedProducer,
-    //   message: "Producer created successfully",
-    // });
-        const token = generateToken({
-          //uid:  savedProducer.uid,
+    const token = generateToken({
+          uid: savedProducer._id,
           email: savedProducer.email,
           role: "producer",
         });
@@ -28,14 +45,9 @@ export const createProducer = async (
         res.status(200).json({
           success: true,
           token,
-          // data: {
-          //   uid: uid,
-          //   email: email,
-          //   name: name,
-          //   role: userType,
-          // },
           message: "Registration successful",
         });
+    console.log("New producer created:", savedProducer);
     return;
   } catch (error) {
     console.error("Error creating producer:", error);

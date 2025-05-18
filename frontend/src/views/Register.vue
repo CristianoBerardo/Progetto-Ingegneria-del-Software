@@ -109,8 +109,8 @@ const register = async () => {
                 router.push('/feed');
             })
             .catch(err => {
-                
                 errMsg.value = "Errore durante la registrazione";
+                console.error("Errore durante la registrazione:", err);
             });
         })
         .catch((error) => {

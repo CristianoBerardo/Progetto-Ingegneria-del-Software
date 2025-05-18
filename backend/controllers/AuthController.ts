@@ -1,9 +1,7 @@
 import { Request, Response } from "express";
-import admin from "../config/firebase"; 
-import User from "../models/UserModel";
-import Producer from "../models/ProducerModel"; 
+import admin from "../config/firebase";
+import { createProducerWithToken } from "./ProducerController";
 import { generateToken } from "../utils/jwt";
-import { createProducer } from "./ProducerController";
 
 export const registerWithFirebase = async (req: Request, res: Response) => {
   try {
@@ -14,11 +12,11 @@ export const registerWithFirebase = async (req: Request, res: Response) => {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const { uid } = decodedToken;
 
-    // Generate new Producer or User 
+    // Create new Producer in the database
     if (userType === "azienda") {
       req.body.products = [];
       req.body.uid = uid;
-      await createProducer(req, res);
+      await createProducerWithToken(req, res);
       return;
     }
     
@@ -58,53 +56,34 @@ export const registerWithFirebase = async (req: Request, res: Response) => {
   }
 };
 
-export const loginWithFirebase = async (req: Request, res: Response) => {/*
+export const loginWithFirebase = async (req: Request, res: Response) => {
   try {
     const { idToken } = req.params;
-    const { userType, name, phone, address, email } = req.body;
-
-    // Verifica il token Firebase
+    // Verify Firebase token
     const decodedToken = await admin.auth().verifyIdToken(idToken);
-    const { uid } = decodedToken;
+    const { uid, email } = decodedToken;
 
-    if (userType === "azienda") {
-      let producer = await Producer.findOne({ uid });
-      if (!producer) {
-        producer = await User.create({ uid, email, name, role: "user" }); // esempio ruolo di default
-      }
-      return;
-    }
+    // Controlla se l'utente esiste nel database (opzionale)
+    // const user = await User.findOne({ uid });
+    // if (!user) {
+    //   return res.status(404).json({ success: false, message: "Utente non trovato" });
+    // }
 
-    // defautl userType
-    let user = await User.findOne({ uid });
-    if (!user) {
-      user = await User.create({ uid, email, name, role: "user" }); // esempio ruolo di default
-    }
+    // Generate JWT token
+    const token = generateToken({ uid, email, role: "user" });
 
-    const token = generateToken({
-      uid: user.uid,
-      email: user.email,
-      role: user.role,
-    });
-
+    // Send JWT token back to the client
     res.status(200).json({
       success: true,
       token,
-      data: {
-        uid: user.uid,
-        email: user.email,
-        name: user.name,
-        role: user.role,
-      },
-      message: "Login successful",
+      message: "Login effettuato con successo",
     });
-    console.log("User logged in:", user.email);
+    console.log("User logged in:", email);
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("Errore durante il login:", error);
     res.status(500).json({
       success: false,
-      message: "Login failed",
+      message: "Errore durante il login",
     });
-    return;
-  }*/
+  }
 };
