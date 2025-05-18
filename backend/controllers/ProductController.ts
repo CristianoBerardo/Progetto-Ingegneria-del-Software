@@ -36,7 +36,9 @@ export const readProducts = async (
   }
 
   try {
-    const products = await Product.find();
+    const products = await Product.find()
+      .populate("producer", "_id name")
+      
     res.status(200).json({
       success: true,
       data: products,

@@ -6,6 +6,7 @@ import {
   partialUpdateProducer,
   readProducer,
   readProducers,
+  getProducerNames,
 } from "../controllers/ProducerController";
 
 const producerRouter = Router();
@@ -13,6 +14,7 @@ const producerRouter = Router();
 producerRouter.post("/", createProducer);
 producerRouter.get("/", readProducers);
 
+producerRouter.get("/names", getProducerNames);
 
 producerRouter.get("/:id", readProducer);
 producerRouter.delete("/:id", deleteProducer);

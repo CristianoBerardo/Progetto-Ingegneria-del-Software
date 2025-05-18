@@ -313,3 +313,38 @@ export const searchProducers = async (
     return;
   }
 };
+
+//* ------------------ GET NAMES ------------------ *//
+
+export const getProducerNames = async (req: Request, res: Response) => {
+  try {
+    const producers = await Producer.find(
+      {},
+      {
+        name: 1,
+        _id: 1,
+      }
+    );
+
+    if (!producers) {
+      res.status(404).json({
+        success: false,
+        message: "No producers found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: producers,
+      message: "Producer names retrieved successfully",
+    });
+  } catch (error) {
+    console.error("Error retrieving producer names:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve producer names",
+    });
+    return;
+  }
+};

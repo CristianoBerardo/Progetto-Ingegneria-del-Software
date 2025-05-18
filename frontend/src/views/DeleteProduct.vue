@@ -15,7 +15,7 @@
             <p v-if="product.description"><strong>Descrizione: </strong>{{ product.description }}</p>
             <p><strong>Prezzo:</strong> {{ product.price }}€</p>
             <p><strong>Disponibilità:</strong> {{ product.available }}</p>
-            <p><strong>Produttore:</strong> {{ product.producer }}</p>
+            <p><strong>Produttore:</strong> {{ product.producer.name }}</p>
           </div>
           <div class="product-actions">
             <button @click="deleteProduct(product._id)" class="delete-button">
@@ -49,6 +49,7 @@
         try {
           const response = await fetch('http://localhost:3000/api/v1/products');
           const result = await response.json();
+          console.log(result);
   
           if (result.success) {
             this.products = result.data;
