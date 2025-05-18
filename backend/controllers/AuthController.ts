@@ -1,12 +1,22 @@
 import { Request, Response } from "express";
-import admin from "../config/firebase";  // Assicurati di inizializzare Firebase Admin SDK
+import admin from "../config/firebase"; // Assicurati di inizializzare Firebase Admin SDK
 import User from "../models/UserModel";
 import { generateToken } from "../utils/jwt";
 
-export const loginWithFirebase = async (req: Request, res: Response) => {
-  console.log("Ricevuta richiesta login con dati:", req.body);  // <-- Qui
+export const loginWithFirebase = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
+  console.log("Ricevuta richiesta login con dati:", req.body); // <-- Qui
   try {
-    const { idToken } = req.body;
+    const idToken = req.params.idtoken;
+    if (!idToken) {
+      res.status(400).json({
+        success: false,
+        message: "ID token non fornito",
+      });
+      return;
+    }
 
     // Verifica il token Firebase
     const decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -35,11 +45,13 @@ export const loginWithFirebase = async (req: Request, res: Response) => {
       },
       message: "Login successful",
     });
+    return;
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({
       success: false,
       message: "Login failed",
     });
+    return;
   }
 };

@@ -3,6 +3,6 @@ import { loginWithFirebase } from "../controllers/AuthController";
 
 const authRouter = Router();
 
-authRouter.post("/login/firebase", loginWithFirebase);
+authRouter.post("/:idtoken", loginWithFirebase);
 
 export default authRouter;
