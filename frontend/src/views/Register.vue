@@ -116,12 +116,12 @@ const register = async () => {
                 });
             };*/
             const idToken = await userCredential.user.getIdToken();
-            axios.post('http://localhost:3000/auth/login/firebase', { idToken })
+            axios.post(`http://localhost:3000/auth/${idToken}`)
                 .then(res => {
+                    console.log("Token received from backend", res.data.token);
                     localStorage.setItem('token', res.data.token);
                     router.push('/feed');
                 });
-            router.push('/feed');
         })
         .catch((error) => {
             const errorCode = error.code;

@@ -34,10 +34,9 @@ const signIn = async () => {
         .then(async (data) => {
             const idToken = await data.user.getIdToken();
             console.log("Invio token al backend", idToken);
-            axios.post('http://localhost:3000/auth/login/firebase', { idToken })
+            axios.post(`http://localhost:3000/auth/${idToken}`)
                 .then(res => {
-                    // Use backend token JWT
-                    console.log(res.data.token);
+                    console.log("Token received from backend", res.data.token);
                     localStorage.setItem('token', res.data.token);
                     router.push('/feed');
                 });

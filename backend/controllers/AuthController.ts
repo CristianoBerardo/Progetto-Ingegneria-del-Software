@@ -4,9 +4,8 @@ import User from "../models/UserModel";
 import { generateToken } from "../utils/jwt";
 
 export const loginWithFirebase = async (req: Request, res: Response) => {
-  console.log("Ricevuta richiesta login con dati:", req.body);  // <-- Qui
   try {
-    const { idToken } = req.body;
+    const { idToken } = req.params;
 
     // Verifica il token Firebase
     const decodedToken = await admin.auth().verifyIdToken(idToken);
@@ -35,6 +34,7 @@ export const loginWithFirebase = async (req: Request, res: Response) => {
       },
       message: "Login successful",
     });
+    console.log("User logged in:", user.email);
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({
