@@ -28,6 +28,13 @@ export const readProducts = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  const query = req.query;
+
+  if (Object.keys(query).length > 0) {
+    searchProducts(req, res);
+    return;
+  }
+
   try {
     const products = await Product.find();
     res.status(200).json({
@@ -235,7 +242,7 @@ export const searchProducts = async (
 
     const products = await Product.find(query)
       .sort(sortOption)
-      .populate("producer")
+      .populate("producer", "_id name")
       .skip((parseInt(page as string) - 1) * parseInt(limit as string))
       .limit(parseInt(limit as string));
 

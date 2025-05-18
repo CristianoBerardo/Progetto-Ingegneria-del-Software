@@ -5,7 +5,7 @@ import { generateToken } from "../utils/jwt";
 
 export const createProducer = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const producerData = req.body;
@@ -35,18 +35,18 @@ export const createProducerWithToken = async (
     const producerData = req.body;
     const newProducer = new Producer(producerData);
     const savedProducer = await newProducer.save();
-    
+
     const token = generateToken({
-          uid: savedProducer._id,
-          email: savedProducer.email,
-          role: "producer",
-        });
-    
-        res.status(200).json({
-          success: true,
-          token,
-          message: "Registration successful",
-        });
+      uid: savedProducer._id,
+      email: savedProducer.email,
+      role: "producer",
+    });
+
+    res.status(200).json({
+      success: true,
+      token,
+      message: "Registration successful",
+    });
     console.log("New producer created:", savedProducer);
     return;
   } catch (error) {
@@ -62,6 +62,12 @@ export const readProducers = async (
   req: Request,
   res: Response
 ): Promise<void> => {
+  const query = req.query;
+  if (Object.keys(query).length > 0) {
+    searchProducers(req, res);
+    return;
+  }
+
   try {
     const producers = await Producer.find();
     res.status(200).json({
