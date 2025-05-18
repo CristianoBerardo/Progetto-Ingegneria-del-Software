@@ -2,59 +2,50 @@ import { Request, Response } from "express";
 import admin from "../config/firebase";
 import { createProducerWithToken } from "./ProducerController";
 import { generateToken } from "../utils/jwt";
+import { createClientWithToken } from "./ClientController";
 
-export const registerWithFirebase = async (req: Request, res: Response) => {
+export const registerClient = async (req: Request, res: Response) => {
   try {
     const { idToken } = req.params;
-    const { userType, name, phone, address, email } = req.body;
 
-    // Verify Firebase token
+    // Verify token Firebase
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const { uid } = decodedToken;
+    req.body.uid = uid;
 
-    // Create new Producer in the database
-    if (userType === "azienda") {
-      req.body.products = [];
-      req.body.uid = uid;
-      await createProducerWithToken(req, res);
-      return;
-    }
-    
-    // else if (userType === "client") {
-    //   let user = await User.findOne({ uid });
-    //   if (!user) {
-    //     user = await User.create({ uid, email, name, role: "user" }); // esempio ruolo di default
-    //   }
-    // }
-
-    // // Generate JWT token
-    // const token = generateToken({
-    //   uid: uid,
-    //   email: email,
-    //   role: userType,
-    // });
-
-    // res.status(200).json({
-    //   success: true,
-    //   token,
-    //   data: {
-    //     uid: uid,
-    //     email: email,
-    //     name: name,
-    //     role: userType,
-    //   },
-    //   message: "Registration successful",
-    // });
-    console.log("User logged in:", email);
+    // Create client inside database
+    await createClientWithToken(req, res);
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Errore during database registration:", error);
     res.status(500).json({
       success: false,
-      message: "Registration failed",
+      message: "Error during database registration",
     });
-    return;
   }
 };
+
+export const registerProducer = async (req: Request, res: Response) => {
+  try {
+    const { idToken } = req.params;
+
+    // Verify token Firebase
+    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const { uid } = decodedToken;
+    req.body.uid = uid;
+    req.body.products = [];
+
+    // Crea il produttore nel database
+    await createProducerWithToken(req, res);
+  } catch (error) {
+    console.error("Error during database registration:", error);
+    res.status(500).json({
+      success: false,
+      message: "Errore during database registration",
+    });
+  }
+};
+
+
 
 export const loginWithFirebase = async (req: Request, res: Response) => {
   try {
@@ -63,14 +54,8 @@ export const loginWithFirebase = async (req: Request, res: Response) => {
     const decodedToken = await admin.auth().verifyIdToken(idToken);
     const { uid, email } = decodedToken;
 
-    // Controlla se l'utente esiste nel database (opzionale)
-    // const user = await User.findOne({ uid });
-    // if (!user) {
-    //   return res.status(404).json({ success: false, message: "Utente non trovato" });
-    // }
-
     // Generate JWT token
-    const token = generateToken({ uid, email, role: "user" });
+    const token = generateToken({ uid, email });
 
     // Send JWT token back to the client
     res.status(200).json({
@@ -80,10 +65,10 @@ export const loginWithFirebase = async (req: Request, res: Response) => {
     });
     console.log("User logged in:", email);
   } catch (error) {
-    console.error("Errore durante il login:", error);
+    console.error("Error during login:", error);
     res.status(500).json({
       success: false,
-      message: "Errore durante il login",
+      message: "Errore during login",
     });
   }
 };

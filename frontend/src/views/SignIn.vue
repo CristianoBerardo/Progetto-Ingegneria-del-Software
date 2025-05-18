@@ -9,7 +9,6 @@
             <p><input type="password" placeholder="Password" v-model="password"/></p>
             <p v-if="errMsg" class="error-message"> {{ errMsg }}</p>
             <p><button @click="signIn">Submit</button></p>
-            <p><button class="sign-in-google" @click="signInWithGoogle">Sign In With Google</button></p>
         </div>
         <p class="register-link">Don't have an account? <router-link to="/register">Register</router-link></p>
         <!-- <p>Forgot your password? <router-link to="/reset-password">Reset Password</router-link></p> -->
@@ -17,8 +16,7 @@
     </template>
 <script setup>
 import { ref } from 'vue';
-import { getAuth, signInWithEmailAndPassword,
-    GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
@@ -35,7 +33,6 @@ const signIn = async () => {
         const idToken = await userCredential.user.getIdToken();
         // Invia il token al backend e ricevi JWT
         const res = await axios.post(`http://localhost:3000/auth/login/${idToken}`);
-
         // Salva il token JWT nel localStorage
         localStorage.setItem('token', res.data.token);
         console.log("Token ricevuto dal backend:", res.data.token);
@@ -59,27 +56,7 @@ const signIn = async () => {
     }
 };
 
-const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(getAuth(), provider)
-        .then((result) => {
-            console.log(result.user);
-            router.push('/feed');
-        }).catch((error) => {
-            console.log(error.code);
-            switch (error.code) {
-                case 'auth/popup-closed-by-user':
-                    errMsg.value = "Popup closed by user";
-                    break;
-                case 'auth/popup-blocked':
-                    errMsg.value = "Popup blocked";
-                    break;
-                default:
-                    errMsg.value = "Error signing in with Google";
-                    break;
-            }
-        });
-};
+
 </script>
 
 

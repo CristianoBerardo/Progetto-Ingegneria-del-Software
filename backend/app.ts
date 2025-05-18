@@ -5,6 +5,7 @@ import { startServer } from "./connections/mongoDB/connections";
 import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
 import authRouter from './routes/AuthRouter';
+import clientRouter from "./routes/ClientRoutes";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -13,8 +14,9 @@ app.use(express.json());
 app.use(cors());
 
 app.use("/api/v1/producers", producerRouter);
-app.use('/auth', authRouter);
 app.use("/api/v1/products", productRouter);
+app.use("/api/v1/clients", clientRouter);
+app.use('/auth', authRouter);
 
 app.get("/api", (req, res) => {
   res.send(JSON.stringify(expressListEndpoints(app), null, 2));

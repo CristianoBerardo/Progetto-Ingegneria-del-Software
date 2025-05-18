@@ -35,8 +35,10 @@
                 <input type="text" placeholder="Indirizzo" v-model="address" />
             </p>
             <p v-if="errMsg" class="error-message">{{ errMsg }}</p>
-            <p><button @click="register">Submit</button></p>
-            <p><button class="sign-in-google" @click="signInWithGoogle">Sign In With Google</button></p>
+            <p>
+                <button v-if="userType === 'cliente'" @click="registerClient">Submit</button>
+                <button v-else @click="registerProducer">Submit</button>
+            </p>
             <p class="back-link"><a href="#" @click.prevent="userType = null">Torna indietro</a></p>
         </div>
         <p class="signin-link">Hai già un account? <router-link to="/sign-in">Sign In</router-link></p>
@@ -45,7 +47,7 @@
 
 <script setup>
 import { ref } from 'vue';
-import {getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
+import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
@@ -69,9 +71,9 @@ function selectType(type) {
     address.value = "";
 }
 
-const register = async () => {
+const registerClient = async () => {
     if (!username.value) {
-        errMsg.value = userType.value === 'cliente' ? "Inserisci uno username" : "Inserisci il nome azienda";
+        errMsg.value = "Inserisci uno username";
         return;
     }
     if (!email.value) {
@@ -82,7 +84,55 @@ const register = async () => {
         errMsg.value = "Inserisci una password";
         return;
     }
-    if (userType.value === 'azienda') {
+
+    const auth = getAuth();
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+        console.log("Client registered on Firebase:", userCredential.user);
+        const idToken = await userCredential.user.getIdToken();
+
+        console.log("Sending data to backend:", {
+            username: username.value,
+            email: email.value
+        });
+
+        // Send data to backend
+        const res = await axios.post(`http://localhost:3000/auth/register/client/${idToken}`, {
+            username: username.value,
+            email: email.value
+        });
+
+        console.log("Backend token response:", res.data.token);
+        // Save JWT token inside localStorage
+        localStorage.setItem('token', res.data.token);
+        router.push('/feed');
+    } catch (error) {
+        console.error("Error during Firebase registration:", error);
+        if (error.code === 'auth/email-already-in-use') {
+            errMsg.value = "L'email è già in uso";
+        } else if (error.code === 'auth/invalid-email') {
+            errMsg.value = "L'email non è valida";
+        } else if (error.code === 'auth/weak-password') {
+            errMsg.value = "La password è troppo debole";
+        } else {
+            errMsg.value = error.response?.data?.message || "Errore durante la registrazione";
+        }
+    }
+};
+
+const registerProducer = async () => {
+        if (!username.value) {
+            errMsg.value = "Inserisci il nome azienda";
+            return;
+        }
+        if (!email.value) {
+            errMsg.value = "Inserisci una email";
+            return;
+        }
+        if (!password.value) {
+            errMsg.value = "Inserisci una password";
+            return;
+        }
         if (!phone.value) {
             errMsg.value = "Inserisci un numero di telefono";
             return;
@@ -91,67 +141,44 @@ const register = async () => {
             errMsg.value = "Inserisci un indirizzo";
             return;
         }
-    }
-    const auth = getAuth(); //saved in local storage by default
-    createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then(async (userCredential) => {
+
+        const auth = getAuth();
+        try {
+            const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+            console.log("Producer registered on Firebase:", userCredential.user);
             const idToken = await userCredential.user.getIdToken();
-            axios.post(`http://localhost:3000/auth/register/${idToken}`, {
-                userType: userType.value,
+
+            console.log("Sending data to backend:", {
                 name: username.value,
                 phone: phone.value,
                 address: address.value,
                 email: email.value
-            })
-            .then(res => {
-                localStorage.setItem('token', res.data.token);
-                console.log("Token ricevuto dal backend", res.data.token);
-                router.push('/feed');
-            })
-            .catch(err => {
-                errMsg.value = "Errore durante la registrazione";
-                console.error("Errore durante la registrazione:", err);
             });
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            switch (errorCode) {
-                case 'auth/invalid-email':
-                    errMsg.value = "Invalid email";
-                    break;
-                case 'auth/email-already-in-use':
-                    errMsg.value = "This email is already registered\nWant to sign in?";
-                    break;
-                case 'auth/weak-password':
-                    errMsg.value = "Password should be at least 6 characters";
-                    break;
-                default:
-                    errMsg.value = "Email or password was incorrect";
-                    break;
-            }
-        });
-};
-const signInWithGoogle = async () => {
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(getAuth(), provider)
-        .then((result) => {
-            console.log(result.user);
+
+            // Send data to backend
+            const res = await axios.post(`http://localhost:3000/auth/register/producer/${idToken}`, {
+                name: username.value,
+                phone: phone.value,
+                address: address.value,
+                email: email.value
+            });
+            console.log("Backend token response:", res.data.token);
+            // Save JWT token inside localStorage
+            localStorage.setItem('token', res.data.token);
             router.push('/feed');
-        }).catch((error) => {
-            console.log(error.code);
-            switch (error.code) {
-                case 'auth/popup-closed-by-user':
-                    errMsg.value = "Popup closed by user";
-                    break;
-                case 'auth/popup-blocked':
-                    errMsg.value = "Popup blocked";
-                    break;
-                default:
-                    errMsg.value = "Error signing in with Google";
-                    break;
+        } catch (error) {
+            console.error("Error during Firebase registration:", error);
+            if (error.code === 'auth/email-already-in-use') {
+                errMsg.value = "L'email è già in uso";
+            } else if (error.code === 'auth/invalid-email') {
+                errMsg.value = "L'email non è valida";
+            } else if (error.code === 'auth/weak-password') {
+                errMsg.value = "La password è troppo debole";
+            } else {
+                errMsg.value = error.response?.data?.message || "Errore durante la registrazione";
             }
-        });
-};
+        }
+    };
 </script>
 
 <style scoped>

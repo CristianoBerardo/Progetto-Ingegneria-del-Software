@@ -1,5 +1,4 @@
 import { Schema, model, Document, Types } from 'mongoose';
-import { IProduct } from './ProductModel';
 
 export interface IProducer extends Document {
   name: string;
