@@ -36,16 +36,11 @@ const signIn = async () => {
             console.log("Invio token al backend", idToken);
             axios.post('http://localhost:3000/auth/login/firebase', { idToken })
                 .then(res => {
-                 console.log(res.data.token);
-                localStorage.setItem('token', res.data.token);
-                router.push('/feed');
-            });
-            /*
-            // Signed in
-            console.log("Successfully signed id!");
-            //console.log(auth.currentUser);
-            console.log(data.user);
-            router.push('/feed');*/
+                    // Use backend token JWT
+                    console.log(res.data.token);
+                    localStorage.setItem('token', res.data.token);
+                    router.push('/feed');
+                });
         })
         .catch((error) => {
             console.log(error.code);

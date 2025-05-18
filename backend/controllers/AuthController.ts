@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import admin from "../config/firebase";  // Assicurati di inizializzare Firebase Admin SDK
 import User from "../models/UserModel";
-
+import { generateToken } from "../utils/jwt";
 
 export const loginWithFirebase = async (req: Request, res: Response) => {
   console.log("Ricevuta richiesta login con dati:", req.body);  // <-- Qui
@@ -18,8 +18,15 @@ export const loginWithFirebase = async (req: Request, res: Response) => {
       user = await User.create({ uid, email, name, role: "user" }); // esempio ruolo di default
     }
 
+    const token = generateToken({
+      uid: user.uid,
+      email: user.email,
+      role: user.role,
+    });
+
     res.status(200).json({
       success: true,
+      token,
       data: {
         uid: user.uid,
         email: user.email,

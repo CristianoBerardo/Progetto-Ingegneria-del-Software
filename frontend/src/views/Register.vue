@@ -47,6 +47,7 @@
 import { ref } from 'vue';
 import {getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup} from 'firebase/auth';
 import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const email = ref("");
 const password = ref("");
@@ -93,7 +94,7 @@ const register = async () => {
     }
     const auth = getAuth(); //saved in local storage by default
     createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then(async () => {
+        .then(async (userCredential) => {
             const userPayload = {
                 name: username.value,
                 email: email.value,
@@ -114,7 +115,12 @@ const register = async () => {
                     body: JSON.stringify(userPayload)
                 });
             };*/
-
+            const idToken = await userCredential.user.getIdToken();
+            axios.post('http://localhost:3000/auth/login/firebase', { idToken })
+                .then(res => {
+                    localStorage.setItem('token', res.data.token);
+                    router.push('/feed');
+                });
             router.push('/feed');
         })
         .catch((error) => {

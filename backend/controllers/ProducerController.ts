@@ -8,7 +8,7 @@ export const createProducer = async (
 ): Promise<void> => {
   try {
     const producerData = req.body;
-    console.log(producerData);
+    //console.log(producerData);
     console.log("Nuovo produttore registrato:", producerData);
     const newProducer = new Producer(producerData);
     const savedProducer = await newProducer.save();
