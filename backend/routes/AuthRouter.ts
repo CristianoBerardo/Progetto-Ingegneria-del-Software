@@ -1,8 +1,9 @@
 import { Router } from "express";
-import { loginWithFirebase } from "../controllers/AuthController";
+import { registerWithFirebase, loginWithFirebase } from "../controllers/AuthController";
 
 const authRouter = Router();
 
-authRouter.post("/:idToken", loginWithFirebase);
+authRouter.post("/register/:idToken", registerWithFirebase);
+authRouter.post("/login/:idToken", loginWithFirebase);
 
 export default authRouter;

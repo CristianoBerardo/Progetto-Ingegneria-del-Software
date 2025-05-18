@@ -95,33 +95,23 @@ const register = async () => {
     const auth = getAuth(); //saved in local storage by default
     createUserWithEmailAndPassword(auth, email.value, password.value)
         .then(async (userCredential) => {
-            const userPayload = {
+            const idToken = await userCredential.user.getIdToken();
+            axios.post(`http://localhost:3000/auth/register/${idToken}`, {
+                userType: userType.value,
                 name: username.value,
-                email: email.value,
                 phone: phone.value,
                 address: address.value,
-            };
-            if (userType.value === 'azienda') {
-                await fetch('http://localhost:3000/api/v1/producers', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userPayload)
-                });
-            } /*else if (userType.value === 'cliente') {
-                // Chiamata API per creare Cliente (se hai un endpoint)
-                await fetch('http://localhost:3000/api/clients', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(userPayload)
-                });
-            };*/
-            const idToken = await userCredential.user.getIdToken();
-            axios.post(`http://localhost:3000/auth/${idToken}`)
-                .then(res => {
-                    console.log("Token received from backend", res.data.token);
-                    localStorage.setItem('token', res.data.token);
-                    router.push('/feed');
-                });
+                email: email.value
+            })
+            .then(res => {
+                localStorage.setItem('token', res.data.token);
+                console.log("Token ricevuto dal backend", res.data.token);
+                router.push('/feed');
+            })
+            .catch(err => {
+                
+                errMsg.value = "Errore durante la registrazione";
+            });
         })
         .catch((error) => {
             const errorCode = error.code;

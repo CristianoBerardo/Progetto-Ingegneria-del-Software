@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Producer from "../models/ProducerModel";
 import Product from "../models/ProductModel";
+import { generateToken } from "../utils/jwt";
 
 export const createProducer = async (
   req: Request,
@@ -12,11 +13,29 @@ export const createProducer = async (
     console.log("Nuovo produttore registrato:", producerData);
     const newProducer = new Producer(producerData);
     const savedProducer = await newProducer.save();
-    res.status(201).json({
-      success: true,
-      data: savedProducer,
-      message: "Producer created successfully",
-    });
+    
+    // res.status(201).json({
+    //   success: true,
+    //   data: savedProducer,
+    //   message: "Producer created successfully",
+    // });
+        const token = generateToken({
+          //uid:  savedProducer.uid,
+          email: savedProducer.email,
+          role: "producer",
+        });
+    
+        res.status(200).json({
+          success: true,
+          token,
+          // data: {
+          //   uid: uid,
+          //   email: email,
+          //   name: name,
+          //   role: userType,
+          // },
+          message: "Registration successful",
+        });
     return;
   } catch (error) {
     console.error("Error creating producer:", error);
