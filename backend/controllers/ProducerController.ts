@@ -9,6 +9,7 @@ export const createProducer = async (
   try {
     const producerData = req.body;
     console.log(producerData);
+    console.log("Nuovo produttore registrato:", producerData);
     const newProducer = new Producer(producerData);
     const savedProducer = await newProducer.save();
     res.status(201).json({
