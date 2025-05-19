@@ -1,0 +1,667 @@
+FORMAT: 1A
+HOST: http://localhost:3000
+
+# AgriTrento
+
+**Idea di progetto**: siluppare una piattaforma web che faciliti la prenotazione e la vendita di
+frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti
+stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.
+
+
+AgriTrento mette a disposizione le seguenti API.
+
+## Produttori [/api/v1/producers]
+
+### Lettura produttori[GET /]
+
++ Response 200 (application/json)
+
+            [
+                {
+                "success": true,
+                "data": [
+                    {
+                        "_id": "6829d852f157077cbf886a50",
+                        "name": "Azienda 1",
+                        "email": "azienda1@azienda1.it",
+                        "phone": "+39 3771954812",
+                        "address": "Via Carlo Magno, 17, Caldonazzo, Trento, Italia",
+                        "products": [
+                            "68250af830cf8930e4cd9222"
+                        ],
+                        "__v": 0
+                    },
+                    {
+                        "_id": "6829f7cfbf802532dc2eae8e",
+                        "name": "Azienda 2",
+                        "email": "azienda2@azienda2.it",
+                        "phone": "+39 3771954812",
+                        "address": "Via Napolenone, 12, Trento, Trento, Italia",
+                        "products": [
+                            "68250af831cf893054cd9282"
+                        ],
+                        "__v": 0
+                    }
+                ],
+                "message": "Producers retrieved successfully"
+                }
+            ]
+        
+###  Lettura nomi produttori[GET /names]
+
++ Response 200 (application/json)
+
+            [
+                {
+                "success": true,
+                "data": [
+                    {
+                        "_id": "6829d852f157077cbf886a50",
+                        "name": "Azienda 1"
+                    },
+                    {
+                        "_id": "6829f7cfbf802532dc2eae8e",
+                        "name": "Azienda 2",
+                    }
+                ],
+                "message": "Producers retrieved successfully"
+                }
+            ]
+        
+###  Lettura produttore[GET /6829d852f157077cbf886a50]
+
++ Response 200 (application/json)
+
+            {
+                "success": true,
+                "data": 
+                    {
+                        "_id": "6829d852f157077cbf886a50",
+                        "name": "Azienda 1",
+                        "email": "azienda1@azienda1.it",
+                        "phone": "+39 3771954812",
+                        "address": "Via Carlo Magno, 17, Caldonazzo, Trento, Italia",
+                        "products": [
+                            "68250af830cf8930e4cd9222"
+                        ],
+                        "__v": 0
+                    },
+                "message": "Producers retrieved successfully"
+            }
+
+### Create produttore [POST /]
+
++ Request (application/json)
+
+            {
+                "name": "Azienda 3",
+                "email": "azienda3@azienda3.it",
+                "phone": "+39 3771954812",
+                "address": "Via Cesare Battisti, 17, Levico, Trento, Italia",
+                "products": []
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "name": "Azienda 3",
+                    "email": "azienda3@azienda3.it",
+                    "phone": "+39 3771954812",
+                    "address": "Via Cesare Battisti, 17, Levico, Trento, Italia",
+                    "products": [],
+                    "_id": "682b32359e2b5e805fdb2fce",
+                    "__v": 0
+                },
+                "message": "Producer created successfully"
+            }
+            
+### Elimina produttore [DELETE /682b32359e2b5e805fdb2fce]
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "name": "Azienda 3",
+                    "email": "azienda3@azienda3.it",
+                    "phone": "+39 3771954812",
+                    "address": "Via Cesare Battisti, 17, Levico, Trento, Italia",
+                    "products": [],
+                    "_id": "682b32359e2b5e805fdb2fce",
+                    "__v": 0
+                },
+                "message": "Producer and relative products are deleted successfully"
+            }
+            
+### Aggiornamento completo produttore [PUT /682b32359e2b5e805fdb2fce]
+
++ Request (application/json)
+
+            {
+                "name": "NEW Azienda 3",
+                "email": "NEWazienda3@azienda3.it",
+                "phone": "+39 3333333333",
+                "address": "Piazza Cesare Battisti, 17, Levico, Trento, Italia",
+                "products": [
+                    "68250af831cf893054cd9282"
+                ],
+            }
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "name": "NEW Azienda 3",
+                    "email": "NEWazienda3@azienda3.it",
+                    "phone": "+39 3333333333",
+                    "address": "Piazza Cesare Battisti, 17, Levico, Trento, Italia",
+                    "products": [
+                        "68250af831cf893054cd9282"
+                    ],
+                    "_id": "682b32359e2b5e805fdb2fce",
+                    "__v": 0
+                },
+                "message": "Producer updated successfully"
+            }
+
+### Aggiornamento parziale produttore [PATCH /682b32359e2b5e805fdb2fce]
+
++ Request (application/json)
+
+            {
+                "name": "Azienda 3",
+            }
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "name": "Azienda 3",
+                    "email": "NEWazienda3@azienda3.it",
+                    "phone": "+39 3333333333",
+                    "address": "Piazza Cesare Battisti, 17, Levico, Trento, Italia",
+                    "products": [
+                        "68250af831cf893054cd9282"
+                    ],
+                    "_id": "682b32359e2b5e805fdb2fce",
+                    "__v": 0
+                },
+                "message": "Producer updated successfully"
+            }
+            
+## Prodotti [/api/v1/products]
+
+### Lettura prodotti[GET /]
+
++ Response 200 (application/json)
+
+            [
+                {
+                    "success": true,
+                    "data": [
+                        {
+                            "_id": "682a43f39ce62815f3f88802",
+                            "name": "Zucchina",
+                            "description": "Zucchina di Trento",
+                            "price": 6,
+                            "available": 125,
+                            "producer": "682b32359e2b5e805fdb2fce",
+                            "__v": 0
+                        },
+                        {
+                            "_id": "682b3b0acc48a587b641a5fe",
+                            "name": "Pomodoro",
+                            "description": "Pomodoro di Trento",
+                            "price": 6,
+                            "available": 125,
+                            "producer": "682b32359e2b5e805fdb2fce",
+                            "__v": 0
+                        }
+                    ],
+                    "message": "Products retrieved successfully"
+                }
+            ]
+        
+### Lettura prodotto[GET /682a43f39ce62815f3f88802]
+
++ Response 200 (application/json)
+
+            {
+                "name": "Zucchina",
+                "description": "Bello",
+                "price": "6",
+                "available": "12",
+                "producer": "6829d852f157077cbf886a50"
+            }
+        
+### Create prodotto [POST /]
+
++ Request (application/json)
+
+            {
+                "name": "Peperone",
+                "description": "Peperone di Trento",
+                "price": "6",
+                "available": "12",
+                "producer": "6829d852f157077cbf886a50"
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "name": "Peperone",
+                    "description": "Peperone di Trento",
+                    "price": 6,
+                    "available": 12,
+                    "producer": "6829d852f157077cbf886a50",
+                    "_id": "682b3c08a10424f6de694ce5",
+                    "__v": 0
+                },
+                "message": "Product created successfully"
+            }
+
+### Elimina prodotto [DELETE /682b3c08a10424f6de694ce5]
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "682b3c08a10424f6de694ce5",
+                    "name": "Peperone",
+                    "description": "Peperone di Trento",
+                    "price": 6,
+                    "available": 12,
+                    "producer": "6829d852f157077cbf886a50",
+                    "__v": 0
+                },
+                "message": "Product deleted successfully"
+            }
+        
+### Aggiornamento completo prodotto [PUT /682b3c08a10424f6de694ce5]
+
++ Request (application/json)
+
+            {
+                "name": "Cipolla",
+                "description": "Cipolla di Trento",
+                "price": 12,
+                "available": 24,
+            }
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "682b3c08a10424f6de694ce5",
+                    "name": "Cipolla",
+                    "description": "Cipolla di Trento",
+                    "price": 12,
+                    "available": 24,
+                    "producer": "6829d852f157077cbf886a50",
+                    "__v": 0
+                },
+                "message": "Product updated successfully"
+            }
+        
+
+### Aggiornamento parziale produttore [PATCH /682b3c08a10424f6de694ce5]
+
++ Request (application/json)
+
+            {
+                "name": "Cipolla"
+            }
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "682b3c08a10424f6de694ce5",
+                    "name": "Cipolla",
+                    "description": "Peperone di Trento",
+                    "price": 6,
+                    "available": 12,
+                    "producer": "6829d852f157077cbf886a50",
+                    "__v": 0
+                },
+                "message": "Product partially updated successfully"
+            }
+
+## Clienti [/api/v1/clients]
+
+### Lettura cliente[GET /]
+
++ Response 200 (application/json)
+
+            [
+                {
+                    "success": true,
+                    "data": [
+                        {
+                            "_id": "682b41a64f824f4cb9774470",
+                            "username": "Melania",
+                            "email": "melania@melania.it",
+                            "phone": "+39 5771284351",
+                            "shippingAddress": "Via Tolomeo, 2, Lavis, Trento, Italia",
+                            "__v": 0
+                        }
+                    ],
+                    "message": "Clients retrieved successfully"
+                }
+            ]
+        
+### Lettura cliente[GET /682b41a64f824f4cb9774470]
+
++ Response 200 (application/json)
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "682b41a64f824f4cb9774470",
+                    "username": "Melania",
+                    "email": "melania@melania.it",
+                    "phone": "+39 5771284351",
+                    "shippingAddress": "Via Tolomeo, 2, Lavis, Trento, Italia",
+                    "__v": 0
+                },
+                "message": "Client retrieved successfully"
+            }
+        
+### Create cliente [POST /]
+
++ Request (application/json)
+
+            {
+              "username": "Melania",
+              "email": "melania@melania.it",
+              "phone": "+39 5771284351",
+              "shippingAddress": "Via Tolomeo, 2, Lavis, Trento, Italia"
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "username": "Melania",
+                    "email": "melania@melania.it",
+                    "phone": "+39 5771284351",
+                    "shippingAddress": "Via Tolomeo, 2, Lavis, Trento, Italia",
+                    "_id": "682b41a64f824f4cb9774470",
+                    "__v": 0
+                },
+                "message": "Client created successfully"
+            }
+
+### Elimina cliente [DELETE /682b41a64f824f4cb9774470]
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "682b41a64f824f4cb9774470",
+                    "username": "MelaniaMel",
+                    "email": "NEWmelania@melania.it",
+                    "phone": "+39 3333333333",
+                    "shippingAddress": "NEW Via Tolomeo, 2, Lavis, Trento, Italia",
+                    "__v": 0
+                },
+                "message": "Client retrieved successfully"
+            }
+        
+### Aggiornamento completo cliente [PUT /682b41a64f824f4cb9774470]
+
++ Request (application/json)
+
+            {
+                "username": "NEWMelania",
+                "email": "NEWmelania@melania.it",
+                "phone": "+39 3333333333",
+                "shippingAddress": "NEW Via Tolomeo, 2, Lavis, Trento, Italia"
+            }
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "682b41a64f824f4cb9774470",
+                    "username": "NEWMelania",
+                    "email": "NEWmelania@melania.it",
+                    "phone": "+39 3333333333",
+                    "shippingAddress": "NEW Via Tolomeo, 2, Lavis, Trento, Italia",
+                    "__v": 0
+                },
+                "message": "Client updated successfully"
+            }
+        
+
+### Aggiornamento parziale cliente [PATCH /682b41a64f824f4cb9774470]
+
++ Request (application/json)
+
+            {
+                "username": "MelaniaMel"
+            }
+
++ Response 200 (application/json)
+    
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "682b41a64f824f4cb9774470",
+                    "username": "MelaniaMel",
+                    "email": "NEWmelania@melania.it",
+                    "phone": "+39 3333333333",
+                    "shippingAddress": "NEW Via Tolomeo, 2, Lavis, Trento, Italia",
+                    "__v": 0
+                },
+                "message": "Client partially updated successfully"
+            }
+
+## Auth [/auth]
+
+### Login cliente [POST /login/eyJhbGciOiJSUzI1NiIsImtpZCI6IjY3ZDh...]
+
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "success": true,
+              "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjY3ZDh...",
+              "message": "Login effettuato con successo"
+            }
+            
+### Registra cliente [POST /register/client/eyJhbGciOiJSUzI1NiIsImtpZ...]
+
++ Request (application/json)
+
+            { 
+                "username": "AgriTrento", 
+                "email": "agritrento@agritrento.it" 
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              success: true,
+              token: "eyJhbGciOiJSUzI1NiIsImtpZ..."
+              message: 'Registration successful'
+            }
+            
+### Registra produttore [POST /register/producer/eyJhbGciOiJIUzI1Ni...]
+
++ Request (application/json)
+
+            { 
+                "name": "Azienda",
+                "phone": "+39 6447281657",
+                "address": "Via Italia, Levico, Trento, Italia",
+                "email": "azienda@azienda.it"
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+              "success": "true",
+              "token": "eyJhbGciOiJIUzI1Ni"
+              "message": "Registration successful"
+            }
+
+## API [/api]
+
++ Response 200 (application/json)
+
+            [
+                {
+                    "path": "/api/v1/producers",
+                    "methods": [
+                        "POST",
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "createProducer"
+                    ]
+                },
+                {
+                    "path": "/api/v1/producers/names",
+                    "methods": [
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "getProducerNames"
+                    ]
+                },
+                {
+                    "path": "/api/v1/producers/:id",
+                    "methods": [
+                        "GET",
+                        "DELETE",
+                        "PUT",
+                        "PATCH"
+                    ],
+                    "middlewares": [
+                        "readProducer"
+                    ]
+                },
+                {
+                    "path": "/api/v1/products",
+                    "methods": [
+                        "POST",
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "createProduct"
+                    ]
+                },
+                {
+                    "path": "/api/v1/products/:id",
+                    "methods": [
+                        "GET",
+                        "DELETE",
+                        "PUT",
+                        "PATCH"
+                    ],
+                    "middlewares": [
+                        "readProduct"
+                    ]
+                },
+                {
+                    "path": "/api/v1/clients",
+                    "methods": [
+                        "POST",
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "createClient"
+                    ]
+                },
+                {
+                    "path": "/api/v1/clients/:id",
+                    "methods": [
+                        "GET",
+                        "DELETE",
+                        "PUT",
+                        "PATCH"
+                    ],
+                    "middlewares": [
+                        "readClient"
+                    ]
+                },
+                {
+                    "path": "/auth/register/client/:idToken",
+                    "methods": [
+                        "POST"
+                    ],
+                    "middlewares": [
+                        "registerClient"
+                    ]
+                },
+                {
+                    "path": "/auth/register/producer/:idToken",
+                    "methods": [
+                        "POST"
+                    ],
+                    "middlewares": [
+                        "registerProducer"
+                    ]
+                },
+                {
+                    "path": "/auth/login/:idToken",
+                    "methods": [
+                        "POST"
+                    ],
+                    "middlewares": [
+                        "loginWithFirebase"
+                    ]
+                },
+                {
+                    "path": "/api",
+                    "methods": [
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "anonymous"
+                    ]
+                }
+            ]
