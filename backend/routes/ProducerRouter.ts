@@ -3,10 +3,10 @@ import {
   completeUpdateProducer,
   createProducer,
   deleteProducer,
+  getProducerNames,
   partialUpdateProducer,
   readProducer,
   readProducers,
-  getProducerNames,
 } from "../controllers/ProducerController";
 
 const producerRouter = Router();
@@ -15,6 +15,7 @@ producerRouter.post("/", createProducer);
 producerRouter.get("/", readProducers);
 
 producerRouter.get("/names", getProducerNames);
+// producerRouter.get("/:id/products", readProductsByProducerId);
 
 producerRouter.get("/:id", readProducer);
 producerRouter.delete("/:id", deleteProducer);

@@ -8,7 +8,7 @@ export const createProduct = async (
 ): Promise<void> => {
   const productData = req.body;
   try {
-    const newProduct = new Product(productData).save();
+    const newProduct = await new Product(productData).save();
     res.status(201).json({
       success: true,
       data: newProduct,
@@ -36,9 +36,8 @@ export const readProducts = async (
   }
 
   try {
-    const products = await Product.find()
-      .populate("producer", "_id name")
-      
+    const products = await Product.find().populate("producer", "_id name");
+
     res.status(200).json({
       success: true,
       data: products,
