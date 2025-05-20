@@ -20,7 +20,7 @@ const router = createRouter({
       component: () => import('../views/AddProduct.vue'),
     },
     {
-      path: '/delete-product',
+      path: '/delete-product/:id',
       name: 'deleteProduct',
       component: () => import('../views/DeleteProduct.vue'),
     },
