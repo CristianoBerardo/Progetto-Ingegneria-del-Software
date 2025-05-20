@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Producer from "../models/ProducerModel";
 import Product from "../models/ProductModel";
+import { generateToken } from "../utils/jwt";
 
 export const createProducer = async (
   req: Request,
@@ -16,6 +17,37 @@ export const createProducer = async (
       data: savedProducer,
       message: "Producer created successfully",
     });
+    return;
+  } catch (error) {
+    console.error("Error creating producer:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create producer",
+    });
+  }
+};
+
+export const createProducerWithToken = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const producerData = req.body;
+    const newProducer = new Producer(producerData);
+    const savedProducer = await newProducer.save();
+    
+    const token = generateToken({
+          uid: savedProducer._id,
+          email: savedProducer.email,
+          role: "producer",
+        });
+    
+        res.status(200).json({
+          success: true,
+          token,
+          message: "Registration successful",
+        });
+    console.log("New producer created:", savedProducer);
     return;
   } catch (error) {
     console.error("Error creating producer:", error);

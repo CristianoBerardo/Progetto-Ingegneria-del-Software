@@ -1,35 +1,24 @@
 <template>
-  <head>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <div class="page-center">
-    <div class="sign-in-container">
-      <h3>Sign in</h3>
-      <p><input type="text" placeholder="Email" v-model="email" /></p>
-      <p><input type="password" placeholder="Password" v-model="password" /></p>
-      <p v-if="errMsg" class="error-message">{{ errMsg }}</p>
-      <p><button @click="signIn">Submit</button></p>
-      <p><button class="sign-in-google" @click="signInWithGoogle">Sign In With Google</button></p>
+    <head>
+        <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    </head>
+    <div class="page-center">
+        <div class="sign-in-container">
+            <h3>Sign in</h3>
+            <p><input type="text" placeholder="Email" v-model="email"/></p>
+            <p><input type="password" placeholder="Password" v-model="password"/></p>
+            <p v-if="errMsg" class="error-message"> {{ errMsg }}</p>
+            <p><button @click="signIn">Submit</button></p>
+        </div>
+        <p class="register-link">Don't have an account? <router-link to="/register">Register</router-link></p>
+        <!-- <p>Forgot your password? <router-link to="/reset-password">Reset Password</router-link></p> -->
     </div>
-    <p class="register-link">
-      Don't have an account? <router-link to="/register">Register</router-link>
-    </p>
-    <!-- <p>Forgot your password? <router-link to="/reset-password">Reset Password</router-link></p> -->
-  </div>
-</template>
+    </template>
 <script setup>
-import { ref } from "vue"
-import {
-  getAuth,
-  signInWithEmailAndPassword,
-  GoogleAuthProvider,
-  signInWithPopup,
-} from "firebase/auth"
-import { useRouter } from "vue-router"
-import axios from "axios"
+import { ref } from 'vue';
+import { getAuth, signInWithEmailAndPassword} from 'firebase/auth';
+import { useRouter } from 'vue-router';
+import axios from 'axios';
 
 const email = ref("")
 const password = ref("")
@@ -37,67 +26,36 @@ const errMsg = ref() // error message
 const router = useRouter()
 
 const signIn = async () => {
-  const auth = getAuth() //saved in local storage by default
-  signInWithEmailAndPassword(auth, email.value, password.value)
-    .then(async (data) => {
-      const idToken = await data.user.getIdToken()
-      console.log("Invio token al backend", idToken)
-      axios.post("http://localhost:3000/auth/login/firebase", { idToken }).then((res) => {
-        console.log(res.data.token)
-        localStorage.setItem("token", res.data.token)
-        router.push("/feed")
-      })
-      /*
-            // Signed in
-            console.log("Successfully signed id!");
-            //console.log(auth.currentUser);
-            console.log(data.user);
-            router.push('/feed');*/
-    })
-    .catch((error) => {
-      console.log(error.code)
-      switch (error.code) {
-        case "auth/invalid-email":
-          errMsg.value = "Invalid email"
-          break
-        case "auth/user-not-found":
-          errMsg.value = "This email is not registered"
-          break
-        case "auth/wrong-password":
-          errMsg.value = "Incorrect password"
-          break
-        case "auth/missing-password":
-          errMsg.value = "Missing password"
-          break
-        default:
-          errMsg.value = "Email or password was incorrect"
-          break
-      }
-    })
-}
+    const auth = getAuth();
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
+        const idToken = await userCredential.user.getIdToken();
+        // Invia il token al backend e ricevi JWT
+        const res = await axios.post(`http://localhost:3000/auth/login/${idToken}`);
+        // Salva il token JWT nel localStorage
+        localStorage.setItem('token', res.data.token);
+        console.log("Token ricevuto dal backend:", res.data.token);
+        router.push('/feed');
+    } catch (error) {
+        console.error("Errore durante login:", error.code);
+        switch (error.code) {
+            case 'auth/invalid-email':
+                errMsg.value = "Email non valida";
+                break;
+            case 'auth/user-not-found':
+                errMsg.value = "Utente non trovato";
+                break;
+            case 'auth/wrong-password':
+                errMsg.value = "Password errata";
+                break;
+            default:
+                errMsg.value = "Errore durante il login";
+                break;
+        }
+    }
+};
 
-const signInWithGoogle = async () => {
-  const provider = new GoogleAuthProvider()
-  signInWithPopup(getAuth(), provider)
-    .then((result) => {
-      console.log(result.user)
-      router.push("/feed")
-    })
-    .catch((error) => {
-      console.log(error.code)
-      switch (error.code) {
-        case "auth/popup-closed-by-user":
-          errMsg.value = "Popup closed by user"
-          break
-        case "auth/popup-blocked":
-          errMsg.value = "Popup blocked"
-          break
-        default:
-          errMsg.value = "Error signing in with Google"
-          break
-      }
-    })
-}
+
 </script>
 
 <style scoped>

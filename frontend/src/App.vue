@@ -11,7 +11,7 @@ onMounted(() => {
   auth = getAuth()
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      console.log("User is signed in:", user)
+      console.log('User is signed in:', user.email)
       isLoggedIn.value = true
     } else {
       console.log("No user is signed in.")
@@ -37,7 +37,7 @@ const handleSignOut = async () => {
     <router-link to="/">Home</router-link>
     <router-link to="/feed">Feed</router-link>
     <router-link to="/sign-in" v-if="!isLoggedIn">Sign In</router-link>
-    <!--<router-link to="/register">Register</router-link>-->
+    <router-link to="/register">Register</router-link>
     <router-link to="/add-product"> Aggiungi Prodotto</router-link>
     <router-link to="/delete-product/:id"> Rimuovi Prodotto </router-link>
 
