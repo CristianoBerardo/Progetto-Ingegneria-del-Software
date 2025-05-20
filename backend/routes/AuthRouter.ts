@@ -1,5 +1,9 @@
 import { Router } from "express";
-import { registerClient, registerProducer, loginWithFirebase } from "../controllers/AuthController";
+import {
+  registerClient,
+  registerProducer,
+  loginWithFirebase,
+} from "../controllers/AuthController";
 
 const authRouter = Router();
 

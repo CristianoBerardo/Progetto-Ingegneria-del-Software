@@ -1,60 +1,64 @@
 <template>
-    <div class="page-center">
-        <div v-if="!userType" class="choose-type-container">
-            <h3>Scegli il tipo di account</h3>
-            <div class="type-selection">
-                <div class="type-card" @click="selectType('cliente')">
-                    <div class="type-img cliente-img">
-                        <img src="@/assets/icon_client.jpg" alt="Cliente" style="width:48px; height:48px;" />
-                    </div>
-                    <div class="type-label">Cliente</div>
-                </div>
-                <div class="type-card" @click="selectType('azienda')">
-                    <div class="type-img azienda-img">
-                        <img src="@/assets/icon_farmer_market.jpg" alt="Azienda" style="width:48px; height:48px;" />
-                    </div>
-                    <div class="type-label">Azienda</div>
-                </div>
-            </div>
+  <div class="page-center">
+    <div v-if="!userType" class="choose-type-container">
+      <h3>Scegli il tipo di account</h3>
+      <div class="type-selection">
+        <div class="type-card" @click="selectType('cliente')">
+          <div class="type-img cliente-img">
+            <img src="@/assets/icon_client.jpg" alt="Cliente" style="width: 48px; height: 48px" />
+          </div>
+          <div class="type-label">Cliente</div>
         </div>
-        <div v-else class="register-container">
-            <h3>Crea un account {{ userType === 'cliente' ? 'Cliente' : 'Azienda' }}</h3>
-            <p>
-                <input
-                    type="text"
-                    :placeholder="userType === 'cliente' ? 'Username' : 'Nome azienda'"
-                    v-model="username"
-                />
-            </p>
-            <p><input type="text" placeholder="Email" v-model="email" /></p>
-            <p><input type="password" placeholder="Password" v-model="password" /></p>
-            <p v-if="userType === 'azienda'">
-                <input type="text" placeholder="Telefono" v-model="phone" />
-            </p>
-            <p v-if="userType === 'azienda'">
-                <input type="text" placeholder="Indirizzo" v-model="address" />
-            </p>
-            <p v-if="errMsg" class="error-message">{{ errMsg }}</p>
-            <p>
-                <button v-if="userType === 'cliente'" @click="registerClient">Submit</button>
-                <button v-else @click="registerProducer">Submit</button>
-            </p>
-            <p class="back-link"><a href="#" @click.prevent="userType = null">Torna indietro</a></p>
+        <div class="type-card" @click="selectType('azienda')">
+          <div class="type-img azienda-img">
+            <img
+              src="@/assets/icon_farmer_market.jpg"
+              alt="Azienda"
+              style="width: 48px; height: 48px"
+            />
+          </div>
+          <div class="type-label">Azienda</div>
         </div>
-        <p class="signin-link">Hai già un account? <router-link to="/sign-in">Sign In</router-link></p>
+      </div>
     </div>
+    <div v-else class="register-container">
+      <h3>Crea un account {{ userType === "cliente" ? "Cliente" : "Azienda" }}</h3>
+      <p>
+        <input
+          type="text"
+          :placeholder="userType === 'cliente' ? 'Username' : 'Nome azienda'"
+          v-model="username"
+        />
+      </p>
+      <p><input type="text" placeholder="Email" v-model="email" /></p>
+      <p><input type="password" placeholder="Password" v-model="password" /></p>
+      <p v-if="userType === 'azienda'">
+        <input type="text" placeholder="Telefono" v-model="phone" />
+      </p>
+      <p v-if="userType === 'azienda'">
+        <input type="text" placeholder="Indirizzo" v-model="address" />
+      </p>
+      <p v-if="errMsg" class="error-message">{{ errMsg }}</p>
+      <p>
+        <button v-if="userType === 'cliente'" @click="registerClient">Submit</button>
+        <button v-else @click="registerProducer">Submit</button>
+      </p>
+      <p class="back-link"><a href="#" @click.prevent="userType = null">Torna indietro</a></p>
+    </div>
+    <p class="signin-link">Hai già un account? <router-link to="/sign-in">Sign In</router-link></p>
+  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { useRouter } from 'vue-router';
-import axios from 'axios';
+import { ref } from "vue";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "vue-router";
+import axios from "axios";
 
-const email = ref("")
-const password = ref("")
-const router = useRouter()
-const errMsg = ref()
+const email = ref("");
+const password = ref("");
+const router = useRouter();
+const errMsg = ref();
 
 const userType = ref(null);
 const username = ref("");
@@ -62,123 +66,123 @@ const phone = ref("");
 const address = ref("");
 
 function selectType(type) {
-    userType.value = type;
-    errMsg.value = "";
-    username.value = "";
-    email.value = "";
-    password.value = "";
-    phone.value = "";
-    address.value = "";
+  userType.value = type;
+  errMsg.value = "";
+  username.value = "";
+  email.value = "";
+  password.value = "";
+  phone.value = "";
+  address.value = "";
 }
 
 const registerClient = async () => {
-    if (!username.value) {
-        errMsg.value = "Inserisci uno username";
-        return;
-    }
-    if (!email.value) {
-        errMsg.value = "Inserisci una email";
-        return;
-    }
-    if (!password.value) {
-        errMsg.value = "Inserisci una password";
-        return;
-    }
+  if (!username.value) {
+    errMsg.value = "Inserisci uno username";
+    return;
+  }
+  if (!email.value) {
+    errMsg.value = "Inserisci una email";
+    return;
+  }
+  if (!password.value) {
+    errMsg.value = "Inserisci una password";
+    return;
+  }
 
-    const auth = getAuth();
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
-        console.log("Client registered on Firebase:", userCredential.user);
-        const idToken = await userCredential.user.getIdToken();
+  const auth = getAuth();
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    console.log("Client registered on Firebase:", userCredential.user);
+    const idToken = await userCredential.user.getIdToken();
 
-        console.log("Sending data to backend:", {
-            username: username.value,
-            email: email.value
-        });
+    console.log("Sending data to backend:", {
+      username: username.value,
+      email: email.value,
+    });
 
-        // Send data to backend
-        const res = await axios.post(`http://localhost:3000/auth/register/client/${idToken}`, {
-            username: username.value,
-            email: email.value
-        });
+    // Send data to backend
+    const res = await axios.post(`http://localhost:3000/auth/register/client/${idToken}`, {
+      username: username.value,
+      email: email.value,
+    });
 
-        console.log("Backend token response:", res.data.token);
-        // Save JWT token inside localStorage
-        localStorage.setItem('token', res.data.token);
-        router.push('/feed');
-    } catch (error) {
-        console.error("Error during Firebase registration:", error);
-        if (error.code === 'auth/email-already-in-use') {
-            errMsg.value = "L'email è già in uso";
-        } else if (error.code === 'auth/invalid-email') {
-            errMsg.value = "L'email non è valida";
-        } else if (error.code === 'auth/weak-password') {
-            errMsg.value = "La password è troppo debole";
-        } else {
-            errMsg.value = error.response?.data?.message || "Errore durante la registrazione";
-        }
+    console.log("Backend token response:", res.data.token);
+    // Save JWT token inside localStorage
+    localStorage.setItem("token", res.data.token);
+    router.push("/feed");
+  } catch (error) {
+    console.error("Error during Firebase registration:", error);
+    if (error.code === "auth/email-already-in-use") {
+      errMsg.value = "L'email è già in uso";
+    } else if (error.code === "auth/invalid-email") {
+      errMsg.value = "L'email non è valida";
+    } else if (error.code === "auth/weak-password") {
+      errMsg.value = "La password è troppo debole";
+    } else {
+      errMsg.value = error.response?.data?.message || "Errore durante la registrazione";
     }
+  }
 };
 
 const registerProducer = async () => {
-        if (!username.value) {
-            errMsg.value = "Inserisci il nome azienda";
-            return;
-        }
-        if (!email.value) {
-            errMsg.value = "Inserisci una email";
-            return;
-        }
-        if (!password.value) {
-            errMsg.value = "Inserisci una password";
-            return;
-        }
-        if (!phone.value) {
-            errMsg.value = "Inserisci un numero di telefono";
-            return;
-        }
-        if (!address.value) {
-            errMsg.value = "Inserisci un indirizzo";
-            return;
-        }
+  if (!username.value) {
+    errMsg.value = "Inserisci il nome azienda";
+    return;
+  }
+  if (!email.value) {
+    errMsg.value = "Inserisci una email";
+    return;
+  }
+  if (!password.value) {
+    errMsg.value = "Inserisci una password";
+    return;
+  }
+  if (!phone.value) {
+    errMsg.value = "Inserisci un numero di telefono";
+    return;
+  }
+  if (!address.value) {
+    errMsg.value = "Inserisci un indirizzo";
+    return;
+  }
 
-        const auth = getAuth();
-        try {
-            const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
-            console.log("Producer registered on Firebase:", userCredential.user);
-            const idToken = await userCredential.user.getIdToken();
+  const auth = getAuth();
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
+    console.log("Producer registered on Firebase:", userCredential.user);
+    const idToken = await userCredential.user.getIdToken();
 
-            console.log("Sending data to backend:", {
-                name: username.value,
-                phone: phone.value,
-                address: address.value,
-                email: email.value
-            });
+    console.log("Sending data to backend:", {
+      name: username.value,
+      phone: phone.value,
+      address: address.value,
+      email: email.value,
+    });
 
-            // Send data to backend
-            const res = await axios.post(`http://localhost:3000/auth/register/producer/${idToken}`, {
-                name: username.value,
-                phone: phone.value,
-                address: address.value,
-                email: email.value
-            });
-            console.log("Backend token response:", res.data.token);
-            // Save JWT token inside localStorage
-            localStorage.setItem('token', res.data.token);
-            router.push('/feed');
-        } catch (error) {
-            console.error("Error during Firebase registration:", error);
-            if (error.code === 'auth/email-already-in-use') {
-                errMsg.value = "L'email è già in uso";
-            } else if (error.code === 'auth/invalid-email') {
-                errMsg.value = "L'email non è valida";
-            } else if (error.code === 'auth/weak-password') {
-                errMsg.value = "La password è troppo debole";
-            } else {
-                errMsg.value = error.response?.data?.message || "Errore durante la registrazione";
-            }
-        }
-    };
+    // Send data to backend
+    const res = await axios.post(`http://localhost:3000/auth/register/producer/${idToken}`, {
+      name: username.value,
+      phone: phone.value,
+      address: address.value,
+      email: email.value,
+    });
+    console.log("Backend token response:", res.data.token);
+    // Save JWT token inside localStorage
+    localStorage.setItem("token", res.data.token);
+    router.push("/feed");
+  } catch (error) {
+    console.error("Error during Firebase registration:", error);
+    if (error.code === "auth/email-already-in-use") {
+      errMsg.value = "L'email è già in uso";
+    } else if (error.code === "auth/invalid-email") {
+      errMsg.value = "L'email non è valida";
+    } else if (error.code === "auth/weak-password") {
+      errMsg.value = "La password è troppo debole";
+    } else {
+      errMsg.value = error.response?.data?.message || "Errore durante la registrazione";
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -283,61 +287,63 @@ p {
 }
 /* ...existing code... */
 .choose-type-container {
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
-    padding: 32px 24px;
-    max-width: 400px;
-    margin: 60px auto;
-    text-align: center;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+  padding: 32px 24px;
+  max-width: 400px;
+  margin: 60px auto;
+  text-align: center;
 }
 .type-selection {
-    display: flex;
-    justify-content: space-around;
-    margin-top: 24px;
+  display: flex;
+  justify-content: space-around;
+  margin-top: 24px;
 }
 .type-card {
-    background: #f7f7f7;
-    border: 2px solid #ccc;
-    border-radius: 10px;
-    width: 130px;
-    height: 180px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: border 0.2s, box-shadow 0.2s;
+  background: #f7f7f7;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  width: 130px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition:
+    border 0.2s,
+    box-shadow 0.2s;
 }
 .type-card:hover {
-    border: 2px solid #577c41;
-    box-shadow: 0 2px 8px rgba(87,124,65,0.08);
+  border: 2px solid #577c41;
+  box-shadow: 0 2px 8px rgba(87, 124, 65, 0.08);
 }
 .type-img {
-    width: 60px;
-    height: 60px;
-    background: #e0e0e0;
-    border-radius: 50%;
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5em;
-    color: #888;
+  width: 60px;
+  height: 60px;
+  background: #e0e0e0;
+  border-radius: 50%;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5em;
+  color: #888;
 }
 .type-label {
-    font-size: 1.1em;
-    font-weight: bold;
-    color: #333;
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #333;
 }
 .back-link {
-    text-align: center;
-    margin-top: 10px;
+  text-align: center;
+  margin-top: 10px;
 }
 .back-link a {
-    color: #577c41;
-    font-size: 0.9em;
-    text-decoration: underline;
-    cursor: pointer;
+  color: #577c41;
+  font-size: 0.9em;
+  text-decoration: underline;
+  cursor: pointer;
 }
 </style>

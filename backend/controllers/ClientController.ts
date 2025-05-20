@@ -28,24 +28,24 @@ export const createClient = async (
 
 export const createClientWithToken = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const ClientData = req.body;
     const newClient = new Client(ClientData);
     const savedClient = await newClient.save();
-    
+
     const token = generateToken({
-          uid: savedClient._id,
-          email: savedClient.email,
-          role: "client",
-        });
-    
-        res.status(200).json({
-          success: true,
-          token,
-          message: "Registration successful",
-        });
+      uid: savedClient._id,
+      email: savedClient.email,
+      role: "client",
+    });
+
+    res.status(200).json({
+      success: true,
+      token,
+      message: "Registration successful",
+    });
     console.log("New client created:", savedClient);
     return;
   } catch (error) {
@@ -59,7 +59,7 @@ export const createClientWithToken = async (
 
 export const readClients = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const clients = await Client.find();
@@ -81,7 +81,7 @@ export const readClients = async (
 
 export const readClient = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const clientId = req.params.id;
@@ -111,7 +111,7 @@ export const readClient = async (
 
 export const deleteClient = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const clientId = req.params.id;
@@ -142,7 +142,7 @@ export const deleteClient = async (
 
 export const completeUpdateClient = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const clientID = req.params.id;
@@ -164,14 +164,10 @@ export const completeUpdateClient = async (
       return;
     }
 
-    const newDocument = await Client.findByIdAndUpdate(
-      clientID,
-      clientData,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const newDocument = await Client.findByIdAndUpdate(clientID, clientData, {
+      new: true,
+      runValidators: true,
+    });
 
     if (!newDocument) {
       res.status(404).json({
@@ -199,7 +195,7 @@ export const completeUpdateClient = async (
 
 export const partialUpdateClient = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   console.log("Partial update client");
 
@@ -223,14 +219,10 @@ export const partialUpdateClient = async (
       return;
     }
 
-    const updatedClient = await Client.findByIdAndUpdate(
-      clientID,
-      clientData,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const updatedClient = await Client.findByIdAndUpdate(clientID, clientData, {
+      new: true,
+      runValidators: true,
+    });
     if (!updatedClient) {
       res.status(404).json({
         success: false,

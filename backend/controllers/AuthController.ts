@@ -45,8 +45,6 @@ export const registerProducer = async (req: Request, res: Response) => {
   }
 };
 
-
-
 export const loginWithFirebase = async (req: Request, res: Response) => {
   try {
     const { idToken } = req.params;

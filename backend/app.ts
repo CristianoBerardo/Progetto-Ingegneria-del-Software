@@ -16,7 +16,7 @@ app.use(cors());
 app.use("/api/v1/producers", producerRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/clients", clientRouter);
-app.use('/auth', authRouter);
+app.use("/auth", authRouter);
 
 app.get("/api", (req, res) => {
   res.send(JSON.stringify(expressListEndpoints(app), null, 2));

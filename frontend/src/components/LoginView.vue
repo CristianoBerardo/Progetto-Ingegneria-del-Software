@@ -29,17 +29,17 @@ export default {
         username: "",
         password: "",
       },
-    }
+    };
   },
   methods: {
     login() {
       //make sure username OR password are not empty
       if (this.input.username != "" || this.input.password != "") {
-        console.log("authenticated")
+        console.log("authenticated");
       } else {
-        console.log("Username and Password can not be empty")
+        console.log("Username and Password can not be empty");
       }
     },
   },
-}
+};
 </script>

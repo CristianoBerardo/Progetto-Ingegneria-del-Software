@@ -8,11 +8,11 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits } from 'vue'
+import { ref, watch, defineProps, defineEmits } from "vue";
 
 interface IDropDownOption {
-  value: string // Value to bind
-  text: string // Text to display
+  value: string; // Value to bind
+  text: string; // Text to display
 }
 
 const props = defineProps({
@@ -22,35 +22,34 @@ const props = defineProps({
   },
   placeholder: {
     type: String,
-    default: '',
+    default: "",
   },
-  modelValue: { // <-- Add modelValue to props
+  modelValue: {
+    // <-- Add modelValue to props
     type: [String, Number], // Allow string or number, adjust as needed
-    default: ''
-  }
-})
+    default: "",
+  },
+});
 
-const emits = defineEmits(['update:modelValue', 'change']) // <-- Add 'change' event
-const selectedValue = ref(props.modelValue || '') // Initialize with modelValue
+const emits = defineEmits(["update:modelValue", "change"]); // <-- Add 'change' event
+const selectedValue = ref(props.modelValue || ""); // Initialize with modelValue
 
 watch(
   () => props.modelValue,
   (newValue) => {
-    selectedValue.value = newValue || ''
+    selectedValue.value = newValue || "";
   },
-)
+);
 
 const handleChange = (event: Event) => {
-  const target = event.target
-  const value = target.value
-  console.log('Selected value:', target)
-  selectedValue.value = value
-  emits('update:modelValue', value) // Use 'emits'
-  emits('change', value) // Use 'emits'
-}
-
+  const target = event.target;
+  const value = target.value;
+  console.log("Selected value:", target);
+  selectedValue.value = value;
+  emits("update:modelValue", value); // Use 'emits'
+  emits("change", value); // Use 'emits'
+};
 </script>
-
 
 <style scoped>
 .dropdown-select {

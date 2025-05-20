@@ -5,7 +5,7 @@ import { generateToken } from "../utils/jwt";
 
 export const createProducer = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const producerData = req.body;
@@ -29,7 +29,7 @@ export const createProducer = async (
 
 export const createProducerWithToken = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const producerData = req.body;
@@ -323,7 +323,7 @@ export const getProducerNames = async (req: Request, res: Response) => {
       {
         name: 1,
         _id: 1,
-      }
+      },
     );
 
     if (!producers) {

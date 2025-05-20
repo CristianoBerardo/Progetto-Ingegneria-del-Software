@@ -63,17 +63,17 @@ export default {
       producer: "",
       errorMessage: "",
       successMessage: "",
-    }
+    };
   },
   methods: {
     async submitProduct() {
-      this.errorMessage = ""
-      this.successMessage = ""
+      this.errorMessage = "";
+      this.successMessage = "";
 
       // Validazione base
       if (!this.name || !this.price || !this.available || !this.producer) {
-        this.errorMessage = "Per favore compila tutti i campi obbligatori"
-        return
+        this.errorMessage = "Per favore compila tutti i campi obbligatori";
+        return;
       }
 
       const product = {
@@ -82,41 +82,41 @@ export default {
         price: this.price,
         available: this.available,
         producer: this.producer, // Ora è un semplice testo
-      }
+      };
 
       try {
-        console.log("Invio prodotto:", product)
+        console.log("Invio prodotto:", product);
         const response = await fetch("http://localhost:3000/api/v1/products", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(product),
-        })
+        });
 
-        const result = await response.json()
+        const result = await response.json();
 
         if (result.success) {
-          this.successMessage = "Prodotto salvato con successo!"
+          this.successMessage = "Prodotto salvato con successo!";
           // Reset del form
-          this.name = ""
-          this.description = ""
-          this.price = 0
-          this.available = 0
-          this.producer = ""
+          this.name = "";
+          this.description = "";
+          this.price = 0;
+          this.available = 0;
+          this.producer = "";
 
           // Attendi un secondo prima di reindirizzare
           setTimeout(() => {
-            this.$router.push("/")
-          }, 1000)
+            this.$router.push("/");
+          }, 1000);
         } else {
-          this.errorMessage = result.message || "Errore nel salvataggio del prodotto"
+          this.errorMessage = result.message || "Errore nel salvataggio del prodotto";
         }
       } catch (err) {
-        console.error("Errore nel salvataggio del prodotto:", err)
-        this.errorMessage = "Errore di connessione al server"
+        console.error("Errore nel salvataggio del prodotto:", err);
+        this.errorMessage = "Errore di connessione al server";
       }
     },
   },
-}
+};
 </script>
 
 <style scoped>
