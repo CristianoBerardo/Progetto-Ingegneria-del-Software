@@ -8,7 +8,7 @@ export const createProduct = async (
 ): Promise<void> => {
   const productData = req.body;
   try {
-    const newProduct = new Product(productData).save();
+    const newProduct = await new Product(productData).save();
     res.status(201).json({
       success: true,
       data: newProduct,
@@ -28,8 +28,16 @@ export const readProducts = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
+  const query = req.query;
+
+  if (Object.keys(query).length > 0) {
+    searchProducts(req, res);
+    return;
+  }
+
   try {
-    const products = await Product.find();
+    const products = await Product.find().populate("producer", "_id name");
+
     res.status(200).json({
       success: true,
       data: products,
@@ -241,7 +249,7 @@ export const searchProducts = async (
 
     const products = await Product.find(query)
       .sort(sortOption)
-      .populate("producer")
+      .populate("producer", "_id name")
       .skip((parseInt(page as string) - 1) * parseInt(limit as string))
       .limit(parseInt(limit as string));
 

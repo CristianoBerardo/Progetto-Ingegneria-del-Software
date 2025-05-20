@@ -5,7 +5,7 @@ import { generateToken } from "../utils/jwt";
 
 export const createProducer = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const producerData = req.body;
@@ -35,18 +35,18 @@ export const createProducerWithToken = async (
     const producerData = req.body;
     const newProducer = new Producer(producerData);
     const savedProducer = await newProducer.save();
-    
+
     const token = generateToken({
-          uid: savedProducer._id,
-          email: savedProducer.email,
-          role: "producer",
-        });
-    
-        res.status(200).json({
-          success: true,
-          token,
-          message: "Registration successful",
-        });
+      uid: savedProducer._id,
+      email: savedProducer.email,
+      role: "producer",
+    });
+
+    res.status(200).json({
+      success: true,
+      token,
+      message: "Registration successful",
+    });
     console.log("New producer created:", savedProducer);
     return;
   } catch (error) {
@@ -62,6 +62,12 @@ export const readProducers = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
+  const query = req.query;
+  if (Object.keys(query).length > 0) {
+    searchProducers(req, res);
+    return;
+  }
+
   try {
     const producers = await Producer.find();
     res.status(200).json({
@@ -303,6 +309,41 @@ export const searchProducers = async (
     res.status(500).json({
       success: false,
       message: "Failed to search producers",
+    });
+    return;
+  }
+};
+
+//* ------------------ GET NAMES ------------------ *//
+
+export const getProducerNames = async (req: Request, res: Response) => {
+  try {
+    const producers = await Producer.find(
+      {},
+      {
+        name: 1,
+        _id: 1,
+      }
+    );
+
+    if (!producers) {
+      res.status(404).json({
+        success: false,
+        message: "No producers found",
+      });
+      return;
+    }
+
+    res.status(200).json({
+      success: true,
+      data: producers,
+      message: "Producer names retrieved successfully",
+    });
+  } catch (error) {
+    console.error("Error retrieving producer names:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve producer names",
     });
     return;
   }
