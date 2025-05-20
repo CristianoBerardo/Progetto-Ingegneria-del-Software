@@ -1,4 +1,9 @@
 <template>
+  <div class="feed">
+    <h1 align="center">Feed</h1>
+  </div>
+</template>
+
     <div>
       <h2>Select a Producer:</h2>
       <DropDown

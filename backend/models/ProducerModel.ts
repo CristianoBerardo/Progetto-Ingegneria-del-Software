@@ -13,7 +13,7 @@ export const ProducerSchema = new Schema<IProducer>({
   email: { type: String, required: true },
   phone: { type: String, required: true },
   address: { type: String, required: true },
-  products: [{ type: Schema.Types.ObjectId, ref: "Product", required: false}],
+  products: [{ type: Schema.Types.ObjectId, ref: "Product", required: false }],
 });
 
-export default model<IProducer>('Producer', ProducerSchema);
+export default model<IProducer>("Producer", ProducerSchema);

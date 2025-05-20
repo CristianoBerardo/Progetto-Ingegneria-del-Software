@@ -4,7 +4,7 @@ import Product from "../models/ProductModel";
 
 export const createProduct = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   const productData = req.body;
   try {
@@ -26,7 +26,7 @@ export const createProduct = async (
 
 export const readProducts = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   const query = req.query;
 
@@ -56,7 +56,7 @@ export const readProducts = async (
 
 export const readProduct = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -86,7 +86,7 @@ export const readProduct = async (
 
 export const deleteProduct = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -116,7 +116,7 @@ export const deleteProduct = async (
 
 export const completeUpdateProduct = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -125,7 +125,10 @@ export const completeUpdateProduct = async (
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       productData,
-      { new: true, runValidators: true }
+      {
+        new: true,
+        runValidators: true,
+      },
     );
     if (!updatedProduct) {
       res.status(404).json({
@@ -152,7 +155,7 @@ export const completeUpdateProduct = async (
 };
 export const partialUpdateProduct = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -161,7 +164,10 @@ export const partialUpdateProduct = async (
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       productData,
-      { new: true, runValidators: true }
+      {
+        new: true,
+        runValidators: true,
+      },
     );
     if (!updatedProduct) {
       res.status(404).json({
@@ -190,7 +196,7 @@ export const partialUpdateProduct = async (
 
 export const searchProducts = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const {

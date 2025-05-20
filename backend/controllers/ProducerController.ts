@@ -60,7 +60,7 @@ export const createProducerWithToken = async (
 
 export const readProducers = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   const query = req.query;
   if (Object.keys(query).length > 0) {
@@ -88,7 +88,7 @@ export const readProducers = async (
 
 export const readProducer = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const producerId = req.params.id;
@@ -118,7 +118,7 @@ export const readProducer = async (
 
 export const deleteProducer = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const producerId = req.params.id;
@@ -153,7 +153,7 @@ export const deleteProducer = async (
 
 export const completeUpdateProducer = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const producerID = req.params.id;
@@ -181,7 +181,7 @@ export const completeUpdateProducer = async (
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     if (!newDocument) {
@@ -210,7 +210,7 @@ export const completeUpdateProducer = async (
 
 export const partialUpdateProducer = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   console.log("Partial update producer");
 
@@ -240,7 +240,7 @@ export const partialUpdateProducer = async (
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
     if (!updatedProducer) {
       res.status(404).json({
@@ -270,7 +270,7 @@ export const partialUpdateProducer = async (
 
 export const searchProducers = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   const { name, sort = "name:asc", page = 1, limit = 10 } = req.query;
 

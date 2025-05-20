@@ -2,9 +2,9 @@ import cors from "cors";
 import express from "express";
 import expressListEndpoints from "express-list-endpoints";
 import { startServer } from "./connections/mongoDB/connections";
+import authRouter from "./routes/AuthRouter";
 import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
-import authRouter from './routes/AuthRouter';
 import clientRouter from "./routes/ClientRoutes";
 
 const app = express();

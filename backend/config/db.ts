@@ -1,6 +1,5 @@
 //import mongoose from 'mongoose';
 
-
 // export const connectDB = async () => {
 //   try {
 //     await mongoose.connect("mongodb+srv://progettoAgriTrento:pzsZ2WE4z0uUg58H@agritrento.hyvazu3.mongodb.net/?retryWrites=true&w=majority&appName=AgriTrento");

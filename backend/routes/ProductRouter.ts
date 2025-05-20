@@ -21,5 +21,4 @@ productRouter.delete("/:id", deleteProduct);
 productRouter.put("/:id", completeUpdateProduct);
 productRouter.patch("/:id", partialUpdateProduct);
 
-
 export default productRouter;
