@@ -1,36 +1,79 @@
-How to run on your local machine
+<div align="center">
+  <img src="./Deliverables/Logo/AgriTrentoSlogan.svg" alt="Alt text">
+  <p> 
+   <div align="center">
+      <strong>AgriTrento</strong> una piattaforma web che facilita la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.
+   </div>
+</div>
 
-1. Make sure you have npm installed. You can check this by running the following command in your terminal:
+## Prerequisiti
 
-```bash
-npm -v
-```
+- [Node.js](https://nodejs.org/en/) v20.17.0
+- [npm](https://www.npmjs.com/) v10.8.2
 
-If you don't have npm installed, you can download it from [Node.js](https://nodejs.org/).
+### Come eseguire sulla tua macchina locale
 
-1. Clone the repository
-2. Add the node modules to the project by running the following command in your terminal:
+1. Assicurati di aver installato Node e npm. Puoi verificarlo eseguendo il seguente comando nel tuo terminale:
 
-```bash
-npm install
-```
+   ```bash
+   node -v
+   npm -v
+   ```
 
-3. Run the project by running the following command in your terminal:
+1. Clona la repository
+1. Entra nella cartella del progetto e da terminale installa i moduli necessari:
 
-```bash
-npm run test
-```
+   ```bash
+   npm run install:all
+   ```
 
-4. Check the console and open your browser and go to [http://localhost:3000](http://localhost:3000) to see the project running.
+1. Crea un database su MongoDB
 
-5. To pull a remote branch and updae your current code you can use the git switch command.
+1. Crea un database Authentication su firebase
 
-# Convenzioni
+1. Aggiungi un file `.env` in "/backend/":
 
-1. Inglese (anche i commenti possibilmente)
-1. Nomi di file che contengono classi es. PascalCase
-1. Nomi di interfacce iniziano con es. IUser
-1. Nomi di classi PascalCase
+   ```bash
+   PORT=3000
+   MONGODB_URI=mongodb+srv://...
+   JWT_SECRET=JWT_SECRET
+   ```
 
+1. Aggiungi un file `serviceAccountKey.json` in "/backend/config/". Per trovarlo collegarsi a [console.firebase.google.com](https://console.firebase.google.com/) > Progetto > Impostazioni ⚙️ > Account di servizio > Genera nuova chiave privata. 
+   
+   Questo scaricherà un file JSON. Copia il contenuto del file e incollalo nel file `serviceAccountKey.json`. Il file dovrebbe apparire simile a questo:
 
-[I 10 comandi più comuni spiegati](https://dev.to/moibra/learning-git-and-github-the-10-most-common-commands-explained-3m6n)
+   ```json
+       {
+         "type": "...",
+
+         "project_id": "...",
+
+         "private_key_id": "...",,
+
+         "private_key": "...",
+
+         "client_email":  "...",
+
+         "client_id":  "...",
+
+         "auth_uri":  "...",
+
+         "token_uri":  "...",
+
+         "auth_provider_x509_cert_url":  "...",
+
+         "client_x509_cert_url":  "...",
+
+         "universe_domain":  "..."
+     }
+
+   ```
+
+2. Esegui il progetto eseguendo il seguente comando nel tuo terminale:
+
+   ```bash
+   npm run dev
+   ```
+
+3. Controlla la console, apri il tuo browser e vai su [http://localhost:5173/](http://localhost:5173/) per vedere il progetto in esecuzione.
