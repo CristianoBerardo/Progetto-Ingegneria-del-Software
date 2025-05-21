@@ -24,6 +24,11 @@ const router = createRouter({
       name: "deleteProduct",
       component: () => import("../views/DeleteProduct.vue"),
     },
+    {
+      path: "/modify-product/",
+      name: "modifyProduct",
+      component: () => import("../views/ModifyProduct.vue"),
+    },
   ],
 });
 
