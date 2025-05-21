@@ -1,0 +1,181 @@
+\subsection{Test Case}
+
+\begin{landscape}
+
+\begin{longtable}
+{p{0.4cm}|p{2.4cm}|p{0.4cm}|p{2.5cm}|p{3cm}|p{2.5cm}|p{2cm}|p{2.5cm}|p{2.5cm}|p{2cm}}
+\caption{Test Cases Design Sprint \#1}\label{tab:TestCasesSprint1} \\
+\hline
+\textbf{ID} &\textbf{User Story} & \textbf{N.}& \textbf{Descrizione} & \textbf{Dati test case} & \textbf{Precondizioni} & \textbf{Dipendenze}& \textbf{Risultato atteso} & \textbf{Risultato effettivo} & \textbf{Note}  \\
+\hline
+\endfirsthead
+
+\hline
+\textbf{ID} &\textbf{User Story} & \textbf{N.} & \textbf{Descrizione} &\textbf{Dati test case} & \textbf{Precondizioni} & \textbf{Dipendenze}& \textbf{Risultato atteso} & \textbf{Risultato effettivo} & \textbf{Note}  \\
+\hline
+\endhead
+
+
+\multirow{19}{0.2cm}{14} & \multirow{19}{0.2cm}{Inserimento prodotto} 
+& 1 & Il produttore autenticato inserisce un prodotto & Vai al login del portale, inserisci: email e password, nella pagina clicca su l'icona + e inserisci tutti i dati richiesti & email e password devono esistere nel database& & Il nuovo prodotto deve essere presente lato database. Il produttore visualizza la lista aggiornata& & \\
+
+&& 2 & Il produttore autenticato inserisce un prodotto e non fornisce i dati obbligatori richiesti & Vai al login del portale, inserisci: email e password, nella pagina clicca su l'icona + e non inserire i dati obbligatori  & email e password devono esistere nel database& & Il prodotto non viene inserito nel database e il produttore viene avvisato con un banner dell'errore& & \\
+
+&& 3 & Il produttore autenticato inserisce un prodotto e inserisce un prezzo negativo & Vai al login del portale, inserisci: email e password, nella pagina clicca su l'icona + e inserisci un prezzo negativo & email e password devono esistere nel database& & Il prodotto non viene inserito nel database e il produttore viene avvisato con un banner dell'errore& & \\
+
+&& 4 & Il produttore autenticato inserisce un prodotto e inserisce una quantità negativa & Vai al login del portale, inserisci: email e password, nella pagina clicca su l'icona + e inserisci un quantità negativa & email e password devono esistere nel database& & Il prodotto non viene inserito nel database e il produttore viene avvisato con un banner dell'errore& & \\
+
+\hline
+\hline
+\newpage
+
+
+\multirow{13}{0.2cm}{1} & \multirow{13}{0.2cm}{Registrazione cliente - produttore} 
+
+& 5 & Il cliente può registrarsi alla piattaforma & Vai al login del portale, seleziona registrati come cliente, inserisci: username, email e password & l'email NON deve essere già presente nel database& & Il cliente viene registrato e viene inserito sia su MongoDB sia su Firebase& & \\
+
+&& 6 & Il produttore può registrarsi alla piattaforma & Vai al login del portale, seleziona registrati come azienda, inserisci tutti i dati richiesti & l'email NON deve essere già presente nel database& & Il produttore viene registrato sia su MongoDB sia su Firebase& & \\
+
+&& 7 & Il cliente si registra con una mail non valida& Vai al login del portale, seleziona registrati come cliente, inserisci una email errata (non compare @ e/o il dominio) &  & & Viene mostrato un banner di email non valida& & \\
+
+&& 8 & Il produttore si registra con una mail non valida& Vai al login del portale, seleziona registrati come azienda, inserisci una email errata (non compare @ e/o il dominio) &  & & Viene mostrato un banner di email non valida& & \\
+
+&& 9 & Il cliente si registra con una mail già esistente& Vai al login del portale, seleziona registrati come cliente, inserisci una email già presente&  & & Viene mostrato un banner di email precedentemente inserita& & \\
+
+&& 10 & Il produttore si registra con una mail già esistente& Vai al login del portale, seleziona registrati come azienda, inserisci una email già presente&  & & Viene mostrato un banner di email precedentemente inserita& & \\
+
+&& 11 & Il cliente si registra ma lascia vuoto uno o più campi obbligatori& Vai al login del portale, seleziona registrati come cliente, e lascia vuoto uno o più campi&  & & Viene mostrato un banner di errore& & \\
+
+&& 12 & Il produttore si registra ma lascia vuoto uno o più campi obbligatori& Vai al login del portale, seleziona registrati come cliente, e lascia vuoto uno o più campi&  & & Viene mostrato un banner di errore& & \\
+
+\hline
+\hline
+\newpage
+
+\multirow{17}{0.2cm}{2} & \multirow{17}{0.2cm}{Autenticazione cliente - produttore} 
+
+& 13 & Il cliente può autenticarsi sulla piattaforma & Vai al login del portale inserire email e password& Il cliente deve essersi precedentemente registrato& & Il cliente viene autenticato e riportato alla schermata home & \\
+
+&& 14 & Il produttore può autenticarsi sulla piattaforma & Vai al login del portale, seleziona registrati come azienda, inserisci tutti i dati richiesti & Il produttore deve essersi precedentemente registrato& & Il produttore viene autenticato e riportato alla sua schermata dedicata& & \\
+
+&& 15 & Il cliente tenta il login senza inserire l'email & Vai al login del portale, lascia vuoto il campo email, inserisci una password, premi 'Accedi'& Il cliente è registrato con una password nota&&  Il sistema mostra un messaggio di errore indicando che l'email è obbligatoria e non esegue l'autenticazione& \\
+
+&& 16 & Il cliente tenta il login senza inserire la password & Vai al login del portale, inserisci un'email valida, lascia vuoto il campo password, premi 'Accedi'& Il cliente è registrato con un'email nota&&  Il sistema mostra un messaggio di errore indicando che la password è obbligatoria e non esegue l'autenticazione& \\
+
+&& 17 & Il cliente tenta il login con un'email non valida (formato errato) & Vai al login del portale, inserisci un'email con formato non valido (non compare @ e/o il dominio), inserisci una password, premi 'Accedi'& && Il sistema mostra un messaggio di errore indicando che il formato dell'email non è valido e non esegue l'autenticazione & \\
+
+&& 18 & Il cliente tenta il login con email valida ma password errata & Vai al login del portale, inserisci un'email registrata e una password errata, premi 'Accedi'& Il cliente è registrato con l'email inserita ma con una password differente&& Il sistema mostra un messaggio di errore e non esegue l'autenticazione&  \\
+
+&& 19 & Il cliente tenta il login con un'email non registrata & Vai al login del portale, inserisci un'email non presente nel sistema e una password qualsiasi, premi 'Accedi'& L'email inserita non corrisponde a nessun utente registrato&& Il sistema mostra un messaggio di errore e non esegue l'autenticazione&  \\
+
+&& 20 & Il produttore tenta il login senza inserire l'email & Vai al login del portale (sezione azienda), lascia vuoto il campo email, inserisci una password, premi 'Accedi'& Il produttore è registrato con una password nota&&  Il sistema mostra un messaggio di errore indicando che l'email è obbligatoria e non esegue l'autenticazione& \\
+
+&& 21 & Il produttore tenta il login senza inserire la password & Vai al login del portale (sezione azienda), inserisci un'email valida, lascia vuoto il campo password, premi 'Accedi'& Il produttore è registrato con un'email nota&&  Il sistema mostra un messaggio di errore indicando che la password è obbligatoria e non esegue l'autenticazione& \\
+
+&& 22 & Il produttore tenta il login con un'email non valida (formato errato) & Vai al login del portale (sezione azienda), inserisci un'email con formato non valido (non compare @ e/o il dominio), inserisci una password, premi 'Accedi'& Nessuna specifica, il controllo è sul formato&&  Il sistema mostra un messaggio di errore indicando che il formato dell'email non è valido e non esegue l'autenticazione& \\
+
+&& 23 & Il produttore tenta il login con email valida ma password errata & Vai al login del portale (sezione azienda), inserisci un'email registrata e una password errata, premi 'Accedi'& Il produttore è registrato con l'email inserita ma con una password differente&&  Il sistema mostra un messaggio di errore "Email o password non validi" (o simile) e non esegue l'autenticazione& \\
+
+&& 24 & Il produttore tenta il login con un'email non registrata & Vai al login del portale (sezione azienda), inserisci un'email non presente nel sistema e una password qualsiasi, premi 'Accedi'& L'email inserita non corrisponde a nessun produttore registrato&&  Il sistema mostra un messaggio di errore "Email o password non validi" (o simile, per non rivelare se l'email esiste) e non esegue l'autenticazione& \\
+
+\hline
+\hline
+
+\multirow{6}{0.2cm}{14} & \multirow{6}{0.2cm}{Inserimento prodotto} 
+
+& 25 & Eliminazione di un prodotto & Con Postman inviare una richiesta di Delete di un prodotto inserendo un identificativo & L'identificativo deve essere presente nel database& & Messaggio di successo da parte del endpoint della API e eliminazione lato database & \\
+
+&& 26 & Eliminazione di un prodotto inesistente & Con Postman inviare una richiesta di Delete di un prodotto inserendo un identificativo & L'identificativo non deve essere presente nel database& & Messaggio di errore da parte del endpoint della API & \\
+
+\hline
+\hline
+\newpage
+
+\multirow{7}{0.2cm}{20} & \multirow{7}{0.2cm}{Aggiornamento prodotto} 
+
+& 27 & Inserimento di un prodotto & Con Postman inviare una richiesta di creazione di un prodotto inserendo tutti i campi necessari& L'identificativo del produttore deve essere già presente nel database  &&  Messaggio di successo da parte del endpoint della API e creazione del prodotto lato database& \\
+
+&& 28 & Inserimento di un prodotto prodotto lasciando vuoti i campi obbligatori & Aprire Postman e inviare una richiesta di creazione di un prodotto lasciando vuoti i campi obbligatori (es. nome produttore) &&& Messaggio di errore da parte del endpoint della API & \\
+
+\hline
+\hline
+
+\multirow{3}{0.2cm}{5} & \multirow{3}{0.2cm}{Ricerca prodotti} 
+
+& 29 & Ricerca prodotti & Da interfaccia grafica utilizzare i filtri messi a disposizione per la ricerca &&&  Vedere se i dati a schermo sono stati filtrati correttamente& \\
+
+\hline
+\hline
+
+\multirow{2}{0.2cm}{6} & \multirow{2}{0.2cm}{Ricerca produttore} 
+
+& 30 & Ricerca produttore & Da interfaccia grafica utilizzare cerca produttore &&&  Vedere se i dati a schermo sono stati filtrati correttamente& \\
+
+\hline
+\hline
+
+
+\end{longtable}
+
+
+\end{landscape}
+\restoregeometry
+
+
+\subsection{Sprint Review}
+
+Durante la Sprint Review del primo sprint del progetto Agritrento, sono state presentate e valutate le funzionalità sviluppate rispetto agli obiettivi definiti nello Sprint Planning.
+
+Funzionalità completate e mostrate:
+\begin{itemize}
+    \item Registrazione utenti (cliente e produttore): completata lato backend e API, con integrazione su MongoDB e Firebase.
+    \item Autenticazione utenti: implementata autenticazione via credenziali e predisposta l’integrazione futura con Google OAuth.
+    \item Creazione database MongoDB: configurato e operativo, con collezioni separate per clienti e produttori.
+    \item Repository GitHub: inizializzato con NodeJS, impostata strategia di branching e pull request operative.
+    \item Inserimento, aggiornamento e rimozione prodotto: completate le API backend e relative interfacce base in Vue.
+    \item Visualizzazione prodotto e dettaglio prodotto: implementata visualizzazione lista e pagina dettaglio via API e frontend Vue.
+    \item Ricerca produttori: endpoint API funzionante per la ricerca produttori basata su nome.
+\end{itemize}
+
+Il team ha evidenziato la buona stabilità di API e database. È emersa però la necessità di:
+\begin{itemize}
+    \item Migliorare il feedback lato interfaccia utente, soprattutto nella gestione degli errori di input in fase di login e registrazione.
+    \item Allocare più tempo e margine ai task frontend, che hanno subito rallentamenti.
+    \item Definire come priorità per il prossimo sprint la gestione carrello e checkout e l’integrazione delle notifiche email.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection*{Product Backlog Refinement}
+Il meeting di raffinamento ha permesso di riallineare le priorità e ottimizzare la pianificazione in base agli sviluppi dello Sprint 1.
+
+\textbf{Incontro di raffinamento backlog:}
+
+Durante il Product Backlog Refinement il team ha:
+\begin{itemize}
+    \item Revisionato e confermato le funzionalità pianificate per il prossimo sprint: aggiunta carrello, checkout, gestione ordini.
+    \item Aggiunto al Product Backlog il task di integrazione notifiche email per conferma ordine.
+\end{itemize}
+
+\textbf{Variazioni al Product Backlog:}
+\begin{itemize}
+    \item Riorganizzati i task secondari e posticipati quelli a bassa priorità (es. recensioni e dashboard statistiche) agli sprint futuri.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\subsection{Sprint Retrospective}
+
+\textbf{Conclusioni e osservazioni:}
+\begin{itemize}
+    \item \textbf{Cosa ha funzionato:} buona comunicazione nel team, suddivisione task (progressivamente migliorata durante lo spint).
+    \item \textbf{Cosa non ha funzionato:} alcuni task frontend (UI login/registrazione) hanno avuto rallentamenti. Abbiamo impiegato molto tempo per la scrittura del Deliverable 3 a causa di una documentazione in alcuni tratti ridondante.
+    \item \textbf{Adozione di pratiche Agile:} Daily stand-up di 15 minuti, pair programming.
+    \item \textbf{Design Thinking:} valutata la user experience lato registrazione.
+    \item \textbf{Dinamiche di gruppo:} buona collaborazione e disponibilità, migliorabile gestione del tempo.
+    \item \textbf{Spunti per il prossimo Sprint:}
+    \begin{itemize}
+        \item Migliorare UI.
+        \item Rafforzare validazione input e messaggi di errore lato utente.
+    \end{itemize}
+\end{itemize}
