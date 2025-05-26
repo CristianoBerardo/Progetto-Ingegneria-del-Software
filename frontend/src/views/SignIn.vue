@@ -37,9 +37,10 @@ const signIn = async () => {
     const idToken = await userCredential.user.getIdToken();
     // Invia il token al backend e ricevi JWT
     const res = await axios.post(`http://localhost:3000/auth/login/${idToken}`);
+    console.log("Risposta dal backend:", res);
     // Salva il token JWT nel localStorage
-    localStorage.setItem("token", res.data.token);
-    console.log("Token ricevuto dal backend:", res.data.token);
+    localStorage.setItem("token", res.data.customToken);
+    console.log("Token ricevuto dal backend:", res.data.customToken);
     router.push("/feed");
   } catch (error) {
     console.error("Errore durante login:", error.code);
