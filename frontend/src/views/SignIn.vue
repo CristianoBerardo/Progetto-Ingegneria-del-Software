@@ -21,7 +21,8 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { useRouter } from "vue-router";
 import axios from "axios";
 
@@ -31,7 +32,6 @@ const errMsg = ref(); // error message
 const router = useRouter();
 
 const signIn = async () => {
-  const auth = getAuth();
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
     const firebaseToken = await userCredential.user.getIdToken();

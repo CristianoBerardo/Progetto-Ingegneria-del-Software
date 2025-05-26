@@ -51,7 +51,8 @@
 
 <script setup>
 import axios from "axios";
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { auth } from "@/firebase";
+import { createUserWithEmailAndPassword} from "firebase/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -89,7 +90,6 @@ const registerClient = async () => {
     return;
   }
 
-  const auth = getAuth();
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     console.log("Client registered on Firebase:", userCredential.user);
@@ -160,7 +160,6 @@ const registerProducer = async () => {
     return;
   }
 
-  const auth = getAuth();
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     console.log("Producer registered on Firebase:", userCredential.user);
