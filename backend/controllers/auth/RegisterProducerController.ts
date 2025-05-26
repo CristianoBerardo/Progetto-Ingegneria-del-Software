@@ -36,7 +36,7 @@ export const registerProducerController = async (
         userRole: savedProducer.roles,
       },
     });
-    console.log("New producer created:", savedProducer);
+    // console.log("New producer created:", savedProducer);
     return;
   } catch (error) {
     console.error("Error during registration:", error);

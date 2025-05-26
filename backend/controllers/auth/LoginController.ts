@@ -49,7 +49,7 @@ export const loginController = async (
       });
       return;
     } else if (client) {
-      console.log("Client found:", client);
+      // console.log("Client found:", client);
 
       const payload = {
         uid: client.id,

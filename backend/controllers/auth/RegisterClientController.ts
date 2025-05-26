@@ -11,9 +11,9 @@ export const registerClientController = async (
     const data = req.body;
     const clientData = {
       uid: data.decodedToken.uid,
-      ...data, // not the best because there is all the decodedToken (req.body.decodedToken) inside the body
+      ...data, // not ideal because there is all the decodedToken (req.body.decodedToken) inside the body
     };
-    console.log("Client data received:", clientData);
+    // console.log("Client data received:", clientData);
 
     const newClient = new Client(clientData);
     const savedClient = await newClient.save();
@@ -37,7 +37,7 @@ export const registerClientController = async (
         userRole: savedClient.roles,
       },
     });
-    console.log("New client client:", savedClient);
+    // console.log("New client client:", savedClient);
     return;
   } catch (error) {
     console.error("Error creating client:", error);
