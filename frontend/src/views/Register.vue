@@ -223,18 +223,10 @@ body {
   min-height: 100vh;
   margin: 0;
   background: #f7f7f7;
-  font-family: "Quicksand", Arial, sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-.register-container,
-input,
-button,
-h3,
-p {
-  font-family: "Quicksand", Arial, sans-serif;
 }
 h3 {
   text-align: center;
