@@ -50,10 +50,10 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "vue-router";
 import axios from "axios";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 const email = ref("");
 const password = ref("");
@@ -93,7 +93,7 @@ const registerClient = async () => {
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     console.log("Client registered on Firebase:", userCredential.user);
-    const idToken = await userCredential.user.getIdToken();
+    const firebaseToken = await userCredential.user.getIdToken();
 
     console.log("Sending data to backend:", {
       username: username.value,
@@ -101,14 +101,28 @@ const registerClient = async () => {
     });
 
     // Send data to backend
-    const res = await axios.post(`http://localhost:3000/auth/register/client/${idToken}`, {
-      username: username.value,
-      email: email.value,
-    });
+    // const res = await axios.post(`http://localhost:3000/auth/register/client/${idToken}`, {
+    //   username: username.value,
+    //   email: email.value,
+    // });
 
-    console.log("Backend token response:", res.data.token);
+    // ! meglio metterlo nell'header Authorization
+    // idToken obtained from Firebase successful sign-up/sign-in
+    const res = await axios.post(
+      `http://localhost:3000/auth/clients`,
+      {
+        username: username.value,
+        email: email.value,
+      },
+      {
+        headers: { Authorization: `Bearer ${firebaseToken}` },
+      },
+    );
+    console.log("Risposta dal backend:", res.data);
     // Save JWT token inside localStorage
-    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("token", res.data.data.token);
+    localStorage.setItem("userRole", res.data.data.userRole);
+
     router.push("/feed");
   } catch (error) {
     console.error("Error during Firebase registration:", error);
@@ -160,15 +174,32 @@ const registerProducer = async () => {
     });
 
     // Send data to backend
-    const res = await axios.post(`http://localhost:3000/auth/register/producer/${idToken}`, {
-      name: username.value,
-      phone: phone.value,
-      address: address.value,
-      email: email.value,
-    });
-    console.log("Backend token response:", res.data.token);
+    // const res = await axios.post(`http://localhost:3000/auth/register/producer/${idToken}`, {
+    //   name: username.value,
+    //   phone: phone.value,
+    //   address: address.value,
+    //   email: email.value,
+    // });
+
+    // idToken obtained from Firebase successful sign-up/sign-in
+    const res = await axios.post(
+      `http://localhost:3000/auth/producers`,
+      {
+        name: username.value,
+        phone: phone.value,
+        address: address.value,
+        email: email.value,
+      },
+      {
+        headers: { Authorization: `Bearer ${idToken}` },
+      },
+    );
+
+    console.log("Risposta dal backend:", res.data);
     // Save JWT token inside localStorage
-    localStorage.setItem("token", res.data.token);
+    localStorage.setItem("token", res.data.data.token);
+    localStorage.setItem("userRole", res.data.data.userRole);
+
     router.push("/feed");
   } catch (error) {
     console.error("Error during Firebase registration:", error);

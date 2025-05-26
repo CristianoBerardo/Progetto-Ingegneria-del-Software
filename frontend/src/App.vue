@@ -16,6 +16,9 @@ onMounted(() => {
     } else {
       console.log("No user is signed in.");
       isLoggedIn.value = false;
+      localStorage.setItem("token", "");
+      localStorage.setItem("userRole", "");
+
     }
   });
 });

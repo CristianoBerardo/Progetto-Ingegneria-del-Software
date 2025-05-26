@@ -1,4 +1,4 @@
-import { Schema, model, Document } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
 export interface IClient extends Document {
   uid: string; // Firebase UID
@@ -6,12 +6,7 @@ export interface IClient extends Document {
   email: string;
   phone: string;
   shippingAddress: string;
-  roles: {
-    type: string;
-    required: false;
-    enum: ["client", "producer", "admin"];
-    default: "client";
-  };
+  roles: string;
   // orders: Types.ObjectId[]; // Array di ID degli ordini
 }
 
@@ -23,10 +18,9 @@ export const ClientSchema = new Schema<IClient>({
   shippingAddress: { type: String },
   roles: {
     type: String,
-    required: false,
-    enum: ["client", "producer", "admin"],
+    required: true,
     default: "client",
-  }
+  },
   // orders: [{ type: Schema.Types.ObjectId, ref: "Order", required: false }],
 });
 

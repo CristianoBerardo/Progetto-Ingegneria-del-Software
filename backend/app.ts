@@ -6,9 +6,15 @@ import authRouter from "./routes/AuthRouter";
 import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
 import clientRouter from "./routes/ClientRoutes";
+import { deleteAllUsers } from "./config/firebase";
 
 const app = express();
 const port = process.env.PORT || 3000;
+
+
+// Clear all Firebase users before starting the server
+// deleteAllUsers();
+
 
 app.use(express.json());
 app.use(cors());

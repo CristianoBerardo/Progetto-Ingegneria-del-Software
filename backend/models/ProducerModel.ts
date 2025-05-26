@@ -7,12 +7,7 @@ export interface IProducer extends Document {
   phone: string;
   address: string;
   products: Types.ObjectId[]; // Array of product IDs
-  roles: {
-    type: string;
-    required: false;
-    enum: ['client', 'producer', 'admin'];
-    default : 'producer';
-  };
+  roles: string;
 }
 
 export const ProducerSchema = new Schema<IProducer>({
@@ -24,8 +19,7 @@ export const ProducerSchema = new Schema<IProducer>({
   products: [{ type: Schema.Types.ObjectId, ref: "Product", required: false }],
   roles: {
     type: String,
-    required: false,
-    enum: ["client", "producer", "admin"],
+    required: true,
     default: "producer",
   },
 });

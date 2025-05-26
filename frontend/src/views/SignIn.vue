@@ -34,13 +34,23 @@ const signIn = async () => {
   const auth = getAuth();
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email.value, password.value);
-    const idToken = await userCredential.user.getIdToken();
+    const firebaseToken = await userCredential.user.getIdToken();
     // Invia il token al backend e ricevi JWT
-    const res = await axios.post(`http://localhost:3000/auth/login/${idToken}`);
-    console.log("Risposta dal backend:", res);
+    // const res = await axios.post(`http://localhost:3000/auth/login/${idToken}`);
+    const res = await axios.post("http://localhost:3000/auth/login", {}, {
+      headers: {
+        Authorization: `Bearer ${firebaseToken}`,
+      },
+    });
+    console.log("Risposta dal backend:", res.data);
+
+
+    console.log("ROLE:", res.data.data.userRole)
     // Salva il token JWT nel localStorage
-    localStorage.setItem("token", res.data.customToken);
-    console.log("Token ricevuto dal backend:", res.data.customToken);
+    localStorage.setItem("token", res.data.data.customToken);
+    localStorage.setItem("userRole", res.data.data.userRole);
+
+    console.log("Token ricevuto dal backend:", res.data.data.customToken);
     router.push("/feed");
   } catch (error) {
     console.error("Errore durante login:", error.code);

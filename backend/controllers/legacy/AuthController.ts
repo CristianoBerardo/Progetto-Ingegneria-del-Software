@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import admin from "../config/firebase";
-import { createProducerWithToken } from "./ProducerController";
-import { generateToken } from "../utils/jwt";
-import { createClientWithToken } from "./ClientController";
+import admin from "../../config/firebase";
+import { createProducerWithToken } from "../ProducerController";
+import { generateToken } from "../../utils/jwt";
+import { createClientWithToken } from "../ClientController";
 
 export const registerClient = async (req: Request, res: Response) => {
   try {
