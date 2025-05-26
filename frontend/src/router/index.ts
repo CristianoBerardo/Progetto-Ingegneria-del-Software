@@ -7,9 +7,17 @@ const router = createRouter({
     { path: "/register", name: "register", component: () => import("../views/Register.vue") },
     { path: "/sign-in", name: "signin", component: () => import("../views/SignIn.vue") },
     {
-      path: "/feed",
-      name: "feed",
-      component: () => import("../views/Feed.vue"),
+      path: "/producer-feed",
+      name: "producer-feed",
+      component: () => import("../views/ProducerFeed.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/client-feed",
+      name: "client-feed",
+      component: () => import("../views/ClientFeed.vue"),
       meta: {
         requiresAuth: true,
       },

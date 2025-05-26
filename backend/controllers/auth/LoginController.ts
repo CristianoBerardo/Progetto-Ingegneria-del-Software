@@ -21,6 +21,7 @@ export const loginController = async (
     //   uid: decodedToken.uid,
     // });
 
+
     if (!producer && !client) {
       res.status(404).json({
         success: false,
@@ -31,7 +32,7 @@ export const loginController = async (
 
     if (producer) {
       const payload = {
-        uid: producer.id,
+        uid: producer.id,    // !!!!!! COSì STIAMO MANDANDO L'ID DI MONGODB TRAMITE UID !!!!!
         email: producer.email,
         roles: producer.roles,
       };
@@ -44,6 +45,8 @@ export const loginController = async (
         message: "Login successful azienda",
         data: {
           customToken,
+          uid: req.body.decodedToken.uid,
+          name: producer.name || "",
           userRole: payload.roles,
         },
       });
@@ -68,6 +71,8 @@ export const loginController = async (
         message: "Login successful cliente",
         data: {
           customToken,
+          uid: req.body.decodedToken.uid,
+          name: client.username || "",
           userRole: payload.roles,
         },
       });

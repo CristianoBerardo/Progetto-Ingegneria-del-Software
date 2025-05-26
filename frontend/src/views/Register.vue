@@ -40,8 +40,8 @@
       </p>
       <p v-if="errMsg" class="error-message">{{ errMsg }}</p>
       <p>
-        <button v-if="userType === 'cliente'" @click="registerClient">Submit</button>
-        <button v-else @click="registerProducer">Submit</button>
+        <button v-if="userType === 'cliente'" @click="registerClient">Entra</button>
+        <button v-else @click="registerProducer">Entra</button>
       </p>
       <p class="back-link"><a href="#" @click.prevent="userType = null">Torna indietro</a></p>
     </div>
@@ -55,6 +55,7 @@ import { auth } from "@/firebase";
 import { createUserWithEmailAndPassword} from "firebase/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import { loginUser } from "@/services/authService";
 
 const email = ref("");
 const password = ref("");
@@ -120,10 +121,10 @@ const registerClient = async () => {
     );
     console.log("Risposta dal backend:", res.data);
     // Save JWT token inside localStorage
-    localStorage.setItem("token", res.data.data.token);
-    localStorage.setItem("userRole", res.data.data.userRole);
-
-    router.push("/feed");
+    // localStorage.setItem("token", res.data.data.token);
+    // localStorage.setItem("userRole", res.data.data.userRole);
+    await loginUser(email.value, password.value);
+    router.push("/client-feed");
   } catch (error) {
     console.error("Error during Firebase registration:", error);
     if (error.code === "auth/email-already-in-use") {
@@ -196,10 +197,12 @@ const registerProducer = async () => {
 
     console.log("Risposta dal backend:", res.data);
     // Save JWT token inside localStorage
-    localStorage.setItem("token", res.data.data.token);
-    localStorage.setItem("userRole", res.data.data.userRole);
+    // localStorage.setItem("token", res.data.data.token);
+    // localStorage.setItem("userRole", res.data.data.userRole);
 
-    router.push("/feed");
+    // --- LOGIN ---
+    await loginUser(email.value, password.value);
+    router.push("/producer-feed");
   } catch (error) {
     console.error("Error during Firebase registration:", error);
     if (error.code === "auth/email-already-in-use") {

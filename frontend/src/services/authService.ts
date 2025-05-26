@@ -1,0 +1,35 @@
+import axios from 'axios';
+import { auth } from '@/firebase';
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useUserStore } from '@/stores/userStore';
+
+export const loginUser = async (email: string, password: string) => {
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const firebaseToken = await userCredential.user.getIdToken();
+  const res = await axios.post("http://localhost:3000/auth/login", {}, {
+    headers: {
+      Authorization: `Bearer ${firebaseToken}`,
+    },
+  });
+  //console.log("Risposta dal backend:", res.data);
+  const store = useUserStore();
+  console.log("ROLE:", res.data.data.userRole)
+  // Salva il token JWT nel localStorage
+  // localStorage.setItem("token", res.data.data.customToken);
+  // localStorage.setItem("userRole", res.data.data.userRole);
+
+  const userData = {
+    name: res.data.data.name,  
+    uid: res.data.data.uid,    
+    role: res.data.data.userRole
+  };
+  store.setUser(userData);
+  console.log("--- Name salvato nello store:", store.name);
+  console.log("--- uid salvato nel localStorage:", store.uid);
+  console.log("--- Role utente salvato nel localStorage:", store.role);
+
+
+  console.log("Token ricevuto dal backend:", res.data.data.customToken);
+  
+  return { role: store.role, token: res.data.data.customToken };
+};
