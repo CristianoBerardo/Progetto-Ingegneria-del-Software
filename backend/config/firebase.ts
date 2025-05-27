@@ -5,8 +5,6 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
 });
 
-const auth = admin.auth();
-
 export const deleteAllUsers = async function deleteAllUsers() {
   try {
     let pageToken;
@@ -51,5 +49,6 @@ export const deleteAllUsers = async function deleteAllUsers() {
     console.error("Error deleting users:", error);
   }
 }
-
+const auth = admin.auth();
+export {auth};
 export default admin;

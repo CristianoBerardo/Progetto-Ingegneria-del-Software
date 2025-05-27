@@ -24,9 +24,9 @@ export const loginUser = async (email: string, password: string) => {
     role: res.data.data.userRole
   };
   store.setUser(userData);
-  console.log("--- Name salvato nello store:", store.name);
-  console.log("--- uid salvato nel localStorage:", store.uid);
-  console.log("--- Role utente salvato nel localStorage:", store.role);
+  console.log("--- store name:", store.name);
+  console.log("--- store uid:", store.uid);
+  console.log("--- store role:", store.role);
 
 
   console.log("Token ricevuto dal backend:", res.data.data.customToken);

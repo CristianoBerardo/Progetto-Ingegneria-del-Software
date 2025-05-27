@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import admin from "../../config/firebase";
+import admin, { auth } from "../../config/firebase";
 import { createProducerWithToken } from "../ProducerController";
 import { generateToken } from "../../utils/jwt";
 import { createClientWithToken } from "../ClientController";
@@ -9,7 +9,7 @@ export const registerClient = async (req: Request, res: Response) => {
     const { idToken } = req.params;
 
     // Verify token Firebase
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await auth.verifyIdToken(idToken);
     const { uid } = decodedToken;
     req.body.uid = uid;
 
@@ -29,7 +29,7 @@ export const registerProducer = async (req: Request, res: Response) => {
     const { idToken } = req.params;
 
     // Verify token Firebase
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await auth.verifyIdToken(idToken);
     const { uid } = decodedToken;
     req.body.uid = uid;
     req.body.products = [];
@@ -49,7 +49,7 @@ export const loginWithFirebase = async (req: Request, res: Response) => {
   try {
     const { idToken } = req.params;
     // Verify Firebase token
-    const decodedToken = await admin.auth().verifyIdToken(idToken);
+    const decodedToken = await auth.verifyIdToken(idToken);
     const { uid, email } = decodedToken;
 
     // Generate JWT token

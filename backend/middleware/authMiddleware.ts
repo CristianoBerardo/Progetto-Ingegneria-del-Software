@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import admin from "firebase-admin";
+import { auth } from "../config/firebase";
 
 export const verifyFirebaseToken = async (
   req: Request,
@@ -19,10 +19,10 @@ export const verifyFirebaseToken = async (
 
     try {
       
-      const decodedToken = await admin.auth().verifyIdToken(firebaseToken);
+      const decodedToken = await auth.verifyIdToken(firebaseToken);
       req.body.decodedToken = decodedToken;
 
-      console.log("DECOADED TOKEN", decodedToken);
+      console.log("DECODED TOKEN", decodedToken);
       next();
 
     } catch (error) {

@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { getAuth } from "firebase-admin/auth";
-import admin from "../../config/firebase";
+import { auth } from "../../config/firebase";
 import Client from "../../models/ClientModel";
 import Producer from "../../models/ProducerModel";
 
@@ -9,8 +8,6 @@ export const loginController = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const auth = getAuth();
-
     const [producer, client] = await Promise.all([
       Producer.findOne({ uid: req.body.decodedToken.uid }),
       Client.findOne({ uid: req.body.decodedToken.uid }),
@@ -32,21 +29,20 @@ export const loginController = async (
 
     if (producer) {
       const payload = {
-        uid: producer.id,    // !!!!!! COSì STIAMO MANDANDO L'ID DI MONGODB TRAMITE UID !!!!!
+        uid: producer.uid,  
+        name: producer.name || "",
         email: producer.email,
         roles: producer.roles,
       };
 
-      const customToken = await admin
-        .auth()
-        .createCustomToken(req.body.decodedToken.uid, payload);
+      const customToken = await auth.createCustomToken(req.body.decodedToken.uid, payload);
       res.status(200).json({
         success: true,
         message: "Login successful azienda",
         data: {
           customToken,
-          uid: req.body.decodedToken.uid,
-          name: producer.name || "",
+          uid: payload.uid,
+          name: payload.name,
           userRole: payload.roles,
         },
       });
@@ -55,7 +51,8 @@ export const loginController = async (
       // console.log("Client found:", client);
 
       const payload = {
-        uid: client.id,
+        uid: client.uid,
+        name: client.username || "",
         email: client.email,
         roles: client.roles,
       };
@@ -71,8 +68,8 @@ export const loginController = async (
         message: "Login successful cliente",
         data: {
           customToken,
-          uid: req.body.decodedToken.uid,
-          name: client.username || "",
+          uid: payload.uid,
+          name: payload.name,
           userRole: payload.roles,
         },
       });

@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
-import { getAuth } from "firebase-admin/auth";
 import admin from "../../config/firebase";
 import Client from "../../models/ClientModel";
 import Producer from "../../models/ProducerModel";
-import { generateToken } from "../../utils/jwt";
+import { auth } from "../../config/firebase"; e
 
 // export const registerClientController = async (
 //   req: Request,
@@ -102,8 +101,6 @@ export const loginController = async (
   try {
     // ! Essendo una post ci deve essere il body e non il params
     // const { firebaseToken } = req.body;
-
-    const auth = getAuth();
 
     const [producer, client] = await Promise.all([
       Producer.findOne({ uid: req.body.decodedToken.uid }),
