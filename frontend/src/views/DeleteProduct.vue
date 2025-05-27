@@ -15,7 +15,10 @@
           <p v-if="product.description"><strong>Descrizione: </strong>{{ product.description }}</p>
           <p><strong>Prezzo:</strong> {{ product.price }}€</p>
           <p><strong>Disponibilità:</strong> {{ product.available }}</p>
-          <p><strong>Produttore:</strong> {{ product.producer.name }}</p>
+          <p><strong>Produttore:</strong> 
+            <span v-if="product.producer && product.producer.name">{{ product.producer.name }}</span>
+            <span v-else>Non specificato</span>
+          </p>
         </div>
         <div class="product-actions">
           <button @click="deleteProduct(product._id)" class="delete-button">Elimina</button>
@@ -30,6 +33,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "DeleteProduct",
   data() {
@@ -45,14 +50,13 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await fetch("http://localhost:3000/api/v1/products");
-        const result = await response.json();
-        console.log(result);
+        const response = await axios.get("http://localhost:3000/api/v1/products");
+        console.log(response.data);
 
-        if (result.success) {
-          this.products = result.data;
+        if (response.data.success) {
+          this.products = response.data.data;
         } else {
-          this.errorMessage = result.message || "Errore nel recupero dei prodotti";
+          this.errorMessage = response.data.message || "Errore nel recupero dei prodotti";
         }
       } catch (err) {
         console.error("Errore nel recupero dei prodotti:", err);
@@ -65,19 +69,19 @@ export default {
       this.successMessage = "";
 
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/products/${productId}`, {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        });
+        const response = await axios.delete(
+          `http://localhost:3000/api/v1/products/${productId}`,
+          {
+            headers: { "Content-Type": "application/json" }
+          }
+        );
 
-        const result = await response.json();
-
-        if (result.success) {
+        if (response.data.success) {
           this.successMessage = "Prodotto eliminato con successo!";
           // Aggiorna la lista dei prodotti dopo l'eliminazione
           await this.fetchProducts();
         } else {
-          this.errorMessage = result.message || "Errore nell'eliminazione del prodotto";
+          this.errorMessage = response.data.message || "Errore nell'eliminazione del prodotto";
         }
       } catch (err) {
         console.error("Errore nell'eliminazione del prodotto:", err);
@@ -87,83 +91,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.delete-product {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-}
-
-.product-list {
-  margin-top: 20px;
-}
-
-.product-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  margin-bottom: 15px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.product-info {
-  flex: 1;
-}
-
-.product-info h3 {
-  margin-top: 0;
-  margin-bottom: 10px;
-  color: #333;
-}
-
-.product-info p {
-  margin: 5px 0;
-  color: #666;
-}
-
-.product-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.delete-button {
-  padding: 0.6rem 1.2rem;
-  background: #e53935;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-button:hover {
-  background: #c62828;
-}
-
-.no-products {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-}
-
-.error-message {
-  background-color: #ffebee;
-  color: #c62828;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  border-left: 4px solid #c62828;
-}
-
-.success-message {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  padding: 10px;
-  margin-bottom: 15px;
-  border-radius: 4px;
-  border-left: 4px solid #2e7d32;
-}
-</style>

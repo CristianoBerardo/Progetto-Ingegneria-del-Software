@@ -43,7 +43,12 @@
 
       <div>
         <label for="producer">Produttore*</label>
-        <input id="producer" type="text" required v-model="producer" />
+        <select id="producer" required v-model="producerId">
+          <option value="">Seleziona Produttore</option>
+          <option v-for="producer in producers" :key="producer._id" :value="producer._id">
+            {{ producer.name }}
+          </option>
+        </select>
       </div>
 
       <button type="submit">Salva Prodotto</button>
@@ -52,6 +57,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
   name: "AddProduct",
   data() {
@@ -60,18 +67,37 @@ export default {
       description: "",
       price: 0,
       available: 0,
-      producer: "",
+      producerId: "",
+      producers: [],
       errorMessage: "",
       successMessage: "",
     };
   },
+  async mounted() {
+    await this.fetchProducers();
+  },
   methods: {
+    async fetchProducers() {
+      try {
+        const response = await axios.get("http://localhost:3000/api/v1/producers");
+        
+        if (response.data.success) {
+          this.producers = response.data.data;
+        } else {
+          this.errorMessage = "Errore nel recupero dei produttori";
+        }
+      } catch (err) {
+        console.error("Errore nel recupero dei produttori:", err);
+        this.errorMessage = "Errore di connessione al server";
+      }
+    },
+
     async submitProduct() {
       this.errorMessage = "";
       this.successMessage = "";
 
       // Validazione base
-      if (!this.name || !this.price || !this.available || !this.producer) {
+      if (!this.name || !this.price || !this.available || !this.producerId) {
         this.errorMessage = "Per favore compila tutti i campi obbligatori";
         return;
       }
@@ -81,34 +107,34 @@ export default {
         description: this.description,
         price: this.price,
         available: this.available,
-        producer: this.producer, // Ora è un semplice testo
+        producer: this.producerId,
       };
 
       try {
         console.log("Invio prodotto:", product);
-        const response = await fetch("http://localhost:3000/api/v1/products", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(product),
-        });
+        const response = await axios.post(
+          "http://localhost:3000/api/v1/products",
+          product,
+          {
+            headers: { "Content-Type": "application/json" }
+          }
+        );
 
-        const result = await response.json();
-
-        if (result.success) {
+        if (response.data.success) {
           this.successMessage = "Prodotto salvato con successo!";
           // Reset del form
           this.name = "";
           this.description = "";
           this.price = 0;
           this.available = 0;
-          this.producer = "";
+          this.producerId = "";
 
           // Attendi un secondo prima di reindirizzare
           setTimeout(() => {
             this.$router.push("/");
           }, 1000);
         } else {
-          this.errorMessage = result.message || "Errore nel salvataggio del prodotto";
+          this.errorMessage = response.data.message || "Errore nel salvataggio del prodotto";
         }
       } catch (err) {
         console.error("Errore nel salvataggio del prodotto:", err);
