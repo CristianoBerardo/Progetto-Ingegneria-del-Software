@@ -4,6 +4,7 @@ import { auth } from "@/firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useUserStore } from '@/stores/userStore';
+import ThemeToggle from './components/ThemeToggle.vue';
 
 const isLoggedIn = ref(false);
 const router = useRouter();
@@ -31,9 +32,14 @@ const handleSignOut = async () => {
       console.error("Error signing out:", error);
     });
 };
+
 </script>
 
 <template>
+  <header>
+    <h4>Benvenuto in AgriTrento!</h4>
+    <ThemeToggle />
+  </header>
   <nav class="main-nav">
     <router-link to="/">Home</router-link>
     <router-link to="/client-feed" v-if="isLoggedIn && userStore.role === 'client'">Feed</router-link>
@@ -47,3 +53,12 @@ const handleSignOut = async () => {
   </nav>
   <router-view />
 </template>
+<!-- 
+<style scoped>
+.main-nav {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: var(--color-background);
+}
+</style> -->

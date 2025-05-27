@@ -20,9 +20,6 @@ a,
     background-color: hsla(160, 100%, 37%, 0.2);
   }
 }
-input,
-textarea,
-button,
-body {
+* {
   font-family: 'Quicksand', sans-serif;
 }

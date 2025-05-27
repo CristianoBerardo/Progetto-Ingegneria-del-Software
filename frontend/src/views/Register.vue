@@ -5,14 +5,14 @@
       <div class="type-selection">
         <div class="type-card" @click="selectType('cliente')">
           <div class="type-img cliente-img">
-            <img src="@/assets/icon_client.jpg" alt="Cliente" style="width: 48px; height: 48px" />
+            <img src="@/assets/icon_client.png" alt="Cliente" style="width: 48px; height: 48px" />
           </div>
           <div class="type-label">Cliente</div>
         </div>
         <div class="type-card" @click="selectType('azienda')">
           <div class="type-img azienda-img">
             <img
-              src="@/assets/icon_farmer_market.jpg"
+              src="@/assets/icon_producer.png"
               alt="Azienda"
               style="width: 48px; height: 48px"
             />
@@ -40,8 +40,8 @@
       </p>
       <p v-if="errMsg" class="error-message">{{ errMsg }}</p>
       <p>
-        <button v-if="userType === 'cliente'" @click="registerClient">Entra</button>
-        <button v-else @click="registerProducer">Entra</button>
+        <button v-if="userType === 'cliente'" @click="registerClient">Crea</button>
+        <button v-else @click="registerProducer">Crea</button>
       </p>
       <p class="back-link"><a href="#" @click.prevent="userType = null">Torna indietro</a></p>
     </div>
@@ -83,7 +83,7 @@ const registerClient = async () => {
     return;
   }
   if (!email.value) {
-    errMsg.value = "Inserisci una email";
+    errMsg.value = "Indirizzo email mancante";
     return;
   }
   if (!password.value) {
@@ -261,22 +261,22 @@ button {
   width: 80%;
   padding: 10px;
   margin-bottom: 10px;
-  background: #145300; /* theme color */
+  background: #2b6c18; /* theme color */
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 0.8em;
+  font-size: 0.9em;
   cursor: pointer;
   transition: background 0.2s;
 }
 button:hover {
-  background: #0b2f00;
+  background: #194f08;
 }
 .sign-in-google {
   width: 80%;
   padding: 10px;
   margin-bottom: 10px;
-  background: #577c41; /* theme color */
+  background: #577c41;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -285,7 +285,7 @@ button:hover {
   transition: background 0.2s;
 }
 .sign-in-google:hover {
-  background: #1a4301;
+  background: #171a16;
 }
 p {
   text-align: center;
@@ -301,7 +301,7 @@ p {
   font-size: 1em;
 }
 .signin-link a {
-  color: #577c41;
+  color: #80a469;
   font-weight: bold;
   text-decoration: none;
   transition: color 0.2s;
@@ -310,7 +310,6 @@ p {
   color: #145300;
   text-decoration: underline;
 }
-/* ...existing code... */
 .choose-type-container {
   background: #fff;
   border-radius: 12px;
@@ -338,23 +337,19 @@ p {
   cursor: pointer;
   transition:
     border 0.2s,
-    box-shadow 0.2s;
+    box-shadow 1.2s;
 }
 .type-card:hover {
-  border: 2px solid #577c41;
+  border: 3px solid #577c41;
   box-shadow: 0 2px 8px rgba(87, 124, 65, 0.08);
 }
 .type-img {
-  width: 60px;
-  height: 60px;
-  background: #e0e0e0;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5em;
-  color: #888;
 }
 .type-label {
   font-size: 1.1em;
