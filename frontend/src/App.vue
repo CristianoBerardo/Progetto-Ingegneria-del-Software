@@ -25,6 +25,7 @@ onMounted(() => {
 const handleSignOut = async () => {
   signOut(auth)
     .then(() => {
+      userStore.clearUser();
       console.log("User signed out.");
       router.push("/");
     })

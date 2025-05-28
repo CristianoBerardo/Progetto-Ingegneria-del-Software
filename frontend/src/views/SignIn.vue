@@ -28,7 +28,11 @@ const store = useUserStore();
 const signIn = async () => {
   try {
     await loginUser(email.value, password.value);
-    
+    if (!store.role) {
+      console.error("User role not set after login");
+      errMsg.value = "Errore nel caricamento del profilo utente";
+      return;
+    }
     if (store.role === "producer") {
       console.log("Ruolo dell'utente:", store.role);
       router.push("/producer-feed");
