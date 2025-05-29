@@ -21,14 +21,14 @@ export const loginUser = async (email: string, password: string) => {
   const userData = {
     name: res.data.data.name,  
     uid: res.data.data.uid,    
-    role: res.data.data.userRole
+    role: res.data.data.userRole,
+    token: res.data.data.customToken
   };
+  
   store.setUser(userData);
   console.log("--- store name:", store.name);
   console.log("--- store uid:", store.uid);
   console.log("--- store role:", store.role);
-
-
   console.log("Token ricevuto dal backend:", res.data.data.customToken);
   
   return { role: store.role, token: res.data.data.customToken };
