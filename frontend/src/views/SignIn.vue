@@ -39,6 +39,9 @@ const signIn = async () => {
     } else if (store.role === "client") {
       console.log("Ruolo dell'utente:", store.role);
       router.push("/client-feed");
+    } else if (store.role === "administrator") {
+      console.log("Ruolo dell'utente:", store.role);
+      router.push("/client-feed");
     } else {
       console.error("Ruolo utente non riconosciuto:", store.role);
       errMsg.value = "Ruolo utente non riconosciuto";

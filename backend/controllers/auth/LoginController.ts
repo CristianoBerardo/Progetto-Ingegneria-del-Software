@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { auth } from "../../config/firebase";
+import Administrator from "../../models/AdministratorModel";
 import Client from "../../models/ClientModel";
 import Producer from "../../models/ProducerModel";
 
@@ -8,18 +9,13 @@ export const loginController = async (
   res: Response,
 ): Promise<void> => {
   try {
-    const [producer, client] = await Promise.all([
+    const [producer, client, administrator] = await Promise.all([
       Producer.findOne({ uid: req.body.decodedToken.uid }),
       Client.findOne({ uid: req.body.decodedToken.uid }),
+      Administrator.findOne({ uid: req.body.decodedToken.uid }),
     ]);
 
-    // da decidere se creare un altro DB per gli admin o meno
-    // const admin = await Admin.findOne({
-    //   uid: decodedToken.uid,
-    // });
-
-
-    if (!producer && !client) {
+    if (!producer && !client && !administrator) {
       res.status(404).json({
         success: false,
         message: "User not found",
@@ -27,15 +23,40 @@ export const loginController = async (
       return;
     }
 
-    if (producer) {
+    if (administrator) {
       const payload = {
-        uid: producer.uid,  
+        uid: administrator.uid,
+        email: administrator.email,
+        roles: administrator.roles,
+      };
+
+      const customToken = await auth.createCustomToken(
+        req.body.decodedToken.uid,
+        payload,
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Login successful amministratore",
+        data: {
+          customToken,
+          uid: payload.uid,
+          userRole: payload.roles,
+        },
+      });
+      return;
+    } else if (producer) {
+      const payload = {
+        uid: producer.uid,
         name: producer.name || "",
         email: producer.email,
         roles: producer.roles,
       };
 
-      const customToken = await auth.createCustomToken(req.body.decodedToken.uid, payload);
+      const customToken = await auth.createCustomToken(
+        req.body.decodedToken.uid,
+        payload,
+      );
       res.status(200).json({
         success: true,
         message: "Login successful azienda",

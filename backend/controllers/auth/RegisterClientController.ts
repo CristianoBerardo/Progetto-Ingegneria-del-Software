@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import admin from "../../config/firebase";
 import Client from "../../models/ClientModel";
 import { generateToken } from "../../utils/jwt";
+import { Role } from "../../types/Role";
 
 export const registerClientController = async (
   req: Request,
@@ -20,7 +21,7 @@ export const registerClientController = async (
 
     await admin
       .auth()
-      .setCustomUserClaims(req.body.decodedToken.uid, { role: "client" });
+      .setCustomUserClaims(req.body.decodedToken.uid, { role: Role.client });
 
     const token = generateToken({
       uid: savedClient.uid,

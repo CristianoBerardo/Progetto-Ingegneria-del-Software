@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import admin from "../../config/firebase";
 import Producer from "../../models/ProducerModel";
 import { generateToken } from "../../utils/jwt";
+import { Role } from "../../types/Role";
 
 export const registerProducerController = async (
   req: Request,
@@ -20,12 +21,12 @@ export const registerProducerController = async (
 
     await admin
       .auth()
-      .setCustomUserClaims(req.body.decodedToken.uid, { role: "producer" });
+      .setCustomUserClaims(req.body.decodedToken.uid, { role: Role.producer });
 
     const token = generateToken({
       uid: savedProducer.uid,
       email: savedProducer.email,
-      role: "producer",
+      role: Role.producer,
     });
 
     res.status(201).json({

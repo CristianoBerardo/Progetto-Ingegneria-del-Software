@@ -7,6 +7,7 @@ import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
 import clientRouter from "./routes/ClientRoutes";
 import { deleteAllUsers } from "./config/firebase";
+import administratorRouter from "./routes/AdministratorRouter";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(cors());
 
+app.use("/api/v1/admin", administratorRouter);
 app.use("/api/v1/producers", producerRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/clients", clientRouter);

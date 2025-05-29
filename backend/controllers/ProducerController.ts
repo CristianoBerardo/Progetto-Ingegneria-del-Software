@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import Producer from "../models/ProducerModel";
 import Product from "../models/ProductModel";
 import { generateToken } from "../utils/jwt";
+import { Role } from "../types/Role";
 
 export const createProducer = async (
   req: Request,
@@ -39,7 +40,7 @@ export const createProducerWithToken = async (
     const token = generateToken({
       uid: savedProducer._id,
       email: savedProducer.email,
-      role: "producer",
+      role: Role.producer,
     });
 
     res.status(200).json({
