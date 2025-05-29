@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { auth } from '@/firebase';
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "firebase/auth";
 import { useUserStore } from '@/stores/userStore';
 
 export const loginUser = async (email: string, password: string) => {
@@ -14,9 +14,6 @@ export const loginUser = async (email: string, password: string) => {
   //console.log("Risposta dal backend:", res.data);
   const store = useUserStore();
   console.log("ROLE:", res.data.data.userRole)
-  // Salva il token JWT nel localStorage
-  // localStorage.setItem("token", res.data.data.customToken);
-  // localStorage.setItem("userRole", res.data.data.userRole);
 
   const userData = {
     name: res.data.data.name,  
@@ -33,3 +30,26 @@ export const loginUser = async (email: string, password: string) => {
   
   return { role: store.role, token: res.data.data.customToken };
 };
+
+export const logoutUser = async () => {
+  try {
+    const store = useUserStore();
+    store.clearUser();
+    await auth.signOut();
+    console.log("Disconnected user from Firebase and cleared user store.");
+  } catch (error) {
+    console.error("Error during logout:", error);
+    throw error; 
+  }
+};
+
+export const resetPasswordFirebase = async (email: string) => {
+  try {
+    auth.languageCode = 'it';
+    await sendPasswordResetEmail(auth, email);
+    console.log("Reset password email sent to:", email);
+  } catch (error) {
+    console.error("Error durin:", error);
+    throw error; 
+  }
+}

@@ -10,8 +10,10 @@
     <p class="register-link">
       Non hai ancora un account? <router-link to="/register">Registrati!</router-link>
     </p>
-    <!-- <p>Forgot your password? <router-link to="/reset-password">Reset Password</router-link></p> -->
-  </div>
+    <p class="reset-link">
+      Hai dimenticato la password? <router-link to="/reset-password">Reimposta la password</router-link>
+    </p>
+    </div>
 </template>
 <script setup>
 import { ref } from "vue";
@@ -148,12 +150,10 @@ p {
 }
 .register-link a {
   color: #577c41;
-  font-weight: bold;
   text-decoration: none;
   transition: color 0.2s;
 }
 .register-link a:hover {
-  color: #145300;
-  text-decoration: underline;
+  color: #145300;;
 }
 </style>

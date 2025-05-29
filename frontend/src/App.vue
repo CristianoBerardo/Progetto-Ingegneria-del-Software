@@ -5,6 +5,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { useRouter } from "vue-router";
 import { useUserStore } from '@/stores/userStore';
 import ThemeToggle from './components/ThemeToggle.vue';
+import { logoutUser } from "./services/authService";
 
 const isLoggedIn = ref(false);
 const router = useRouter();
@@ -23,15 +24,13 @@ onMounted(() => {
 });
 
 const handleSignOut = async () => {
-  signOut(auth)
-    .then(() => {
-      userStore.clearUser();
-      console.log("User signed out.");
-      router.push("/");
-    })
-    .catch((error) => {
-      console.error("Error signing out:", error);
-    });
+  try {
+    await logoutUser();
+    console.log("User signed out successfully.");
+    isLoggedIn.value = false;
+  } catch (error) {
+    console.error("Error signing out:", error);
+  }
 };
 
 </script>
