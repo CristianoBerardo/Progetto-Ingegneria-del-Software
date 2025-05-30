@@ -10,7 +10,7 @@
           </div>
         </div>
         <div class="cta-buttons">
-          <button class="cta-primary">Esplora Prodotti</button>
+          <button class="cta-primary"><router-link to="/explore-products">Esplora Prodotti</router-link></button>
           <button class="cta-secondary">Trova Produttori</button>
         </div>
       </div>
