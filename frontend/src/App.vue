@@ -46,6 +46,7 @@ const handleSignOut = async () => {
     <router-link to="/producer-feed" v-if="isLoggedIn && userStore.role === 'producer'">Feed</router-link>
     <router-link to="/sign-in" v-if="!isLoggedIn">Sign In</router-link>
     <router-link to="/register" v-if="!isLoggedIn">Register</router-link>
+    <router-link to="/explore-products">Esplora prodotti</router-link>
     <router-link to="/add-product"> Aggiungi Prodotto</router-link>
     <router-link to="/delete-product/"> Rimuovi Prodotto </router-link>
 

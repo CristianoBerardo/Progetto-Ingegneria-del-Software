@@ -210,6 +210,12 @@ button {
   color: white;
 }
 
+.cta-primary router-link-active,
+.cta-primary a {
+  color: #fff !important;
+  background-color: transparent !important;
+}
+
 .cta-primary:hover {
   background-color: #26682a;
 }
