@@ -1,20 +1,39 @@
 import { Request, Response } from "express";
-
 import Product from "../models/ProductModel";
+import Producer from "../models/ProducerModel";
 
 export const createProduct = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
-  const productData = req.body;
   try {
+    const productData = req.body;
+    const currentUserUid = req.body.decodedToken.uid;
+
+    const producer = await Producer.findOne({ uid: currentUserUid });
+    if (!producer) {
+      res.status(404).json({
+        success: false,
+        message: "Producer not found",
+      });
+      return;
+    }
+
+    productData.producer = producer._id;
+
     const newProduct = await new Product(productData).save();
+
+    await Producer.findByIdAndUpdate(
+      producer._id,
+      { $push: { products: newProduct._id } },
+      { new: true }
+    );
+
     res.status(201).json({
       success: true,
       data: newProduct,
       message: "Product created successfully",
     });
-    return;
   } catch (error) {
     console.error("Error creating product:", error);
     res.status(500).json({
@@ -26,7 +45,7 @@ export const createProduct = async (
 
 export const readProducts = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   const query = req.query;
 
@@ -43,20 +62,18 @@ export const readProducts = async (
       data: products,
       message: "Products retrieved successfully",
     });
-    return;
   } catch (error) {
     console.error("Error retrieving products:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve products",
     });
-    return;
   }
 };
 
 export const readProduct = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -73,24 +90,24 @@ export const readProduct = async (
       data: product,
       message: "Product retrieved successfully",
     });
-    return;
   } catch (error) {
     console.error("Error retrieving product:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve product",
     });
-    return;
   }
 };
 
 export const deleteProduct = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const productId = req.params.id;
-    const product = await Product.findByIdAndDelete(productId);
+    const currentUserUid = req.body.decodedToken.uid;
+
+    const product = await Product.findById(productId).populate("producer");
     if (!product) {
       res.status(404).json({
         success: false,
@@ -98,105 +115,138 @@ export const deleteProduct = async (
       });
       return;
     }
+
+    if ((product.producer as any).uid !== currentUserUid) {
+      res.status(403).json({
+        success: false,
+        message: "You can only delete your own products",
+      });
+      return;
+    }
+
+    await Producer.findByIdAndUpdate(
+      product.producer._id,
+      { $pull: { products: productId } },
+      { new: true }
+    );
+
+    const deletedProduct = await Product.findByIdAndDelete(productId);
+
     res.status(200).json({
       success: true,
-      data: product,
+      data: deletedProduct,
       message: "Product deleted successfully",
     });
-    return;
   } catch (error) {
     console.error("Error deleting product:", error);
     res.status(500).json({
       success: false,
       message: "Failed to delete product",
     });
-    return;
   }
 };
 
 export const completeUpdateProduct = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const productId = req.params.id;
-    const productData = req.body;
+    const currentUserUid = req.body.decodedToken.uid;
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      productData,
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-    if (!updatedProduct) {
+    const product = await Product.findById(productId).populate("producer");
+    if (!product) {
       res.status(404).json({
         success: false,
         message: "Product not found",
       });
       return;
     }
+
+    if ((product.producer as any).uid !== currentUserUid) {
+      res.status(403).json({
+        success: false,
+        message: "You can only update your own products",
+      });
+      return;
+    }
+
+    const productData = req.body;
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      productData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
     res.status(200).json({
       success: true,
       data: updatedProduct,
       message: "Product updated successfully",
     });
-
-    return;
   } catch (error) {
     console.error("Error updating product:", error);
     res.status(500).json({
       success: false,
       message: "Failed to update product",
     });
-    return;
   }
 };
+
 export const partialUpdateProduct = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const productId = req.params.id;
-    const productData = req.body;
+    const currentUserUid = req.body.decodedToken.uid;
 
-    const updatedProduct = await Product.findByIdAndUpdate(
-      productId,
-      productData,
-      {
-        new: true,
-        runValidators: true,
-      },
-    );
-    if (!updatedProduct) {
+    const product = await Product.findById(productId).populate("producer");
+    if (!product) {
       res.status(404).json({
         success: false,
         message: "Product not found",
       });
       return;
     }
+
+    if ((product.producer as any).uid !== currentUserUid) {
+      res.status(403).json({
+        success: false,
+        message: "You can only update your own products",
+      });
+      return;
+    }
+
+    const productData = req.body;
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      productData,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
+
     res.status(200).json({
       success: true,
       data: updatedProduct,
       message: "Product partially updated successfully",
     });
-    return;
   } catch (error) {
-    console.error("Error partially updating :", error);
+    console.error("Error partially updating:", error);
     res.status(500).json({
       success: false,
-      message: "Failed to partially update ",
+      message: "Failed to partially update",
     });
-    return;
   }
 };
 
-//* ------------------ SEARCH ------------------ *//
-
 export const searchProducts = async (
   req: Request,
-  res: Response,
+  res: Response
 ): Promise<void> => {
   try {
     const {
@@ -210,16 +260,14 @@ export const searchProducts = async (
       limit = 10,
     } = req.query;
 
-    console.log("Query parameters:", req.query);
-
     const query: any = {};
 
     if (name) {
-      query.name = { $regex: new RegExp(name as string, "i") }; // Case-insensitive search
+      query.name = { $regex: new RegExp(name as string, "i") };
     }
 
     if (category) {
-      query.category = { $regex: new RegExp(category as string, "i") }; // Case-insensitive search
+      query.category = { $regex: new RegExp(category as string, "i") };
     }
 
     if (minPrice) {
@@ -238,7 +286,6 @@ export const searchProducts = async (
 
     const sortOption: any = {};
     if (sort) {
-      //MongoDB conventions --> 1 for ascending, -1 for descending
       const [field, order] = String(sort).split(":");
       sortOption[field] = order === "desc" ? -1 : 1;
     }
@@ -253,8 +300,6 @@ export const searchProducts = async (
       .skip((parseInt(page as string) - 1) * parseInt(limit as string))
       .limit(parseInt(limit as string));
 
-    // const totalProducts = await Product.countDocuments(query);
-
     if (!products || products.length === 0) {
       res.status(404).json({
         success: false,
@@ -267,9 +312,6 @@ export const searchProducts = async (
       success: true,
       data: products,
       message: "Products retrieved successfully",
-      // totalProducts,
-      // totalPages: Math.ceil(totalProducts / parseInt(limit as string)),
-      // currentPage: parseInt(page as string),
     });
   } catch (error) {
     console.error("Error searching products:", error);
@@ -277,6 +319,5 @@ export const searchProducts = async (
       success: false,
       message: "Failed to search products",
     });
-    return;
   }
 };

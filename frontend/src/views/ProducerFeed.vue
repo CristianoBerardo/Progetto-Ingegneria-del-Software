@@ -1,17 +1,12 @@
 <template>
   <div class="producer-feed">
     <h1>🛒 I Tuoi Prodotti</h1>
-    
     <div v-if="message" :class="messageClass">{{ message }}</div>
-
     <div class="products-grid">
-      <!-- Add Product Card -->
       <div class="card add-card" @click="showAddForm = !showAddForm">
         <div class="add-icon">➕</div>
         <p>Aggiungi Prodotto</p>
       </div>
-
-      <!-- Add Form -->
       <div v-if="showAddForm" class="card form-card">
         <h3>➕ Nuovo Prodotto</h3>
         <form @submit.prevent="addProduct">
@@ -19,38 +14,27 @@
             <label>🏷️ Nome*</label>
             <input v-model="form.name" required placeholder="Nome del prodotto">
           </div>
-          
           <div class="form-row">
             <div class="form-group">
               <label>💰 Prezzo (€)*</label>
               <input v-model.number="form.price" type="number" step="0.01" required placeholder="0.00">
             </div>
-            
             <div class="form-group">
               <label>📦 Quantità*</label>
               <input v-model.number="form.available" type="number" required placeholder="0">
             </div>
           </div>
-          
           <div class="form-group">
             <label>📝 Descrizione</label>
             <textarea v-model="form.description" placeholder="Descrizione del prodotto (opzionale)"></textarea>
           </div>
-          
           <div class="actions">
-            <button type="submit" class="save" :disabled="!isFormValid">
-              ✅ Salva
-            </button>
-            <button type="button" @click="cancelForm" class="cancel">
-              ❌ Annulla
-            </button>
+            <button type="submit" class="save" :disabled="!isFormValid">✅ Salva</button>
+            <button type="button" @click="cancelForm" class="cancel">❌ Annulla</button>
           </div>
         </form>
       </div>
-
-      <!-- Product Cards -->
       <div v-for="product in products" :key="product._id" class="card product-card">
-        <!-- View Mode -->
         <div v-if="editingId !== product._id" class="product-view">
           <div class="product-header">
             <h3>{{ product.name }}</h3>
@@ -58,7 +42,6 @@
               {{ product.available > 0 ? 'Disponibile' : 'Esaurito' }}
             </span>
           </div>
-          
           <div class="product-details">
             <p class="price-quantity">
               <span class="price">€{{ product.price.toFixed(2) }}</span>
@@ -66,18 +49,11 @@
             </p>
             <p v-if="product.description" class="description">{{ product.description }}</p>
           </div>
-          
           <div class="actions">
-            <button @click="startEdit(product)" class="edit" title="Modifica">
-              ✏️
-            </button>
-            <button @click="deleteProduct(product._id)" class="delete" title="Elimina">
-              🗑️
-            </button>
+            <button @click="startEdit(product)" class="edit" title="Modifica">✏️</button>
+            <button @click="deleteProduct(product._id)" class="delete" title="Elimina">🗑️</button>
           </div>
         </div>
-
-        <!-- Edit Mode -->
         <div v-else class="product-edit">
           <h3>✏️ Modifica Prodotto</h3>
           <form @submit.prevent="updateProduct(product._id)">
@@ -85,37 +61,27 @@
               <label>Nome*</label>
               <input v-model="editForm.name" required>
             </div>
-            
             <div class="form-row">
               <div class="form-group">
                 <label>Prezzo (€)*</label>
                 <input v-model.number="editForm.price" type="number" step="0.01" required>
               </div>
-              
               <div class="form-group">
                 <label>Quantità*</label>
                 <input v-model.number="editForm.available" type="number" required>
               </div>
             </div>
-            
             <div class="form-group">
               <label>Descrizione</label>
               <textarea v-model="editForm.description"></textarea>
             </div>
-            
             <div class="actions">
-              <button type="submit" class="save">
-                ✅ Salva
-              </button>
-              <button type="button" @click="cancelEdit" class="cancel">
-                ❌ Annulla
-              </button>
+              <button type="submit" class="save">✅ Salva</button>
+              <button type="button" @click="cancelEdit" class="cancel">❌ Annulla</button>
             </div>
           </form>
         </div>
       </div>
-
-
     </div>
   </div>
 </template>
@@ -136,31 +102,45 @@ export default {
     producerId: null,
     loading: false
   }),
-  
   computed: {
     messageClass() {
       return this.message.includes('successo') ? 'success' : 'error';
     },
-    
     isFormValid() {
-      return this.form.name.trim() && 
-             this.form.price > 0 && 
-             this.form.available >= 0;
+      return this.form.name.trim() && this.form.price > 0 && this.form.available >= 0;
     }
   },
-  
   async mounted() {
     await this.initializeComponent();
   },
-  
   methods: {
-    // API Headers with authentication
     headers() {
-      const token = localStorage.getItem('token');
-      return token ? { Authorization: `Bearer ${token}` } : {};
+      const userStore = useUserStore();
+      const token = userStore.token || localStorage.getItem('token');
+      return token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
     },
-
-    // Initialize component data
+    handleApiError(error, defaultMessage) {
+      console.error("API Error:", error);
+      if (error.response) {
+        const status = error.response.status;
+        const message = error.response.data?.message;
+        switch (status) {
+          case 401:
+            this.showMessage("Sessione scaduta. Effettua di nuovo il login.", 'error');
+            break;
+          case 403:
+            this.showMessage("Non hai i permessi per questa operazione.", 'error');
+            break;
+          case 404:
+            this.showMessage("Risorsa non trovata.", 'error');
+            break;
+          default:
+            this.showMessage(message || defaultMessage, 'error');
+        }
+      } else {
+        this.showMessage(defaultMessage, 'error');
+      }
+    },
     async initializeComponent() {
       this.loading = true;
       try {
@@ -172,71 +152,41 @@ export default {
         this.loading = false;
       }
     },
-
-    // Get producer ID for current user
     async fetchProducerId() {
       try {
         const userStore = useUserStore();
-        const response = await axios.get("http://localhost:3000/api/v1/producers", { 
-          headers: this.headers() 
-        });
-        
+        const response = await axios.get("http://localhost:3000/api/v1/producers", { headers: this.headers() });
         if (response.data.success) {
           const producer = response.data.data.find(p => p.uid === userStore.uid);
           this.producerId = producer?._id;
-          
-          if (!this.producerId) {
-            throw new Error("Produttore non trovato");
-          }
+          if (!this.producerId) throw new Error("Produttore non trovato");
         }
       } catch (error) {
         console.error("Error fetching producer ID:", error);
         throw error;
       }
     },
-
-    // Fetch all products
     async fetchProducts() {
+      if (!this.producerId) return;
       try {
-        const response = await axios.get("http://localhost:3000/api/v1/products", { 
-          headers: this.headers() 
-        });
-        
+        const response = await axios.get(`http://localhost:3000/api/v1/producers/${this.producerId}/products`, { headers: this.headers() });
         if (response.data.success) {
           this.products = response.data.data || [];
         } else {
           throw new Error(response.data.message || "Errore nel recupero prodotti");
         }
       } catch (error) {
-        console.error("Error fetching products:", error);
-        this.showMessage("Errore nel caricamento dei prodotti", 'error');
+        this.handleApiError(error, "Errore nel caricamento dei prodotti");
       }
     },
-
-    // Add new product
     async addProduct() {
-      if (!this.producerId) {
-        this.showMessage("Errore: ID produttore non trovato", 'error');
-        return;
-      }
-
       if (!this.isFormValid) {
         this.showMessage("Compila tutti i campi obbligatori", 'error');
         return;
       }
-
       try {
-        const productData = {
-          ...this.form,
-          producer: this.producerId
-        };
-
-        const response = await axios.post(
-          "http://localhost:3000/api/v1/products", 
-          productData,
-          { headers: this.headers() }
-        );
-
+        const productData = { ...this.form };
+        const response = await axios.post("http://localhost:3000/api/v1/products", productData, { headers: this.headers() });
         if (response.data.success) {
           this.showMessage("Prodotto aggiunto con successo!", 'success');
           this.cancelForm();
@@ -245,26 +195,16 @@ export default {
           throw new Error(response.data.message || "Errore nell'aggiunta");
         }
       } catch (error) {
-        console.error("Error adding product:", error);
-        this.showMessage("Errore nell'aggiunta del prodotto", 'error');
+        this.handleApiError(error, "Errore nell'aggiunta del prodotto");
       }
     },
-
-    // Start editing a product
     startEdit(product) {
       this.editingId = product._id;
       this.editForm = { ...product };
     },
-
-    // Update existing product
     async updateProduct(productId) {
       try {
-        const response = await axios.put(
-          `http://localhost:3000/api/v1/products/${productId}`, 
-          this.editForm, 
-          { headers: this.headers() }
-        );
-
+        const response = await axios.put(`http://localhost:3000/api/v1/products/${productId}`, this.editForm, { headers: this.headers() });
         if (response.data.success) {
           this.showMessage("Prodotto aggiornato con successo!", 'success');
           this.cancelEdit();
@@ -273,23 +213,13 @@ export default {
           throw new Error(response.data.message || "Errore nell'aggiornamento");
         }
       } catch (error) {
-        console.error("Error updating product:", error);
-        this.showMessage("Errore nell'aggiornamento del prodotto", 'error');
+        this.handleApiError(error, "Errore nell'aggiornamento del prodotto");
       }
     },
-
-    // Delete product with confirmation
     async deleteProduct(productId) {
-      if (!confirm("Sei sicuro di voler eliminare questo prodotto?")) {
-        return;
-      }
-
+      if (!confirm("Sei sicuro di voler eliminare questo prodotto?")) return;
       try {
-        const response = await axios.delete(
-          `http://localhost:3000/api/v1/products/${productId}`, 
-          { headers: this.headers() }
-        );
-
+        const response = await axios.delete(`http://localhost:3000/api/v1/products/${productId}`, { headers: this.headers() });
         if (response.data.success) {
           this.showMessage("Prodotto eliminato con successo!", 'success');
           await this.fetchProducts();
@@ -297,24 +227,17 @@ export default {
           throw new Error(response.data.message || "Errore nell'eliminazione");
         }
       } catch (error) {
-        console.error("Error deleting product:", error);
-        this.showMessage("Errore nell'eliminazione del prodotto", 'error');
+        this.handleApiError(error, "Errore nell'eliminazione del prodotto");
       }
     },
-
-    // Cancel add form
     cancelForm() {
       this.showAddForm = false;
       this.form = { name: "", price: null, available: null, description: "" };
     },
-
-    // Cancel edit
     cancelEdit() {
       this.editingId = null;
       this.editForm = {};
     },
-
-    // Show message with auto-hide
     showMessage(text, type = 'info') {
       this.message = text;
       setTimeout(() => {
@@ -331,7 +254,6 @@ export default {
   margin: 0 auto;
   padding: 20px;
 }
-
 h1 {
   display: flex;
   align-items: center;
@@ -339,14 +261,12 @@ h1 {
   color: #333;
   margin-bottom: 20px;
 }
-
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 20px;
   margin-top: 20px;
 }
-
 .card {
   background: white;
   border: 1px solid #e1e5e9;
@@ -354,8 +274,6 @@ h1 {
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
 }
-
-/* Add Product Card */
 .add-card {
   display: flex;
   flex-direction: column;
@@ -367,32 +285,25 @@ h1 {
   min-height: 180px;
   background: linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%);
 }
-
-.add-card .add-icon { 
-  font-size: 3em; 
-  margin-bottom: 10px; 
+.add-card .add-icon {
+  font-size: 3em;
+  margin-bottom: 10px;
 }
-
 .add-card p {
   font-weight: 600;
   margin: 0;
 }
-
-/* Form Styling */
 .form-card {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 }
-
 .form-group {
   margin-bottom: 16px;
 }
-
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
-
 label {
   display: flex;
   align-items: center;
@@ -402,7 +313,6 @@ label {
   font-size: 14px;
   color: #495057;
 }
-
 input, textarea {
   width: 100%;
   padding: 10px 12px;
@@ -411,36 +321,29 @@ input, textarea {
   font-size: 14px;
   box-sizing: border-box;
 }
-
 input:focus, textarea:focus {
   outline: none;
   border-color: #007bff;
 }
-
-textarea { 
-  min-height: 80px; 
-  resize: vertical; 
+textarea {
+  min-height: 80px;
+  resize: vertical;
   font-family: inherit;
 }
-
-/* Product Card Styling */
 .product-card {
   position: relative;
 }
-
 .product-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 12px;
 }
-
 .product-header h3 {
   margin: 0;
   color: #333;
   font-size: 18px;
 }
-
 .product-status {
   padding: 4px 8px;
   border-radius: 12px;
@@ -449,29 +352,24 @@ textarea {
   background: #d4edda;
   color: #155724;
 }
-
 .product-status.low-stock {
   background: #fff3cd;
   color: #856404;
 }
-
 .product-details {
   margin-bottom: 16px;
 }
-
 .price-quantity {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 8px;
 }
-
 .price {
   font-size: 20px;
   font-weight: 700;
   color: #28a745;
 }
-
 .quantity {
   background: #f8f9fa;
   padding: 4px 8px;
@@ -479,21 +377,17 @@ textarea {
   font-weight: 600;
   color: #6c757d;
 }
-
 .description {
   color: #6c757d;
   font-size: 14px;
   line-height: 1.4;
   margin: 0;
 }
-
-/* Actions */
 .actions {
   display: flex;
   gap: 8px;
   margin-top: 16px;
 }
-
 button {
   border: none;
   padding: 10px 16px;
@@ -505,35 +399,29 @@ button {
   font-size: 14px;
   font-weight: 600;
 }
-
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
-
-.save { 
-  background: #28a745; 
-  color: white; 
+.save {
+  background: #28a745;
+  color: white;
   flex: 1;
 }
-
-.cancel { 
-  background: #6c757d; 
-  color: white; 
+.cancel {
+  background: #6c757d;
+  color: white;
 }
-
-.edit { 
-  background: #ffc107; 
-  color: #212529; 
+.edit {
+  background: #ffc107;
+  color: #212529;
   padding: 8px 12px;
 }
-
-.delete { 
-  background: #dc3545; 
-  color: white; 
+.delete {
+  background: #dc3545;
+  color: white;
   padding: 8px 12px;
 }
-
 .add-first {
   background: #007bff;
   color: white;
@@ -541,8 +429,6 @@ button:disabled {
   font-size: 16px;
   margin-top: 16px;
 }
-
-/* Messages */
 .success {
   background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
   color: #155724;
@@ -551,7 +437,6 @@ button:disabled {
   margin-bottom: 20px;
   border-left: 4px solid #28a745;
 }
-
 .error {
   background: linear-gradient(135deg, #f8d7da 0%, #f1aeb5 100%);
   color: #721c24;
@@ -560,25 +445,18 @@ button:disabled {
   margin-bottom: 20px;
   border-left: 4px solid #dc3545;
 }
-
-
-
-/* Responsive Design */
 @media (max-width: 768px) {
   .products-grid {
     grid-template-columns: 1fr;
   }
-  
   .form-row {
     grid-template-columns: 1fr;
   }
-  
   .price-quantity {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
   }
-  
   .actions {
     flex-direction: column;
   }

@@ -4,6 +4,7 @@ import {
   createProducer,
   deleteProducer,
   getProducerNames,
+  getProductsByProducerId,
   partialUpdateProducer,
   readProducer,
   readProducers,
@@ -15,7 +16,8 @@ producerRouter.post("/", createProducer);
 producerRouter.get("/", readProducers);
 
 producerRouter.get("/names", getProducerNames);
-// producerRouter.get("/:id/products", readProductsByProducerId);
+
+producerRouter.get("/:id/products", getProductsByProducerId);
 
 producerRouter.get("/:id", readProducer);
 producerRouter.delete("/:id", deleteProducer);
