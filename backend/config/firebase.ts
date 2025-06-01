@@ -1,27 +1,24 @@
 import admin from "firebase-admin";
 
 let serviceAccountCredentials;
+try {
+  serviceAccountCredentials = require("/etc/secrets/serviceAccountKey.json");
+} catch (e) {
+  console.error(
+    "Failed to load service account credentials from /etc/secrets/serviceAccountKey.json - DO NOT PANIC! This is for the production environment.",
+  );
+}
 
-if (process.env.serviceAccountKey) {
-  try {
-    // serviceAccountCredentials = JSON.parse(process.env.serviceAccountKey);
-
-    serviceAccountCredentials = require("/etc/secrets/serviceAccountKey.json");
-  } catch (e) {
-    console.error("Failed to parse FIREBASE_SERVICE_ACCOUNT:", e);
-
-    process.exit(1);
-  }
-} else {
-  console.error("FIREBASE_SERVICE_ACCOUNT environment variable not set.");
+if (!serviceAccountCredentials) {
+  console.error("serviceAccountCredentials environment variable not set.");
 
   try {
     const serviceAccountLocal = require("./serviceAccountKey.json"); // For local dev only
     serviceAccountCredentials = serviceAccountLocal;
-    console.warn("Loaded service account from local file (DEV ONLY)");
+    console.warn("\nLoaded serviceAccountKey.json from local file (DEV ONLY)");
   } catch (e) {
     console.error(
-      "FIREBASE_SERVICE_ACCOUNT not set and local serviceAccountKey.json not found.",
+      "serviceAccountKey.json not set and local serviceAccountKey.json not found.",
     );
     process.exit(1);
   }
