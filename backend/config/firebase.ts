@@ -2,19 +2,19 @@ import admin from "firebase-admin";
 
 let serviceAccountCredentials;
 
-if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+if (process.env.serviceAccountKey) {
   try {
-    serviceAccountCredentials = JSON.parse(
-      process.env.FIREBASE_SERVICE_ACCOUNT,
-    );
+    // serviceAccountCredentials = JSON.parse(process.env.serviceAccountKey);
+
+    serviceAccountCredentials = require("/etc/secrets/serviceAccountKey.json");
   } catch (e) {
     console.error("Failed to parse FIREBASE_SERVICE_ACCOUNT:", e);
-    
+
     process.exit(1);
   }
 } else {
   console.error("FIREBASE_SERVICE_ACCOUNT environment variable not set.");
-  
+
   try {
     const serviceAccountLocal = require("./serviceAccountKey.json"); // For local dev only
     serviceAccountCredentials = serviceAccountLocal;
