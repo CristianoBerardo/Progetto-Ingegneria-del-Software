@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Client from "../models/ClientModel";
 import { generateToken } from "../utils/jwt";
+import { Role } from "../types/Role";
 
 export const createClient = async (
   req: Request,
@@ -38,7 +39,7 @@ export const createClientWithToken = async (
     const token = generateToken({
       uid: savedClient._id,
       email: savedClient.email,
-      role: "client",
+      role: Role.client,
     });
 
     res.status(200).json({

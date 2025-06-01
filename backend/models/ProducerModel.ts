@@ -1,4 +1,5 @@
 import { Schema, model, Document, Types } from "mongoose";
+import { Role } from "../types/Role";
 
 export interface IProducer extends Document {
   uid: string; // firebase UID
@@ -20,7 +21,7 @@ export const ProducerSchema = new Schema<IProducer>({
   roles: {
     type: String,
     required: true,
-    default: "producer",
+    default: Role.producer,
   },
 });
 

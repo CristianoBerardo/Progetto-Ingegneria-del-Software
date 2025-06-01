@@ -6,6 +6,7 @@ import { useUserStore } from '@/stores/userStore';
 export const loginUser = async (email: string, password: string) => {
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
   const firebaseToken = await userCredential.user.getIdToken();
+  console.log("Firebase Token:", firebaseToken);
   const res = await axios.post("http://localhost:3000/auth/login", {}, {
     headers: {
       Authorization: `Bearer ${firebaseToken}`,

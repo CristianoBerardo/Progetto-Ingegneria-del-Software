@@ -2,23 +2,23 @@ import cors from "cors";
 import express from "express";
 import expressListEndpoints from "express-list-endpoints";
 import { startServer } from "./connections/mongoDB/connections";
+import administratorRouter from "./routes/AdministratorRouter";
 import authRouter from "./routes/AuthRouter";
+import clientRouter from "./routes/ClientRoutes";
 import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
-import clientRouter from "./routes/ClientRoutes";
-import { deleteAllUsers } from "./config/firebase";
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-
 // Clear all Firebase users before starting the server
 // deleteAllUsers();
-
+// setAdminClaims("admin@admin.it")
 
 app.use(express.json());
 app.use(cors());
 
+app.use("/api/v1/admin", administratorRouter);
 app.use("/api/v1/producers", producerRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/clients", clientRouter);

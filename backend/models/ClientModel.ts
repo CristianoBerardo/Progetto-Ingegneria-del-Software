@@ -1,4 +1,5 @@
 import { Document, Schema, model } from "mongoose";
+import { Role } from "../types/Role";
 
 export interface IClient extends Document {
   uid: string; // Firebase UID
@@ -19,7 +20,7 @@ export const ClientSchema = new Schema<IClient>({
   roles: {
     type: String,
     required: true,
-    default: "client",
+    default: Role.client, // Default role for clients
   },
   // orders: [{ type: Schema.Types.ObjectId, ref: "Order", required: false }],
 });

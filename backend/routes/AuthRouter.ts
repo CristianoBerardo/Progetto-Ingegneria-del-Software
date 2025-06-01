@@ -3,6 +3,7 @@ import { loginController } from "../controllers/auth/LoginController";
 import { registerClientController } from "../controllers/auth/RegisterClientController";
 import { registerProducerController } from "../controllers/auth/registerProducerController";
 import { verifyFirebaseToken } from "../middleware/authMiddleware";
+import { auth } from "firebase-admin";
 
 const authRouter = Router();
 
