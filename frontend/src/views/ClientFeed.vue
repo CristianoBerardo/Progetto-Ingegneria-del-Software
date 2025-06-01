@@ -22,7 +22,7 @@ interface ProducerOption {
 }
 
 const producerList = ref<ProducerOption[]>([]);
-const selectedProducerId = ref<string | null>(null);
+const selectedProducerId = ref<string | undefined>(undefined);
 
 // Corrected: fetchProducers should be a function
 const fetchProducers = async () => {

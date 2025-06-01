@@ -1,4 +1,5 @@
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -6,10 +7,20 @@ const router = createRouter({
     { path: "/", name: "home", component: () => import("../views/Home.vue") },
     { path: "/register", name: "register", component: () => import("../views/Register.vue") },
     { path: "/sign-in", name: "signin", component: () => import("../views/SignIn.vue") },
+    { path: "/reset-password", name: "resetPassword", component: () => import("../views/ResetPassword.vue") },
+    { path: "/explore-products", name: "exploreProducts", component: () => import("../views/ExploreProducts.vue") }, 
     {
-      path: "/feed",
-      name: "feed",
-      component: () => import("../views/Feed.vue"),
+      path: "/producer-feed",
+      name: "producer-feed",
+      component: () => import("../views/ProducerFeed.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/client-feed",
+      name: "client-feed",
+      component: () => import("../views/ClientFeed.vue"),
       meta: {
         requiresAuth: true,
       },
@@ -35,7 +46,7 @@ const router = createRouter({
 const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     const removeListener = onAuthStateChanged(
-      getAuth(),
+      auth,
       (user) => {
         removeListener();
         resolve(user);
