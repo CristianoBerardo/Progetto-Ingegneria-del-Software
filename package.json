@@ -6,7 +6,7 @@
     "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
-    "render": "cd frontend && rm -rf node_modules package-lock.json && npm install && npm run build-only && cd .. && cd backend && npm install && npm run build && cd ..",
+    "render": "cd frontend && rm -rf node_modules package-lock.json && npm install && npm run build-only && cd .. && cd backend && npm install && npm run build && cd .. && npm install",
     "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
     "start:frontend": "cd frontend && npm run preview",
     "start:backend": "cd backend && npm run start",
