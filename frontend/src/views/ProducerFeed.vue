@@ -91,7 +91,8 @@ import axios from 'axios';
 import { useUserStore } from '@/stores/userStore';
 
 // Updated base URL to use v2 endpoints
-const API_BASE_URL = 'http://localhost:3000/api/v2';
+const API_BASE_URL_V1 = 'http://localhost:3000/api/v1';
+const API_BASE_URL_V2 = 'http://localhost:3000/api/v2';
 
 export default {
   name: 'ProducerFeed',
@@ -158,8 +159,8 @@ export default {
     async fetchProducerId() {
       try {
         const userStore = useUserStore();
-        // Updated to use v2 endpoint
-        const response = await axios.get(`${API_BASE_URL}/producers`, { headers: this.headers() });
+        // Updated to use v1 endpoint
+        const response = await axios.get(`${API_BASE_URL_V1}/producers`, { headers: this.headers() });
         if (response.data.success) {
           const producer = response.data.data.find(p => p.uid === userStore.uid);
           this.producerId = producer?._id;
@@ -173,8 +174,8 @@ export default {
     async fetchProducts() {
       if (!this.producerId) return;
       try {
-        // Updated to use v2 endpoint
-        const response = await axios.get(`${API_BASE_URL}/producers/${this.producerId}/products`, { headers: this.headers() });
+        // Updated to use v1 endpoint
+        const response = await axios.get(`${API_BASE_URL_V1}/producers/${this.producerId}/products`, { headers: this.headers() });
         if (response.data.success) {
           this.products = response.data.data || [];
         } else {
@@ -192,7 +193,7 @@ export default {
       try {
         const productData = { ...this.form };
         // Updated to use v2 endpoint - this will use createProductV2 with authentication
-        const response = await axios.post(`${API_BASE_URL}/products`, productData, { headers: this.headers() });
+        const response = await axios.post(`${API_BASE_URL_V2}/products`, productData, { headers: this.headers() });
         if (response.data.success) {
           this.showMessage("Prodotto aggiunto con successo!", 'success');
           this.cancelForm();
@@ -211,7 +212,7 @@ export default {
     async updateProduct(productId) {
       try {
         // Updated to use v2 endpoint - this will use completeUpdateProductV2 with authentication
-        const response = await axios.put(`${API_BASE_URL}/products/${productId}`, this.editForm, { headers: this.headers() });
+        const response = await axios.put(`${API_BASE_URL_V2}/products/${productId}`, this.editForm, { headers: this.headers() });
         if (response.data.success) {
           this.showMessage("Prodotto aggiornato con successo!", 'success');
           this.cancelEdit();
@@ -227,7 +228,7 @@ export default {
       if (!confirm("Sei sicuro di voler eliminare questo prodotto?")) return;
       try {
         // Updated to use v2 endpoint - this will use deleteProductV2 with authentication
-        const response = await axios.delete(`${API_BASE_URL}/products/${productId}`, { headers: this.headers() });
+        const response = await axios.delete(`${API_BASE_URL_V2}/products/${productId}`, { headers: this.headers() });
         if (response.data.success) {
           this.showMessage("Prodotto eliminato con successo!", 'success');
           await this.fetchProducts();

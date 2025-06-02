@@ -5,6 +5,7 @@ import { startServer } from "./connections/mongoDB/connections";
 import authRouter from "./routes/AuthRouter";
 import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
+import productRouterWithAuth from "./routes/ProductRouterWithAuth";
 import clientRouter from "./routes/ClientRoutes";
 import { deleteAllUsers } from "./config/firebase";
 
@@ -18,9 +19,11 @@ app.use("/api/v1/producers", producerRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/clients", clientRouter);
 
-app.use("/api/v2/producers", producerRouter);
-app.use("/api/v2/products", productRouter);
-app.use("/api/v2/clients", clientRouter);
+
+// app.use("/api/v2/producers", producerRouter);
+// app.use("/api/v2/products", productRouter);
+
+app.use("/api/v2/products", productRouterWithAuth);
 
 app.use("/auth", authRouter);
 
