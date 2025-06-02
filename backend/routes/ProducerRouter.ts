@@ -12,17 +12,16 @@ import {
 
 const producerRouter = Router();
 
+
 producerRouter.post("/", createProducer);
 producerRouter.get("/", readProducers);
 
 producerRouter.get("/names", getProducerNames);
 
 producerRouter.get("/:id/products", getProductsByProducerId);
-
 producerRouter.get("/:id", readProducer);
-producerRouter.delete("/:id", deleteProducer);
-
 producerRouter.put("/:id", completeUpdateProducer);
 producerRouter.patch("/:id", partialUpdateProducer);
+producerRouter.delete("/:id", deleteProducer);
 
 export default producerRouter;

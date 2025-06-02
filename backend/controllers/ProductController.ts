@@ -2,9 +2,33 @@ import { Request, Response } from "express";
 import Product from "../models/ProductModel";
 import Producer from "../models/ProducerModel";
 
+// V1 Functions (from dev branch - no authentication)
 export const createProduct = async (
   req: Request,
-  res: Response
+  res: Response,
+): Promise<void> => {
+  const productData = req.body;
+  try {
+    const newProduct = await new Product(productData).save();
+    res.status(201).json({
+      success: true,
+      data: newProduct,
+      message: "Product created successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to create product",
+    });
+  }
+};
+
+// V2 Function (with authentication and producer logic)
+export const createProductV2 = async (
+  req: Request,
+  res: Response,
 ): Promise<void> => {
   try {
     const productData = req.body;
@@ -45,7 +69,7 @@ export const createProduct = async (
 
 export const readProducts = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   const query = req.query;
 
@@ -62,18 +86,20 @@ export const readProducts = async (
       data: products,
       message: "Products retrieved successfully",
     });
+    return;
   } catch (error) {
     console.error("Error retrieving products:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve products",
     });
+    return;
   }
 };
 
 export const readProduct = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -90,18 +116,52 @@ export const readProduct = async (
       data: product,
       message: "Product retrieved successfully",
     });
+    return;
   } catch (error) {
     console.error("Error retrieving product:", error);
     res.status(500).json({
       success: false,
       message: "Failed to retrieve product",
     });
+    return;
   }
 };
 
+// V1 Delete (from dev branch)
 export const deleteProduct = async (
   req: Request,
-  res: Response
+  res: Response,
+): Promise<void> => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findByIdAndDelete(productId);
+    if (!product) {
+      res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      data: product,
+      message: "Product deleted successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to delete product",
+    });
+    return;
+  }
+};
+
+// V2 Delete (with authentication)
+export const deleteProductV2 = async (
+  req: Request,
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -146,9 +206,51 @@ export const deleteProduct = async (
   }
 };
 
+// V1 Update (from dev branch)
 export const completeUpdateProduct = async (
   req: Request,
-  res: Response
+  res: Response,
+): Promise<void> => {
+  try {
+    const productId = req.params.id;
+    const productData = req.body;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      productData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    if (!updatedProduct) {
+      res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      data: updatedProduct,
+      message: "Product updated successfully",
+    });
+
+    return;
+  } catch (error) {
+    console.error("Error updating product:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update product",
+    });
+    return;
+  }
+};
+
+// V2 Complete Update (with authentication)
+export const completeUpdateProductV2 = async (
+  req: Request,
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -195,9 +297,50 @@ export const completeUpdateProduct = async (
   }
 };
 
+// V1 Partial Update (from dev branch)
 export const partialUpdateProduct = async (
   req: Request,
-  res: Response
+  res: Response,
+): Promise<void> => {
+  try {
+    const productId = req.params.id;
+    const productData = req.body;
+
+    const updatedProduct = await Product.findByIdAndUpdate(
+      productId,
+      productData,
+      {
+        new: true,
+        runValidators: true,
+      },
+    );
+    if (!updatedProduct) {
+      res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+      return;
+    }
+    res.status(200).json({
+      success: true,
+      data: updatedProduct,
+      message: "Product partially updated successfully",
+    });
+    return;
+  } catch (error) {
+    console.error("Error partially updating :", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to partially update ",
+    });
+    return;
+  }
+};
+
+// V2 Partial Update (with authentication)
+export const partialUpdateProductV2 = async (
+  req: Request,
+  res: Response,
 ): Promise<void> => {
   try {
     const productId = req.params.id;
@@ -246,7 +389,7 @@ export const partialUpdateProduct = async (
 
 export const searchProducts = async (
   req: Request,
-  res: Response
+  res: Response,
 ): Promise<void> => {
   try {
     const {
@@ -259,6 +402,8 @@ export const searchProducts = async (
       page = 1,
       limit = 10,
     } = req.query;
+
+    console.log("Query parameters:", req.query);
 
     const query: any = {};
 
@@ -319,5 +464,6 @@ export const searchProducts = async (
       success: false,
       message: "Failed to search products",
     });
+    return;
   }
 };
