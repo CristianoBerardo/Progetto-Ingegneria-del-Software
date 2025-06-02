@@ -10,6 +10,9 @@ const router = createRouter({
     { path: "/sign-in", name: "signin", component: () => import("../views/SignIn.vue") },
     { path: "/reset-password", name: "resetPassword", component: () => import("../views/ResetPassword.vue") },
     { path: "/explore-products", name: "exploreProducts", component: () => import("../views/ExploreProducts.vue") }, 
+    { path: "/cart", name: "cart", component: () => import("../views/CartView.vue") },
+    { path: "/order-confirmation", name: "order-confirmation", component: () => import("../views/OrderConfirmation.vue") },
+
     {
       path: "/producer-feed",
       name: "producer-feed",

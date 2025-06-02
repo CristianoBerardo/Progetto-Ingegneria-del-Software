@@ -1,4 +1,4 @@
-import { Document, Schema, model } from "mongoose";
+import { Document, model, Schema, Types } from "mongoose";
 import { Role } from "../types/Role";
 
 export interface IClient extends Document {
@@ -8,7 +8,7 @@ export interface IClient extends Document {
   phone: string;
   shippingAddress: string;
   roles: string;
-  // orders: Types.ObjectId[]; // Array di ID degli ordini
+  orders: Types.ObjectId[]; // Array di ID degli ordini
 }
 
 export const ClientSchema = new Schema<IClient>({
@@ -22,7 +22,7 @@ export const ClientSchema = new Schema<IClient>({
     required: true,
     default: Role.client, // Default role for clients
   },
-  // orders: [{ type: Schema.Types.ObjectId, ref: "Order", required: false }],
+   orders: [{ type: Schema.Types.ObjectId, ref: "Order", required: false }],
 });
 
 export default model<IClient>("Client", ClientSchema);

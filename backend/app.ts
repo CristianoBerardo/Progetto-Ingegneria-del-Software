@@ -8,6 +8,7 @@ import clientRouter from "./routes/ClientRoutes";
 import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
 import productRouterWithAuth from "./routes/ProductRouterWithAuth";
+import orderRouter from "./routes/OrderRoutes";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -27,6 +28,8 @@ app.use("/api/v1/clients", clientRouter);
 app.use("/api/v2/products", productRouterWithAuth);
 
 app.use("/auth", authRouter);
+
+app.use("/api/v1/orders", orderRouter);
 
 app.get("/api", (req, res) => {
   res.send(JSON.stringify(expressListEndpoints(app), null, 2));

@@ -1,5 +1,6 @@
 <template>
   <div class="home">
+    <ExploreProducts ref="exploreProductsRef" style="display: none;" />
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
@@ -39,7 +40,11 @@
             <h3>{{ product.name }}</h3>
             <p class="producer">{{ product.producer }}</p>
             <p class="price">{{ product.price }} €</p>
-            <button class="add-to-cart"><router-link to="/sign-in">Aggiungi</router-link></button>
+            <button class="add-to-cart" 
+                @click="cartStore.addToCart(product, 1, 'unità')" >
+                <!-- v-if="isAvailable(product)" -->
+                Aggiungi 
+            </button>
           </div>
         </div>
       </div>
@@ -128,8 +133,18 @@
 </template>
 
 <script>
+import { useUserStore } from '@/stores/userStore';
+import { useCartStore } from '@/stores/cartStore';
+
 export default {
   name: "Home",
+  setup() {
+    const userStore = useUserStore();
+    const cartStore = useCartStore();
+    cartStore.loadFromStorage();
+
+    return { userStore, cartStore };
+  },
   data() {
     return {
       categories: [
@@ -145,6 +160,17 @@ export default {
         { name: "SchüttelBrot", producer: "Forno Artigianale", price: "3.20", image: "https://gustos.bz.it/356-large_default/schuttelbrot-originale-fatto-a-mano-155-g.jpg" }
       ]
     };
+  },
+  methods: {
+    isAvailable(product) {
+      return product.available > 0;
+    },
+    addToCart(productId) {
+      const product = this.featuredProducts.find(p => p._id === productId);
+      if (product) {
+        this.cartStore.addToCart(product, 1, 'unità');
+      }
+    }
   }
 };
 </script>

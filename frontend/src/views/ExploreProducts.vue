@@ -1,6 +1,13 @@
 <template>
     <div class="explore-products">
       <h1>Esplora Prodotti</h1>
+      <div class="header-actions">
+        <router-link to="/cart" class="view-cart-btn">
+          <i class="pi pi-shopping-cart"></i> 
+          Carrello ({{ cartStore.totalItems }})
+        </router-link>
+      </div>
+
       <div class="product-grid" v-if="products.length > 0">
         <div class="product-card" :class="{ 'product-unavailable': !isAvailable(product) }" v-for="product in products" :key="product._id">
           <div class="product-image">
@@ -49,13 +56,13 @@
             </div>
             
             <button class="add-to-cart" 
-              @click="addToCart(product._id, quantities[product._id], getUnit(product._id))"
-              v-if="isAvailable(product)">
-              Aggiungi al carrello
-            </button>
-            <button class="add-to-cart unavailable-button" disabled v-else>
-              Non disponibile
-            </button>
+            @click="addToCart(product._id, quantities[product._id], getUnit(product._id))"
+            v-if="isAvailable(product)">
+            Aggiungi al carrello
+          </button>
+          <button class="add-to-cart unavailable-button" disabled v-else>
+            Non disponibile
+          </button>
           </div>
         </div>
       </div>
@@ -63,18 +70,24 @@
         <p>Nessun prodotto disponibile</p>
       </div>
     </div>
-  </template>
+</template>
   
-  <script setup>
+<script setup>
 // TODO: Implementare la logica per la gestione del carrello
 // TODO: Aggiungere mappatura unità -> kg 
-  import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
+import { useToast } from 'vue-toastification';
+import { useCartStore } from '@/stores/cartStore';
+
   const products = ref([]);
   const quantities = reactive({});
   const units = reactive({});
+const toast = useToast();
+const cartStore = useCartStore();
   
   onMounted(async () => {
     await fetchProducts();
+    cartStore.loadFromStorage(); 
   });
   
   const fetchProducts = async () => {
@@ -139,11 +152,19 @@
     }
   };
   
-  const addToCart = (productId, quantity, unit) => {
-    console.log(`Aggiunto al carrello il prodotto con ID: ${productId}, quantità: ${quantity} ${unit}`);
-    // Implementare logica per aggiungere al carrello
-  };
-  </script>
+ // Modifica alla funzione addToCart in ExploreProducts.vue
+ const addToCart = (productId, quantity, unit) => {
+  // Trova il prodotto completo
+  const product = products.value.find(p => p._id === productId);
+  if (!product) return;
+  
+  // Usa lo store del carrello invece di gestire direttamente localStorage
+  cartStore.addToCart(product, quantity, unit);
+  
+  // Reset della quantità al minimo dopo l'aggiunta al carrello
+  quantities[productId] = unit === 'kg' ? 0.1 : 1;
+};
+</script>
   
   <style scoped>
   .explore-products {
@@ -414,6 +435,27 @@
 
 .unavailable-button:hover {
   background-color: #e0e0e0 !important;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.view-cart-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-cart-btn:hover {
+  background-color: #45a049;
 }
 
   @media (max-width: 768px) {
