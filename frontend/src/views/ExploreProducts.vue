@@ -11,7 +11,8 @@
           </div>
           <div class="product-info">
             <h3>{{ product.name }}</h3>
-            <p class="producer">{{ product.producer.name }}</p>
+            <p class="producer" v-if="product.producer" >{{ product.producer.name }}</p>
+            <p v-else >{{ "azienda anonima" }}</p> 
             <p class="description" v-if="product.description">{{ product.description }}</p>
             <p class="availability" :class="{ 'available': isAvailable(product), 'unavailable': !isAvailable(product) }">
               {{ isAvailable(product) ? 'Prodotto disponibile' : 'Prodotto esaurito' }}
@@ -212,7 +213,7 @@
   }
   
   .producer {
-    color: #a4a3a3;
+    color: #5c5b5b;
     font-size: 0.9rem;
     margin-bottom: 0.8rem;
   }

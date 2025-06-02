@@ -11,7 +11,7 @@
         </div>
         <div class="cta-buttons">
           <button class="cta-primary"><router-link to="/explore-products">Esplora Prodotti</router-link></button>
-          <button class="cta-secondary">Trova Produttori</button>
+          <button class="cta-secondary"><router-link to="/client-feed">Trova Produttori</router-link></button>
         </div>
       </div>
     </section>
