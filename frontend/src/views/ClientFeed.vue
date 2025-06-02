@@ -12,9 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from "vue"; // Import computed
+import { ref, onMounted, computed } from "vue";
 import DropDown from "../components/DropDown.vue";
 import axios from "axios";
+
+// Updated base URL to use v2 endpoints
+const API_BASE_URL = 'http://localhost:3000/api/v2';
 
 interface ProducerOption {
   value: string; // This will be producer._id
@@ -24,10 +27,11 @@ interface ProducerOption {
 const producerList = ref<ProducerOption[]>([]);
 const selectedProducerId = ref<string | undefined>(undefined);
 
-// Corrected: fetchProducers should be a function
+// Function to fetch producers using v2 endpoint
 const fetchProducers = async () => {
   try {
-    const response = await axios.get("http://localhost:3000/api/v1/producers/names");
+    // Updated to use v2 endpoint
+    const response = await axios.get(`${API_BASE_URL}/producers/names`);
     if (response.data.success) {
       producerList.value = response.data.data.map((producer: { _id: string; name: string }) => ({
         value: producer._id,
@@ -45,7 +49,7 @@ const fetchProducers = async () => {
 };
 
 onMounted(() => {
-  fetchProducers(); // Call the function
+  fetchProducers();
 });
 
 // Computed property to get the name of the selected producer

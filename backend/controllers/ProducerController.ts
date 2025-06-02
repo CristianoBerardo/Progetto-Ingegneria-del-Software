@@ -267,8 +267,6 @@ export const partialUpdateProducer = async (
   }
 };
 
-//* ------------------ SEARCH ------------------ *//
-
 export const searchProducers = async (
   req: Request,
   res: Response,
@@ -278,7 +276,6 @@ export const searchProducers = async (
   try {
     const sortOption: any = {};
     if (sort) {
-      //MongoDB conventions --> 1 for ascending, -1 for descending
       const [field, order] = String(sort).split(":");
       sortOption[field] = order === "desc" ? -1 : 1;
     }
@@ -287,7 +284,6 @@ export const searchProducers = async (
       name: { $regex: name, $options: "i" },
     })
       .sort(sortOption)
-      // .populate("products")
       .limit(Number(limit))
       .skip((Number(page) - 1) * Number(limit));
 
@@ -315,18 +311,12 @@ export const searchProducers = async (
   }
 };
 
-//* ------------------ GET NAMES ------------------ *//
-
-export const getProducerNames = async (req: Request, res: Response) => {
+export const getProducerNames = async (
+  req: Request, 
+  res: Response
+): Promise<void> => {
   try {
-    const producers = await Producer.find(
-      {},
-      {
-        name: 1,
-        _id: 1,
-      },
-    );
-
+    const producers = await Producer.find({}, { name: 1, _id: 1 });
     if (!producers) {
       res.status(404).json({
         success: false,
@@ -334,7 +324,6 @@ export const getProducerNames = async (req: Request, res: Response) => {
       });
       return;
     }
-
     res.status(200).json({
       success: true,
       data: producers,
@@ -346,6 +335,51 @@ export const getProducerNames = async (req: Request, res: Response) => {
       success: false,
       message: "Failed to retrieve producer names",
     });
-    return;
+  }
+};
+
+export const getProductsByProducerId = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const producerId = req.params.id;
+    const producer = await Producer.findById(producerId);
+    if (!producer) {
+      res.status(404).json({
+        success: false,
+        message: "Producer not found",
+      });
+      return;
+    }
+    if (!producer.products || producer.products.length === 0) {
+      res.status(200).json({
+        success: true,
+        data: [],
+        message: "No products found for this producer",
+      });
+      return;
+    }
+    const products = await Promise.all(
+      producer.products.map(async (productId) => {
+        try {
+          return await Product.findById(productId);
+        } catch {
+          return null;
+        }
+      })
+    );
+    const validProducts = products.filter(product => product !== null);
+    res.status(200).json({
+      success: true,
+      data: validProducts,
+      message: `Found ${validProducts.length} products for producer ${producer.name}`,
+    });
+  } catch (error) {
+    console.error("Error retrieving products by producer ID:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to retrieve products",
+    });
   }
 };

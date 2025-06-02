@@ -32,7 +32,6 @@ const handleSignOut = async () => {
     console.error("Error signing out:", error);
   }
 };
-
 </script>
 
 <template>

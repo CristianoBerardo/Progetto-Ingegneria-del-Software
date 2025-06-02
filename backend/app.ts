@@ -7,6 +7,7 @@ import authRouter from "./routes/AuthRouter";
 import clientRouter from "./routes/ClientRoutes";
 import producerRouter from "./routes/ProducerRouter";
 import productRouter from "./routes/ProductRouter";
+import productRouterWithAuth from "./routes/ProductRouterWithAuth";
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -22,6 +23,9 @@ app.use("/api/v1/admin", administratorRouter);
 app.use("/api/v1/producers", producerRouter);
 app.use("/api/v1/products", productRouter);
 app.use("/api/v1/clients", clientRouter);
+
+app.use("/api/v2/products", productRouterWithAuth);
+
 app.use("/auth", authRouter);
 
 app.get("/api", (req, res) => {
@@ -32,3 +36,5 @@ app.listen(port, async () => {
   console.log(`Server is running on http://localhost:${port}`);
   await startServer();
 });
+
+export default app;
