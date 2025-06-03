@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <ExploreProducts ref="exploreProductsRef" style="display: none;" />
+    <!-- <ExploreProducts ref="exploreProductsRef" style="display: none;" /> -->
     <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
@@ -141,7 +141,7 @@ export default {
   setup() {
     const userStore = useUserStore();
     const cartStore = useCartStore();
-    cartStore.loadFromStorage();
+    cartStore.loadFromLocalStorage();
 
     return { userStore, cartStore };
   },

@@ -82,12 +82,12 @@ import { useCartStore } from '@/stores/cartStore';
   const products = ref([]);
   const quantities = reactive({});
   const units = reactive({});
-const toast = useToast();
-const cartStore = useCartStore();
+  const toast = useToast();
+  const cartStore = useCartStore();
   
   onMounted(async () => {
     await fetchProducts();
-    cartStore.loadFromStorage(); 
+    cartStore.loadFromLocalStorage(); 
   });
   
   const fetchProducts = async () => {
@@ -152,16 +152,21 @@ const cartStore = useCartStore();
     }
   };
   
- // Modifica alla funzione addToCart in ExploreProducts.vue
- const addToCart = (productId, quantity, unit) => {
-  // Trova il prodotto completo
+const addToCart = (productId, quantity, unit) => {
   const product = products.value.find(p => p._id === productId);
   if (!product) return;
   
-  // Usa lo store del carrello invece di gestire direttamente localStorage
-  cartStore.addToCart(product, quantity, unit);
+  const cartItem = {
+    productId: product._id,
+    name: product.name,
+    price: product.price,
+    quantity: quantity,
+    unit: unit,
+    image: product.image,
+    producer: product.producer
+  };
   
-  // Reset della quantità al minimo dopo l'aggiunta al carrello
+  cartStore.addToCart(cartItem);
   quantities[productId] = unit === 'kg' ? 0.1 : 1;
 };
 </script>

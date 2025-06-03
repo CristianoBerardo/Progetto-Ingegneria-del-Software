@@ -5,9 +5,11 @@ import { createRouter, createWebHistory } from "vue-router";
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/", name: "home", component: () => import("../views/Home.vue") },
+    { path: "/home", name: "home", component: () => import("../views/Home.vue") },
+    { path: "/", redirect: "/home" },
     { path: "/register", name: "register", component: () => import("../views/Register.vue") },
     { path: "/sign-in", name: "signin", component: () => import("../views/SignIn.vue") },
+    { path: "/login", redirect: "/sign-in" },
     { path: "/reset-password", name: "resetPassword", component: () => import("../views/ResetPassword.vue") },
     { path: "/explore-products", name: "exploreProducts", component: () => import("../views/ExploreProducts.vue") }, 
     { path: "/cart", name: "cart", component: () => import("../views/CartView.vue") },

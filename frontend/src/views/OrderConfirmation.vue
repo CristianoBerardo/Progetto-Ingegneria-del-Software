@@ -1,188 +1,160 @@
 <template>
-    <div class="order-confirmation">
-      <div v-if="loading" class="loading">
-        <p>Elaborazione ordine in corso...</p>
+  <div class="order-confirmation">
+    <div v-if="loading" class="loading">
+      <p>Elaborazione ordine in corso...</p>
+    </div>
+    
+    <div v-else-if="orderSuccess" class="order-success">
+      <div class="success-icon">
+        <i class="fas fa-check-circle"></i>
       </div>
-      
-      <div v-else-if="orderSuccess" class="order-success">
-        <div class="success-icon">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <h2>Ordine completato con successo!</h2>
-        <p>Il tuo ordine è stato ricevuto e sarà pronto per il ritiro in data: {{ formattedPickupDate }}</p>
-        <div class="order-number">
-          <span>Numero ordine:</span> {{ orderNumber }}
-        </div>
-        <div class="actions">
-          <router-link to="/orders" class="view-orders">Visualizza i tuoi ordini</router-link>
-          <router-link to="/explore" class="continue-shopping">Continua lo shopping</router-link>
-        </div>
+      <h2>Ordine completato con successo!</h2>
+      <p>Il tuo ordine è stato ricevuto e sarà pronto per il ritiro in data: {{ formattedPickupDate }}</p>
+      <div class="order-number">
+        <span>Numero ordine:</span> {{ orderNumber }}
       </div>
+      <div class="actions">
+        <!-- <router-link to="/orders" class="view-orders">Visualizza i tuoi ordini</router-link> -->
+        <router-link to="/explore-products" class="continue-shopping">Continua lo shopping</router-link>
+      </div>
+    </div>
+    
+    <div v-else class="confirmation-container">
+      <h1>Conferma Ordine</h1>
       
-      <div v-else class="confirmation-container">
-        <h1>Conferma Ordine</h1>
+      <div class="order-details">
+        <h2>Riepilogo prodotti</h2>
         
-        <div class="order-details">
-          <h2>Riepilogo prodotti</h2>
-          
-          <div class="order-items">
-            <div v-for="item in pendingOrder.items" :key="item.productId" class="order-item">
-              <div class="item-name">{{ item.name }}</div>
-              <div class="item-quantity">{{ item.quantity }} {{ item.unit }}</div>
-              <div class="item-price">{{ (item.price * item.quantity).toFixed(2) }}€</div>
-            </div>
+        <div class="order-items">
+          <div v-for="item in cartStore.items" :key="item.productId" class="order-item">
+            <div class="item-name">{{ item.name }}</div>
+            <div class="item-quantity">{{ item.quantity }} {{ item.unit }}</div>
+            <div class="item-price">{{ (item.price * item.quantity)  }}€</div>
+          </div>
+        </div>
+        
+        <div class="order-summary">
+          <div class="summary-row total">
+            <span>Totale:</span>
+            <span>{{ cartStore.totalAmount  }}€</span>
           </div>
           
-          <div class="order-summary">
-            <div class="summary-row total">
-              <span>Totale:</span>
-              <span>{{ pendingOrder.totalPrice.toFixed(2) }}€</span>
-            </div>
-            
-            <div class="summary-row">
-              <span>Data di ritiro:</span>
-              <span>{{ formattedPickupDate }}</span>
-            </div>
+          <div class="summary-row">
+            <span>Data di ritiro:</span>
+            <span>{{ formattedPickupDate }}</span>
           </div>
-          
-          <div class="confirmation-message">
-            <p>Confermando l'ordine, accetti le condizioni di acquisto del nostro negozio.</p>
-          </div>
-          
-          <div class="action-buttons">
-            <button class="cancel-btn" @click="cancelOrder">Annulla</button>
-            <button class="confirm-btn" @click="confirmOrder" :disabled="isSubmitting">
-              {{ isSubmitting ? 'Elaborazione...' : 'Conferma ordine' }}
-            </button>
-          </div>
+        </div>
+        
+        <div class="confirmation-message">
+          <p>Confermando l'ordine, accetti le condizioni di acquisto del nostro negozio.</p>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="cancel-btn" @click="cancelOrder">Annulla</button>
+          <button class="confirm-btn" @click="confirmOrder" :disabled="isSubmitting">
+            {{ isSubmitting ? 'Elaborazione...' : 'Conferma ordine' }}
+          </button>
         </div>
       </div>
     </div>
-  </template>
+  </div>
+</template>
+
+<script setup>
+import { useCartStore } from '@/stores/cartStore';
+import { useUserStore } from '@/stores/userStore';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useToast } from 'vue-toastification';
+
+const router = useRouter();
+const toast = useToast();
+const cartStore = useCartStore();
+const userStore = useUserStore();
+
+const isSubmitting = ref(false);
+const loading = ref(true);
+const orderSuccess = ref(false);
+const orderNumber = ref('');
+
+// Formatta la data di ritiro
+const formattedPickupDate = computed(() => {
+  if (!cartStore.pickupDate) return '';
   
-  <script setup>
-  import { ref, computed, onMounted } from 'vue';
-  import { useRouter } from 'vue-router';
-  import { useToast } from 'vue-toastification';
-  import { getAuth } from 'firebase/auth';
-  
-  const router = useRouter();
-  const toast = useToast();
-  
-  const pendingOrder = ref(null);
-  const isSubmitting = ref(false);
-  const loading = ref(true);
-  const orderSuccess = ref(false);
-  const orderNumber = ref('');
-  
-  // Formatta la data di ritiro
-  const formattedPickupDate = computed(() => {
-    if (!pendingOrder.value) return '';
-    
-    const date = new Date(pendingOrder.value.pickupDate);
-    return date.toLocaleDateString('it-IT', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  const date = new Date(cartStore.pickupDate);
+  return date.toLocaleDateString('it-IT', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
   });
+});
+
+// Al montaggio, controlla se ci sono prodotti nel carrello
+onMounted(() => {
+  cartStore.loadFromLocalStorage();
   
-  // Carica l'ordine in attesa dallo storage
-  onMounted(() => {
-    const savedOrder = localStorage.getItem('pendingOrder');
-    
-    if (!savedOrder) {
-      toast.error("Nessun ordine da confermare");
-      router.push('/cart');
+  if (cartStore.items.length === 0) {
+    toast.error("Il tuo carrello è vuoto");
+    router.push('/cart');
+    return;
+  }
+  
+  loading.value = false;
+});
+
+// Conferma l'ordine utilizzando il metodo checkout dello store
+const confirmOrder = async () => {
+  try {
+    isSubmitting.value = true;
+    console.log("userStore", userStore);
+    // Verifica se l'utente è loggato
+    if (!userStore.uid) {
+      console.log("uid is null or undefined");
+      console.log("userStore.uid", userStore.uid);
+    }
+    if (!userStore.fb_token) {
+      console.log("fb token is null or undefined");
+      console.log("userStore.fb_token", userStore.fb_token);
+    }
+    if (!userStore.uid || !userStore.fb_token) {
+      toast.error("Devi effettuare l'accesso per completare l'ordine");
+      router.push({
+        path: '/login',
+        query: { redirect: '/order-confirmation' }
+      });
       return;
     }
     
-    pendingOrder.value = JSON.parse(savedOrder);
-    loading.value = false;
-  });
-  
-  // Conferma l'ordine e invia al server
-  const confirmOrder = async () => {
-    try {
-      isSubmitting.value = true;
-      
-      // Ottieni il token Firebase
-      const auth = getAuth();
-      const user = auth.currentUser;
-      
-      if (!user) {
-        toast.error("Devi effettuare l'accesso per completare l'ordine");
-        router.push('/login');
+    // Usa il metodo checkout dello store
+    const result = await cartStore.checkout();
+    
+    if (!result.success) {
+      if (result.requiresLogin) {
+        // La redirezione la gestisce già il metodo checkout
         return;
       }
-      
-      const token = await user.getIdToken();
-      
-      // Prepara l'ordine da inviare
-      const orderData = {
-        products: pendingOrder.value.products,
-        totalPrice: pendingOrder.value.totalPrice,
-        pickupDate: pendingOrder.value.pickupDate
-      };
-      
-      // Invia l'ordine al server
-      const response = await fetch('http://localhost:3000/api/v1/orders', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(orderData)
-      });
-      
-      const result = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(result.message || 'Errore durante la creazione dell\'ordine');
-      }
-      
-      // Salva l'ID dell'ordine creato
-      const orderId = result.savedOrder._id;
-      
-      // Conferma l'ordine
-      const confirmResponse = await fetch('http://localhost:3000/api/v1/orders/confirm', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ orderId })
-      });
-      
-      const confirmResult = await confirmResponse.json();
-      
-      if (!confirmResponse.ok) {
-        throw new Error(confirmResult.message || 'Errore durante la conferma dell\'ordine');
-      }
-      
-      // Ordine completato con successo
-      orderSuccess.value = true;
-      orderNumber.value = orderId;
-      
-      // Pulisci il carrello
-      localStorage.removeItem('cart');
-      localStorage.removeItem('pendingOrder');
-      
-    } catch (error) {
-      toast.error(`Errore: ${error.message}`);
-    } finally {
-      isSubmitting.value = false;
+      throw new Error(result.error || 'Errore durante la creazione dell\'ordine');
     }
-  };
-  
-  // Annulla l'ordine e torna al carrello
-  const cancelOrder = () => {
-    router.push('/cart');
-  };
-  </script>
-  
-  <style scoped>
+    
+    // Ordine completato con successo
+    orderSuccess.value = true;
+    orderNumber.value = result.orderId;
+    
+  } catch (error) {
+    toast.error(`Errore: ${error.message}`);
+  } finally {
+    isSubmitting.value = false;
+  }
+};
+
+// Annulla l'ordine e torna al carrello
+const cancelOrder = () => {
+  router.push('/cart');
+};
+</script>
+
+<style scoped>
   .order-confirmation {
     max-width: 900px;
     margin: 0 auto;

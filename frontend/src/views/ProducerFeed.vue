@@ -44,7 +44,7 @@
           </div>
           <div class="product-details">
             <p class="price-quantity">
-              <span class="price">€{{ product.price.toFixed(2) }}</span>
+              <span class="price">€{{ product.price  }}</span>
               <span class="quantity">{{ product.available }} pz</span>
             </p>
             <p v-if="product.description" class="description">{{ product.description }}</p>
@@ -87,8 +87,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { useUserStore } from '@/stores/userStore';
+import axios from 'axios';
 
 // Updated base URL to use v2 endpoints
 const API_BASE_URL_V1 = 'http://localhost:3000/api/v1';

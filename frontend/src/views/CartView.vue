@@ -2,14 +2,14 @@
   <div class="cart-container">
     <h1>Il tuo carrello</h1>
     
-    <div v-if="cartItems.length === 0" class="empty-cart">
+    <div v-if="cartStore.items.length === 0" class="empty-cart">
       <p>Il tuo carrello è vuoto</p>
       <router-link to="/explore-products" class="continue-shopping">Continua lo shopping</router-link>
     </div>
     
     <div v-else class="cart-content">
       <div class="cart-items">
-        <div v-for="item in cartItems" :key="item.productId" class="cart-item">
+        <div v-for="item in cartStore.items" :key="item.productId" class="cart-item">
           <div class="item-image">
             <img v-if="item.image" :src="item.image" :alt="item.name">
             <div v-else class="placeholder-image">Immagine non disponibile</div>
@@ -21,16 +21,16 @@
             <div class="item-quantity">
               <p>Quantità: {{ item.quantity }} {{ item.unit }}</p>
               <div class="quantity-controls">
-                <button @click="decreaseItemQuantity(item.productId)" class="quantity-btn">-</button>
-                <button @click="increaseItemQuantity(item.productId)" class="quantity-btn">+</button>
-                <button @click="removeFromCart(item.productId)" class="remove-btn">Rimuovi</button>
+                <button @click="decreaseItemQuantity(item)" class="quantity-btn">-</button>
+                <button @click="increaseItemQuantity(item)" class="quantity-btn">+</button>
+                <button @click="cartStore.removeItem(item.productId)" class="remove-btn">Rimuovi</button>
               </div>
             </div>
           </div>
           
           <div class="item-price">
-            <p class="price">{{ (item.price * item.quantity).toFixed(2) }} €</p>
-            <p class="unit-price">{{ item.price.toFixed(2) }} €/{{ item.unit === 'kg' ? 'kg' : 'unità' }}</p>
+            <p class="price">{{ (item.price * item.quantity)  }} €</p>
+            <p class="unit-price">{{ item.price  }} €/{{ item.unit === 'kg' ? 'kg' : 'unità' }}</p>
           </div>
         </div>
       </div>
@@ -39,7 +39,7 @@
         <h2>Riepilogo ordine</h2>
         <div class="summary-row">
           <span>Totale prodotti:</span>
-          <span>{{ calculateTotal().toFixed(2) }} €</span>
+          <span>{{ cartStore.totalAmount  }} €</span>
         </div>
         
         <div class="pickup-date">
@@ -68,26 +68,24 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { useCartStore } from '@/stores/cartStore';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useToast } from 'vue-toastification';
 
 const router = useRouter();
 const toast = useToast();
-const cartItems = ref([]);
+const cartStore = useCartStore();
 const pickupDate = ref('');
-
-// Funzione per caricare il carrello dallo storage
-const loadCartFromStorage = () => {
-  const savedCart = localStorage.getItem('cart');
-  if (savedCart) {
-    cartItems.value = JSON.parse(savedCart);
-  }
-};
 
 // Al montaggio del componente, carica il carrello
 onMounted(() => {
-  loadCartFromStorage();
+  cartStore.loadFromLocalStorage();
+  
+  // Se c'è una data di ritiro salvata, impostala
+  if (cartStore.pickupDate) {
+    pickupDate.value = new Date(cartStore.pickupDate).toISOString().split('T')[0];
+  }
 });
 
 // Calcola la data minima per il ritiro (almeno domani)
@@ -97,76 +95,48 @@ const minPickupDate = computed(() => {
   return tomorrow.toISOString().split('T')[0];
 });
 
-// Calcola il totale dell'ordine
-const calculateTotal = () => {
-  return cartItems.value.reduce((total, item) => {
-    return total + (item.price * item.quantity);
-  }, 0);
-};
+// Osserva i cambiamenti della data di ritiro e aggiorna lo store
+watch(pickupDate, (newDate) => {
+  if (newDate) {
+    cartStore.setPickupDate(new Date(newDate));
+  }
+});
 
 // Aumenta la quantità di un prodotto nel carrello
-const increaseItemQuantity = (productId) => {
-  const item = cartItems.value.find(item => item.productId === productId);
-  if (item) {
-    if (item.unit === 'kg') {
-      item.quantity = Math.round((item.quantity + 0.1) * 10) / 10;
-    } else {
-      item.quantity += 1;
-    }
-    updateLocalStorage();
+const increaseItemQuantity = (item) => {
+  if (item.unit === 'kg') {
+    const newQuantity = Math.round((item.quantity + 0.1) * 10) / 10;
+    cartStore.updateQuantity(item.productId, newQuantity);
+  } else {
+    cartStore.updateQuantity(item.productId, item.quantity + 1);
   }
 };
 
 // Diminuisci la quantità di un prodotto nel carrello
-const decreaseItemQuantity = (productId) => {
-  const item = cartItems.value.find(item => item.productId === productId);
-  if (item) {
-    const minValue = item.unit === 'kg' ? 0.1 : 1;
-    const decrement = item.unit === 'kg' ? 0.1 : 1;
-    
-    if (item.quantity > minValue) {
-      if (item.unit === 'kg') {
-        item.quantity = Math.round((item.quantity - decrement) * 10) / 10;
-      } else {
-        item.quantity -= decrement;
-      }
-      updateLocalStorage();
+const decreaseItemQuantity = (item) => {
+  const minValue = item.unit === 'kg' ? 0.1 : 1;
+  const decrement = item.unit === 'kg' ? 0.1 : 1;
+  
+  if (item.quantity > minValue) {
+    if (item.unit === 'kg') {
+      const newQuantity = Math.round((item.quantity - decrement) * 10) / 10;
+      cartStore.updateQuantity(item.productId, newQuantity);
+    } else {
+      cartStore.updateQuantity(item.productId, item.quantity - decrement);
     }
   }
 };
 
-// Rimuove un prodotto dal carrello
-const removeFromCart = (productId) => {
-  cartItems.value = cartItems.value.filter(item => item.productId !== productId);
-  updateLocalStorage();
-  toast.success("Prodotto rimosso dal carrello");
-};
-
-// Aggiorna il localStorage con il carrello attuale
-const updateLocalStorage = () => {
-  localStorage.setItem('cart', JSON.stringify(cartItems.value));
-};
-
 // Procedi al checkout
-const proceedToCheckout = async () => {
+const proceedToCheckout = () => {
   if (!pickupDate.value) {
     toast.error("Seleziona una data di ritiro");
     return;
   }
   
-  // Memorizza l'ordine temporaneo per la conferma
-  const order = {
-    products: cartItems.value.map(item => item.productId),
-    totalPrice: calculateTotal(),
-    pickupDate: new Date(pickupDate.value).toISOString(),
-    items: cartItems.value // Include dettagli per la visualizzazione
-  };
-  
-  localStorage.setItem('pendingOrder', JSON.stringify(order));
   router.push('/order-confirmation');
 };
 </script>
-
 <style scoped>
 .cart-container {
   max-width: 1200px;
