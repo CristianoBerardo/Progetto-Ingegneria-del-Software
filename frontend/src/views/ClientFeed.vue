@@ -15,9 +15,10 @@
 import { ref, onMounted, computed } from "vue";
 import DropDown from "../components/DropDown.vue";
 import axios from "axios";
+import { API_URL } from "@/constants/API_URL";
 
 // Updated base URL to use v2 endpoints
-const API_BASE_URL = 'http://localhost:3000/api/v1';
+const API_BASE_URL = `${API_URL}/api/v1`;
 
 interface ProducerOption {
   value: string; // This will be producer._id

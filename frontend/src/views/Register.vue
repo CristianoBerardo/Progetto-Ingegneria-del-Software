@@ -56,6 +56,7 @@ import { createUserWithEmailAndPassword} from "firebase/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { loginUser } from "@/services/authService";
+import {API_URL} from "@/constants/API_URL";
 
 const email = ref("");
 const password = ref("");
@@ -66,6 +67,7 @@ const userType = ref(null);
 const username = ref("");
 const phone = ref("");
 const address = ref("");
+const API_BASE_URL = `${API_URL}/api/v1`;
 
 function selectType(type) {
   userType.value = type;
@@ -102,7 +104,7 @@ const registerClient = async () => {
     });
 
     // Send data to backend
-    // const res = await axios.post(`http://localhost:3000/auth/register/client/${idToken}`, {
+    // const res = await axios.post(`${API_BASE_URL}/auth/register/client/${idToken}`, {
     //   username: username.value,
     //   email: email.value,
     // });
@@ -110,7 +112,7 @@ const registerClient = async () => {
     // ! meglio metterlo nell'header Authorization
     // idToken obtained from Firebase successful sign-up/sign-in
     const res = await axios.post(
-      `http://localhost:3000/auth/clients`,
+      `${API_BASE_URL}/auth/clients`,
       {
         username: username.value,
         email: email.value,
@@ -174,7 +176,7 @@ const registerProducer = async () => {
     });
 
     // Send data to backend
-    // const res = await axios.post(`http://localhost:3000/auth/register/producer/${idToken}`, {
+    // const res = await axios.post(`${API_BASE_URL}/auth/register/producer/${idToken}`, {
     //   name: username.value,
     //   phone: phone.value,
     //   address: address.value,
@@ -183,7 +185,7 @@ const registerProducer = async () => {
 
     // idToken obtained from Firebase successful sign-up/sign-in
     const res = await axios.post(
-      `http://localhost:3000/auth/producers`,
+      `${API_BASE_URL}/auth/producers`,
       {
         name: username.value,
         phone: phone.value,

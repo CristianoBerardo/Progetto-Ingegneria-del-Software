@@ -69,9 +69,14 @@
 // TODO: Implementare la logica per la gestione del carrello
 // TODO: Aggiungere mappatura unità -> kg 
   import { ref, onMounted, reactive } from 'vue';
+  import { API_URL } from '@/constants/API_URL';  
+  import axios from 'axios';
+
   const products = ref([]);
   const quantities = reactive({});
   const units = reactive({});
+
+  const API_BASE_URL = `${API_URL}/api/v1`;
   
   onMounted(async () => {
     await fetchProducts();
@@ -79,12 +84,12 @@
   
   const fetchProducts = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/v1/products");
-      const result = await response.json();
+      const result = await axios.get(`${API_BASE_URL}/products`);
+      // const result = await response.json();
       console.log(result);
   
-      if (result.success) {
-        products.value = result.data;
+      if (result.data.success) {
+        products.value = result.data.data;
         
         // Initialize quantities and units for each product
         products.value.forEach(product => {

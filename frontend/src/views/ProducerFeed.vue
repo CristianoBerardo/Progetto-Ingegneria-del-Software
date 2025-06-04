@@ -89,10 +89,11 @@
 <script>
 import axios from 'axios';
 import { useUserStore } from '@/stores/userStore';
+import { API_URL } from '@/constants/API_URL';
 
 // Updated base URL to use v2 endpoints
-const API_BASE_URL_V1 = 'http://localhost:3000/api/v1';
-const API_BASE_URL_V2 = 'http://localhost:3000/api/v2';
+const API_BASE_URL_V1 = `${API_URL}/api/v1`;
+const API_BASE_URL_V2 = `${API_URL}/api/v2`;
 
 export default {
   name: 'ProducerFeed',
