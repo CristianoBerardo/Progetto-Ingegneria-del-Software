@@ -19,7 +19,8 @@ export const OrderSchema = new Schema<IOrder>({
     clientId: { type: Schema.Types.ObjectId, ref: "Client", required: true },
     products: [{
         productId: { type: Schema.Types.ObjectId, ref: "Product", required: true },
-        quantity: { type: Number, required: true}
+        quantity: { type: Number, required: true },
+        _id : false // Disable automatic _id generation for subdocuments
     }],
     totalPrice: { type: Number, required: true },
     pickupDate: { type: Date, required: true },
