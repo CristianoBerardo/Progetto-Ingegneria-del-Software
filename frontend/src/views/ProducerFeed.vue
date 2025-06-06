@@ -16,7 +16,7 @@
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label>💰 Prezzo (€)*</label>
+              <label>💰 Prezzo (€/Kg)*</label>
               <input
                 v-model.number="form.price"
                 type="number"
@@ -26,7 +26,7 @@
               />
             </div>
             <div class="form-group">
-              <label>📦 Quantità*</label>
+              <label>📦 Quantità (Kg) *</label>
               <input v-model.number="form.available" type="number" required placeholder="0" />
             </div>
           </div>
@@ -54,7 +54,7 @@
           <div class="product-details">
             <p class="price-quantity">
               <span class="price">€{{ product.price }}</span>
-              <span class="quantity">{{ product.available }} pz</span>
+              <span class="quantity">{{ product.available }} Kg</span>
             </p>
             <p v-if="product.description" class="description">{{ product.description }}</p>
           </div>
@@ -72,11 +72,11 @@
             </div>
             <div class="form-row">
               <div class="form-group">
-                <label>Prezzo (€)*</label>
+                <label>Prezzo (€/Kg)*</label>
                 <input v-model.number="editForm.price" type="number" step="0.01" required />
               </div>
               <div class="form-group">
-                <label>Quantità*</label>
+                <label>Quantità (Kg)*</label>
                 <input v-model.number="editForm.available" type="number" required />
               </div>
             </div>
