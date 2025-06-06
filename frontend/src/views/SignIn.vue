@@ -11,9 +11,10 @@
       Non hai ancora un account? <router-link to="/register">Registrati!</router-link>
     </p>
     <p class="reset-link">
-      Hai dimenticato la password? <router-link to="/reset-password">Reimposta la password</router-link>
+      Hai dimenticato la password?
+      <router-link to="/reset-password">Reimposta la password</router-link>
     </p>
-    </div>
+  </div>
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
@@ -23,9 +24,9 @@ import { useUserStore } from "@/stores/userStore";
 
 const email = ref("");
 const password = ref("");
-const errMsg = ref(); 
+const errMsg = ref();
 const router = useRouter();
-const store = useUserStore(); 
+const store = useUserStore();
 const route = useRoute();
 const redirectPath = ref(null);
 
@@ -45,13 +46,13 @@ const signIn = async () => {
     }
     if (store.role === "producer") {
       console.log("Ruolo dell'utente:", store.role);
-      router.push("/producer-feed");
+      router.push("/dashboard");
     } else if (store.role === "client") {
       console.log("Ruolo dell'utente:", store.role);
-      router.push("/client-feed");
+      router.push("/your-orders");
     } else if (store.role === "administrator") {
       console.log("Ruolo dell'utente:", store.role);
-      router.push("/client-feed");
+      router.push("/your-orders");
     } else {
       console.error("Ruolo utente non riconosciuto:", store.role);
       errMsg.value = "Ruolo utente non riconosciuto";
@@ -165,6 +166,6 @@ p {
   transition: color 0.2s;
 }
 .register-link a:hover {
-  color: #145300;;
+  color: #145300;
 }
 </style>

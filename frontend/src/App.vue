@@ -45,14 +45,14 @@ const handleSignOut = async () => {
   <nav class="main-nav">
     <div class="nav-left">
       <router-link to="/home">Home</router-link>
-      <router-link to="/client-feed" v-if="isLoggedIn && userStore.role === 'client'"
-        >Feed</router-link
-      >
-      <router-link to="/producer-feed" v-if="isLoggedIn && userStore.role === 'producer'"
-        >Feed</router-link
-      >
       <router-link to="/explore-products">Esplora prodotti</router-link>
-      <router-link to="/cart" class="cart-link">
+      <router-link to="/your-orders" v-if="isLoggedIn && userStore.role === 'client'"
+        >I tuoi ordini</router-link
+      >
+      <router-link to="/dashboard" v-if="isLoggedIn && userStore.role === 'producer'"
+        >Dashboard</router-link
+      >
+      <router-link to="/cart" class="cart-link" v-if="userStore.role !== 'producer'">
         <i class="pi pi-shopping-cart"></i>
         Carrello ({{ cartStore.items.length }})
       </router-link>

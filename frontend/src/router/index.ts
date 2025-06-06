@@ -10,22 +10,34 @@ const router = createRouter({
     { path: "/register", name: "register", component: () => import("../views/Register.vue") },
     { path: "/sign-in", name: "signin", component: () => import("../views/SignIn.vue") },
     { path: "/login", redirect: "/sign-in" },
-    { path: "/reset-password", name: "resetPassword", component: () => import("../views/ResetPassword.vue") },
-    { path: "/explore-products", name: "exploreProducts", component: () => import("../views/ExploreProducts.vue") }, 
+    {
+      path: "/reset-password",
+      name: "resetPassword",
+      component: () => import("../views/ResetPassword.vue"),
+    },
+    {
+      path: "/explore-products",
+      name: "exploreProducts",
+      component: () => import("../views/ExploreProducts.vue"),
+    },
     { path: "/cart", name: "cart", component: () => import("../views/CartView.vue") },
-    { path: "/order-confirmation", name: "order-confirmation", component: () => import("../views/OrderConfirmation.vue") },
+    {
+      path: "/order-confirmation",
+      name: "order-confirmation",
+      component: () => import("../views/OrderConfirmation.vue"),
+    },
 
     {
-      path: "/producer-feed",
-      name: "producer-feed",
+      path: "/dashboard",
+      name: "dashboard",
       component: () => import("../views/ProducerFeed.vue"),
       meta: {
         requiresAuth: true,
       },
     },
     {
-      path: "/client-feed",
-      name: "client-feed",
+      path: "/your-orders",
+      name: "your-orders",
       component: () => import("../views/ClientFeed.vue"),
       meta: {
         requiresAuth: true,
@@ -34,15 +46,15 @@ const router = createRouter({
     // Redirect delle vecchie rotte verso ProducerFeed
     {
       path: "/add-product",
-      redirect: "/producer-feed"
+      redirect: "/dashboard",
     },
     {
       path: "/delete-product",
-      redirect: "/producer-feed"
+      redirect: "/dashboard",
     },
     {
       path: "/modify-product",
-      redirect: "/producer-feed"
+      redirect: "/dashboard",
     },
   ],
 });

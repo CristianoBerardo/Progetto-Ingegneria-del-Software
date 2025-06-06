@@ -7,12 +7,16 @@
         <div class="logo-placeholder">
           <!-- Logo placeholder -->
           <div class="logo">
-            <img src="../assets/logo_agri.svg" width="400" alt="AgriTrento">
+            <img src="../assets/logo_agri.svg" width="400" alt="AgriTrento" />
           </div>
         </div>
         <div class="cta-buttons">
-          <button class="cta-primary"><router-link to="/explore-products">Esplora Prodotti</router-link></button>
-          <button class="cta-secondary"><router-link to="/client-feed">Trova Produttori</router-link></button>
+          <button class="cta-primary">
+            <router-link to="/explore-products">Esplora Prodotti</router-link>
+          </button>
+          <button class="cta-secondary">
+            <router-link to="/your-orders">I tuoi ordini</router-link>
+          </button>
         </div>
       </div>
     </section>
@@ -22,7 +26,7 @@
       <h2>Categorie Popolari</h2>
       <div class="category-cards">
         <div class="category-card" v-for="(category, index) in categories" :key="index">
-          <img :src="category.image" :alt="category.name">
+          <img :src="category.image" :alt="category.name" />
           <h3>{{ category.name }}</h3>
         </div>
       </div>
@@ -30,32 +34,36 @@
 
     <!-- Featured Products Section -->
     <section class="featured-products">
-    <h2>Prodotti di Stagione</h2>
-    <div class="product-grid">
-      <div class="product-card" v-for="(product, index) in featuredProducts" :key="index">
-        <div class="product-image">
-          <img :src="product.image" :alt="product.name">
-        </div>
-        <div class="product-info">
-          <h3>{{ product.name }}</h3>
-          <p class="producer">{{ product.producer }}</p>
-          <p class="price">{{ product.price }} €/kg</p>
-          <button class="add-to-cart" 
-              @click="cartStore.addToCart({
-                productId: index,
-                name: product.name, 
-                price: parseFloat(product.price), 
-                quantity: 0.5, 
-                unit: 'kg',
-                image: product.image,
-                producer: product.producer
-              })">
+      <h2>Prodotti di Stagione</h2>
+      <div class="product-grid">
+        <div class="product-card" v-for="(product, index) in featuredProducts" :key="index">
+          <div class="product-image">
+            <img :src="product.image" :alt="product.name" />
+          </div>
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="producer">{{ product.producer }}</p>
+            <p class="price">{{ product.price }} €/kg</p>
+            <button
+              class="add-to-cart"
+              @click="
+                cartStore.addToCart({
+                  productId: index,
+                  name: product.name,
+                  price: parseFloat(product.price),
+                  quantity: 0.5,
+                  unit: 'kg',
+                  image: product.image,
+                  producer: product.producer,
+                })
+              "
+            >
               Aggiungi 0.5 kg
-          </button>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
     <!-- Why Choose Us Section -->
     <section class="why-choose-us">
@@ -88,9 +96,12 @@
     <section class="newsletter">
       <div class="newsletter-content">
         <h2>Resta Aggiornato</h2>
-        <p>Iscriviti alla nostra newsletter per ricevere offerte esclusive e notizie sui prodotti di stagione</p>
+        <p>
+          Iscriviti alla nostra newsletter per ricevere offerte esclusive e notizie sui prodotti di
+          stagione
+        </p>
         <div class="newsletter-form">
-          <input type="email" placeholder="La tua email">
+          <input type="email" placeholder="La tua email" />
           <button>Iscriviti</button>
         </div>
       </div>
@@ -100,7 +111,7 @@
     <footer>
       <div class="footer-content">
         <div class="footer-logo">
-          <img src="../assets/logo_agri.svg" width="300" alt="AgriTrento Logo">
+          <img src="../assets/logo_agri.svg" width="300" alt="AgriTrento Logo" />
         </div>
         <div class="footer-links">
           <div class="link-group">
@@ -140,8 +151,8 @@
 </template>
 
 <script>
-import { useUserStore } from '@/stores/userStore';
-import { useCartStore } from '@/stores/cartStore';
+import { useUserStore } from "@/stores/userStore";
+import { useCartStore } from "@/stores/cartStore";
 
 export default {
   name: "Home",
@@ -155,17 +166,57 @@ export default {
   data() {
     return {
       categories: [
-        { name: "Frutta e Verdura", image: "https://bancofresco.it/wp-content/uploads/2021/12/img-banner-ortofrutta-mobile.png" },
-        { name: "Formaggi e Latticini", image: "https://www.formaggideltrentino.it//Media/News/Formaggi-tipici-trentini/Trentingrana-formaggi-tipici-trentino.jpg" },
-        { name: "Carni e Salumi", image: "https://www.italybite.it/img/ybc_blog/post/20210312-ITBI-art10-Viaggio-alla-scoperta-dei-salumi-del-Trentino-Alto-Adige-copertina.jpg" },
-        { name: "Pane e Prodotti da Forno", image: "https://www.alpenfein.com/it/shop/media/bc/89/6a/1611926173/brot%20s%C3%BCdtirol%20-%20pane%20alto%20adige.jpg" }
+        {
+          name: "Frutta e Verdura",
+          image:
+            "https://bancofresco.it/wp-content/uploads/2021/12/img-banner-ortofrutta-mobile.png",
+        },
+        {
+          name: "Formaggi e Latticini",
+          image:
+            "https://www.formaggideltrentino.it//Media/News/Formaggi-tipici-trentini/Trentingrana-formaggi-tipici-trentino.jpg",
+        },
+        {
+          name: "Carni e Salumi",
+          image:
+            "https://www.italybite.it/img/ybc_blog/post/20210312-ITBI-art10-Viaggio-alla-scoperta-dei-salumi-del-Trentino-Alto-Adige-copertina.jpg",
+        },
+        {
+          name: "Pane e Prodotti da Forno",
+          image:
+            "https://www.alpenfein.com/it/shop/media/bc/89/6a/1611926173/brot%20s%C3%BCdtirol%20-%20pane%20alto%20adige.jpg",
+        },
       ],
       featuredProducts: [
-        { name: "Pomodori Biologici", producer: "Azienda Agricola Rossi", price: "2.99", image: "https://www.laboutiquedelbiologico.it/8304-medium_default/pomodori-cherry-bio-250-gr.jpg" },
-        { name: "TrentinGrana", producer: "Caseificio Del Contadino", price: "4.50", image: "https://www.montitrentini.com/wp-content/uploads/2023/06/monti-trentini-prodotti-grana-padano-riserva.jpg" },
-        { name: "Miele Millefiori", producer: "Apicoltura Montana", price: "6.75", image: "https://www.paolomarket.com/wp-content/uploads/2023/06/Miele-di-Millefiori-del-Trentino-Api-di-Lina-500g-01.jpg" },
-        { name: "SchüttelBrot", producer: "Forno Artigianale", price: "3.20", image: "https://gustos.bz.it/356-large_default/schuttelbrot-originale-fatto-a-mano-155-g.jpg" }
-      ]
+        {
+          name: "Pomodori Biologici",
+          producer: "Azienda Agricola Rossi",
+          price: "2.99",
+          image:
+            "https://www.laboutiquedelbiologico.it/8304-medium_default/pomodori-cherry-bio-250-gr.jpg",
+        },
+        {
+          name: "TrentinGrana",
+          producer: "Caseificio Del Contadino",
+          price: "4.50",
+          image:
+            "https://www.montitrentini.com/wp-content/uploads/2023/06/monti-trentini-prodotti-grana-padano-riserva.jpg",
+        },
+        {
+          name: "Miele Millefiori",
+          producer: "Apicoltura Montana",
+          price: "6.75",
+          image:
+            "https://www.paolomarket.com/wp-content/uploads/2023/06/Miele-di-Millefiori-del-Trentino-Api-di-Lina-500g-01.jpg",
+        },
+        {
+          name: "SchüttelBrot",
+          producer: "Forno Artigianale",
+          price: "3.20",
+          image:
+            "https://gustos.bz.it/356-large_default/schuttelbrot-originale-fatto-a-mano-155-g.jpg",
+        },
+      ],
     };
   },
   methods: {
@@ -173,20 +224,20 @@ export default {
       return product.available > 0;
     },
     addToCart(productId) {
-      const product = this.featuredProducts.find(p => p._id === productId);
+      const product = this.featuredProducts.find((p) => p._id === productId);
       if (product) {
         this.cartStore.addToCart({
           productId: product._id,
           name: product.name,
           price: product.price,
           quantity: 0.5, // Default to 0.5 kg
-          unit: 'kg',
+          unit: "kg",
           image: product.image,
-          producer: product.producer
+          producer: product.producer,
         });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -200,7 +251,9 @@ export default {
 /* Hero section styles */
 .hero {
   /*background-image: linear-gradient(rgba(0, 0, 0, 0.677), rgba(0, 0, 0, 0.677)), url('../assets/mercato.jpg');*/
-  background-image: linear-gradient(rgba(24, 36, 20, 0.677), rgba(4, 17, 2, 0.819)), url('../assets/agricoltura.jpg');
+  background-image:
+    linear-gradient(rgba(24, 36, 20, 0.677), rgba(4, 17, 2, 0.819)),
+    url("../assets/agricoltura.jpg");
   background-size: cover;
   background-position: center;
   height: 500px;
@@ -500,34 +553,35 @@ footer {
   .hero {
     height: 400px;
   }
-  
+
   .hero h1 {
     font-size: 2rem;
   }
-  
+
   .newsletter-form {
     flex-direction: column;
   }
-  
+
   .newsletter-form input {
     border-radius: 4px;
     margin-bottom: 1rem;
   }
-  
+
   .newsletter-form button {
     border-radius: 4px;
   }
-  
+
   .footer-links {
     flex-direction: column;
     gap: 1.5rem;
   }
-  
+
   .cta-buttons {
     flex-direction: column;
   }
-  
-  .cta-primary, .cta-secondary {
+
+  .cta-primary,
+  .cta-secondary {
     width: 100%;
     margin-bottom: 1rem;
   }
