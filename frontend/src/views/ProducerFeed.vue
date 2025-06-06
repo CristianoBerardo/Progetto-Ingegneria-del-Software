@@ -20,14 +20,22 @@
               <input
                 v-model.number="form.price"
                 type="number"
-                step="0.01"
+                step="0.1"
                 required
-                placeholder="0.00"
+                placeholder="0.0"
+                min="0.1"
               />
             </div>
             <div class="form-group">
               <label>📦 Quantità (Kg) *</label>
-              <input v-model.number="form.available" type="number" required placeholder="0" />
+              <input
+                v-model.number="form.available"
+                type="number"
+                required
+                placeholder="0.0"
+                step="0.1"
+                min="0.1"
+              />
             </div>
           </div>
           <div class="form-group">
@@ -48,13 +56,13 @@
           <div class="product-header">
             <h3>{{ product.name }}</h3>
             <span class="product-status" :class="{ 'low-stock': product.available < 5 }">
-              {{ product.available > 0 ? "Disponibile" : "Esaurito" }}
+              {{ product.available >= 0.1 ? "Disponibile" : "Esaurito" }}
             </span>
           </div>
           <div class="product-details">
             <p class="price-quantity">
               <span class="price">€{{ product.price }}</span>
-              <span class="quantity">{{ product.available }} Kg</span>
+              <span class="quantity">{{ Math.floor(product.available * 10) / 10 }} Kg</span>
             </p>
             <p v-if="product.description" class="description">{{ product.description }}</p>
           </div>
@@ -227,6 +235,7 @@ export default {
     startEdit(product) {
       this.editingId = product._id;
       this.editForm = { ...product };
+      this.editForm.available = Math.floor(product.available * 10) / 10;
     },
     async updateProduct(productId) {
       try {

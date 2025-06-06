@@ -31,7 +31,7 @@
             :class="{ available: isAvailable(product), unavailable: !isAvailable(product) }"
           >
             {{ isAvailable(product) ? "Prodotto disponibile" : "Prodotto esaurito" }}:
-            {{ product.available }} kg
+            {{ Math.floor(product.available * 10) / 10 }} kg
           </p>
           <p class="price">{{ product.price }} €/kg</p>
 
@@ -120,7 +120,7 @@ const fetchProducts = async () => {
   }
 };
 const isAvailable = (product) => {
-  return product.available > 0;
+  return product.available >= 0.1;
 };
 
 const getQuantity = (productId) => {
@@ -143,7 +143,7 @@ const decreaseQuantity = (productId) => {
   }
 };
 
-const addToCart = (productId, quantity) => {
+const addToCart = async (productId, quantity) => {
   try {
     const product = products.value.find((p) => p._id === productId);
     if (!product) return;
@@ -166,20 +166,21 @@ const addToCart = (productId, quantity) => {
     };
     console.log("Aggiunta al carrello:", cartItem);
 
-    const result = axios.patch(`${API_BASE_URL}/products/${productId}`, {
-      available: newQuant,
-    });
+    try {
+      await axios.patch(`${API_BASE_URL}/products/${productId}`, {
+        available: newQuant,
+      });
 
-    if (!result) {
-      toast.error("Errore nell'aggiornamento della disponibilità del prodotto");
-      return;
+      fetchProducts(); // Refresh products after updating availability
+      
+
+      cartStore.addToCart(cartItem);
+      quantities[productId] = 0.1;
+      // toast.success("Prodotto aggiunto al carrello");
+    } catch (error) {
+      toast.error("Errore nell'aggiornamento della disponibilità");
+      console.error(error);
     }
-
-    fetchProducts();
-
-    cartStore.addToCart(cartItem);
-    console.log("Carrello aggiornato:", cartStore.items);
-    quantities[productId] = 0.1;
   } catch (error) {
     console.error("Errore nell'aggiunta al carrello:", error);
     toast.error("Errore nell'aggiunta al carrello. Riprova più tardi.");
