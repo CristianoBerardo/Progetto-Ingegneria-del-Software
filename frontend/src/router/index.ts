@@ -1,6 +1,7 @@
 import { auth } from "@/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { createRouter, createWebHistory } from "vue-router";
+import { useUserStore } from "@/stores/userStore";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -43,6 +44,15 @@ const router = createRouter({
         requiresAuth: true,
       },
     },
+    {
+      path: "/admin-feed",
+      name: "admin-feed",
+      component: () => import("../views/AdminFeed.vue"),
+      meta: {
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
     // Redirect delle vecchie rotte verso ProducerFeed
     {
       path: "/add-product",
@@ -75,6 +85,15 @@ const getCurrentUser = () => {
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (await getCurrentUser()) {
+      // Controlla se la rotta richiede privilegi admin
+      if (to.matched.some((record) => record.meta.requiresAdmin)) {
+        const userStore = useUserStore();
+        if (userStore.role !== 'administrator') {
+          alert("Accesso negato: solo gli amministratori possono accedere a questa pagina");
+          next("/home");
+          return;
+        }
+      }
       next();
     } else {
       alert("You must be signed in to view this page");

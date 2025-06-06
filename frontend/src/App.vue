@@ -36,6 +36,16 @@ const handleSignOut = async () => {
     console.error("Error signing out:", error);
   }
 };
+
+const navigateToProfile = () => {
+  if (userStore.role === 'client') {
+    router.push('/your-orders');
+  } else if (userStore.role === 'producer') {
+    router.push('/dashboard');
+  } else if (userStore.role === 'administrator') {
+    router.push('/admin-feed');
+  }
+};
 </script>
 
 <template>
@@ -46,12 +56,6 @@ const handleSignOut = async () => {
     <div class="nav-left">
       <router-link to="/home">Home</router-link>
       <router-link to="/explore-products">Esplora prodotti</router-link>
-      <router-link to="/your-orders" v-if="isLoggedIn && userStore.role === 'client'"
-        >I tuoi ordini</router-link
-      >
-      <router-link to="/dashboard" v-if="isLoggedIn && userStore.role === 'producer'"
-        >Dashboard</router-link
-      >
       <router-link to="/cart" class="cart-link" v-if="userStore.role !== 'producer'">
         <i class="pi pi-shopping-cart"></i>
         Carrello ({{ cartStore.items.length }})
@@ -61,6 +65,15 @@ const handleSignOut = async () => {
     <div class="nav-auth">
       <router-link to="/register" v-if="!isLoggedIn" class="register-btn">Register</router-link>
       <router-link to="/sign-in" v-if="!isLoggedIn" class="sign-in-btn">Sign In</router-link>
+      
+      <!-- Menu Profilo per utenti loggati -->
+      <div v-if="isLoggedIn" class="profile-menu" @click="navigateToProfile">
+        <div class="profile-link">
+          <i class="pi pi-user"></i>
+          <span>Il mio profilo</span>
+        </div>
+      </div>
+      
       <button @click="handleSignOut" v-if="isLoggedIn" class="sign-out-btn">Sign Out</button>
     </div>
   </nav>
@@ -85,6 +98,51 @@ const handleSignOut = async () => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+.profile-menu {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid #dee2e6;
+}
+
+.profile-link:hover {
+  background-color: #e9ecef;
+  color: #212529;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.profile-link i {
+  font-size: 1.1rem;
+}
+
+.admin-link {
+  background-color: #6f42c1;
+  color: white !important;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.admin-link:hover {
+  background-color: #5a359a;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(111, 66, 193, 0.3);
 }
 
 .sign-out-btn {

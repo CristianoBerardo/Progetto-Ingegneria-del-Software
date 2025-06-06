@@ -69,16 +69,12 @@ export const loginController = async (
       });
       return;
     } else if (client) {
-      // console.log("Client found:", client);
-
       const payload = {
         uid: client.uid,
         name: client.username || "",
         email: client.email,
         roles: client.roles,
       };
-
-      // console.log("Payload:", payload);
 
       const customToken = await auth.createCustomToken(
         req.body.decodedToken.uid,

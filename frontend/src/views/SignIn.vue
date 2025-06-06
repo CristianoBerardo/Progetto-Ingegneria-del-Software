@@ -44,13 +44,15 @@ const signIn = async () => {
       errMsg.value = "Errore nel caricamento del profilo utente";
       return;
     }
-    if (store.role === "producer") {
+    
+    // Redirect basato sul ruolo
+    if (store.role === "administrator") {
+      console.log("Ruolo dell'utente:", store.role);
+      router.push("/admin-feed");
+    } else if (store.role === "producer") {
       console.log("Ruolo dell'utente:", store.role);
       router.push("/dashboard");
     } else if (store.role === "client") {
-      console.log("Ruolo dell'utente:", store.role);
-      router.push("/your-orders");
-    } else if (store.role === "administrator") {
       console.log("Ruolo dell'utente:", store.role);
       router.push("/your-orders");
     } else {
