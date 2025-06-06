@@ -1,6 +1,13 @@
 <template>
     <div class="explore-products">
       <h1>Esplora Prodotti</h1>
+      <div class="header-actions">
+        <router-link to="/cart" class="view-cart-btn">
+          <i class="pi pi-shopping-cart"></i> 
+          Carrello ({{ cartStore.items.length }})
+        </router-link>
+      </div>
+
       <div class="product-grid" v-if="products.length > 0">
         <div class="product-card" :class="{ 'product-unavailable': !isAvailable(product) }" v-for="product in products" :key="product._id">
           <div class="product-image">
@@ -20,27 +27,14 @@
             <p class="price">{{ product.price }} €/kg</p>
             
             <div class="quantity-container" v-if="isAvailable(product)">
-              <div class="unit-selection">
-                <div class="unit-option" :class="{ active: getUnit(product._id) === 'unity' }">
-                  <input type="radio" :id="`unity-${product._id}`" :name="`unit-${product._id}`" value="unity"
-                    v-model="units[product._id]">
-                  <label :for="`unity-${product._id}`">Unità</label>
-                </div>
-                <div class="unit-option" :class="{ active: getUnit(product._id) === 'kg' }">
-                  <input type="radio" :id="`kg-${product._id}`" :name="`unit-${product._id}`" value="kg"
-                    v-model="units[product._id]">
-                  <label :for="`kg-${product._id}`">Kg</label>
-                </div>
-              </div>
-              
-              <p class="quantity-label">Quantità ({{ getUnit(product._id) }}):</p>
+              <p class="quantity-label">Quantità (kg):</p>
               <div class="quantity-selector">
                 <button @click="decreaseQuantity(product._id)" class="quantity-btn" 
-                  :disabled="getQuantity(product._id) <= (getUnit(product._id) === 'kg' ? 0.1 : 1)">-</button>
+                  :disabled="getQuantity(product._id) <= 0.1">-</button>
                 <input 
-                  :type="getUnit(product._id) === 'kg' ? 'number' : 'number'" 
-                  :step="getUnit(product._id) === 'kg' ? 0.1 : 1"
-                  :min="getUnit(product._id) === 'kg' ? 0.1 : 1"
+                  type="number" 
+                  step="0.1"
+                  min="0.1"
                   :max="product.available" 
                   v-model.number="quantities[product._id]" 
                   class="quantity-input">
@@ -49,13 +43,13 @@
             </div>
             
             <button class="add-to-cart" 
-              @click="addToCart(product._id, quantities[product._id], getUnit(product._id))"
-              v-if="isAvailable(product)">
-              Aggiungi al carrello
-            </button>
-            <button class="add-to-cart unavailable-button" disabled v-else>
-              Non disponibile
-            </button>
+            @click="addToCart(product._id, quantities[product._id], 'kg')"
+            v-if="isAvailable(product)">
+            Aggiungi al carrello
+          </button>
+          <button class="add-to-cart unavailable-button" disabled v-else>
+            Non disponibile
+          </button>
           </div>
         </div>
       </div>
@@ -63,23 +57,26 @@
         <p>Nessun prodotto disponibile</p>
       </div>
     </div>
-  </template>
+</template>
   
-  <script setup>
-// TODO: Implementare la logica per la gestione del carrello
-// TODO: Aggiungere mappatura unità -> kg 
-  import { ref, onMounted, reactive } from 'vue';
-  import { API_URL } from '@/constants/API_URL';  
-  import axios from 'axios';
+<script setup>
+import { ref, onMounted, reactive } from 'vue';
+import { API_URL } from '@/constants/API_URL';  
+import axios from 'axios';
+
+import { useToast } from 'vue-toastification';
+import { useCartStore } from '@/stores/cartStore';
 
   const products = ref([]);
   const quantities = reactive({});
-  const units = reactive({});
+  const toast = useToast();
+  const cartStore = useCartStore();
 
   const API_BASE_URL = `${API_URL}/api/v1`;
   
   onMounted(async () => {
     await fetchProducts();
+    cartStore.loadFromLocalStorage(); 
   });
   
   const fetchProducts = async () => {
@@ -91,10 +88,9 @@
       if (result.data.success) {
         products.value = result.data.data;
         
-        // Initialize quantities and units for each product
+        // Initialize quantities for each product
         products.value.forEach(product => {
-          quantities[product._id] = 1;
-          units[product._id] = 'unity'; // Default to unity
+          quantities[product._id] = 0.1;  // Default 0.1 kg
         });
       } else {
         console.error(result.message || "Errore nel recupero dei prodotti");
@@ -111,44 +107,43 @@
     return quantities[productId] || 1;
   };
   
-  const getUnit = (productId) => {
-    return units[productId] || 'unity';
-  };
   
   const increaseQuantity = (productId, maxAvailable) => {
-    const currentUnit = getUnit(productId);
-    const increment = currentUnit === 'kg' ? 0.1 : 1;
-    
     if (quantities[productId] < maxAvailable) {
-      // Round to 1 decimal place for kg
-      if (currentUnit === 'kg') {
-        quantities[productId] = Math.round((quantities[productId] + increment) * 10) / 10;
-      } else {
-        quantities[productId] = quantities[productId] + increment;
-      }
+      // Round to 1 decimal place
+      quantities[productId] = Math.round((quantities[productId] + 0.1) * 10) / 10;
     }
   };
   
   const decreaseQuantity = (productId) => {
-    const currentUnit = getUnit(productId);
-    const minValue = currentUnit === 'kg' ? 0.1 : 1;
-    const decrement = currentUnit === 'kg' ? 0.1 : 1;
+    const minValue = 0.1;
     
     if (quantities[productId] > minValue) {
-      // Round to 1 decimal place for kg
-      if (currentUnit === 'kg') {
-        quantities[productId] = Math.round((quantities[productId] - decrement) * 10) / 10;
-      } else {
-        quantities[productId] = quantities[productId] - decrement;
-      }
+      // Round to 1 decimal place
+      quantities[productId] = Math.round((quantities[productId] - 0.1) * 10) / 10;
     }
   };
   
-  const addToCart = (productId, quantity, unit) => {
-    console.log(`Aggiunto al carrello il prodotto con ID: ${productId}, quantità: ${quantity} ${unit}`);
-    // Implementare logica per aggiungere al carrello
+const addToCart = (productId, quantity) => {
+  const product = products.value.find(p => p._id === productId);
+  if (!product) return;
+  
+  const cartItem = {
+    productId: product._id,
+    name: product.name,
+    price: product.price,
+    quantity: quantity,
+    unit: 'kg',
+    image: product.image,
+    producer: product.producer
   };
-  </script>
+  console.log("Aggiunta al carrello:", cartItem);
+
+  cartStore.addToCart(cartItem);
+  console.log("Carrello aggiornato:", cartStore.items);
+  quantities[productId] = 0.1;
+};
+</script>
   
   <style scoped>
   .explore-products {
@@ -419,6 +414,27 @@
 
 .unavailable-button:hover {
   background-color: #e0e0e0 !important;
+}
+
+.header-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1.5rem;
+}
+
+.view-cart-btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border-radius: 4px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.view-cart-btn:hover {
+  background-color: #45a049;
 }
 
   @media (max-width: 768px) {

@@ -16,8 +16,8 @@
     </div>
 </template>
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { loginUser } from "@/services/authService";
 import { useUserStore } from "@/stores/userStore";
 
@@ -26,10 +26,18 @@ const password = ref("");
 const errMsg = ref(); 
 const router = useRouter();
 const store = useUserStore(); 
+const route = useRoute();
+const redirectPath = ref(null);
+
+onMounted(() => {
+  if (route.query.redirect) {
+    redirectPath.value = route.query.redirect;
+  }
+});
 
 const signIn = async () => {
   try {
-    await loginUser(email.value, password.value);
+    await loginUser(email.value, password.value, redirectPath.value);
     if (!store.role) {
       console.error("User role not set after login");
       errMsg.value = "Errore nel caricamento del profilo utente";
