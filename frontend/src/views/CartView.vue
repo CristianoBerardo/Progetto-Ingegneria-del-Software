@@ -81,8 +81,12 @@ const pickupDate = ref('');
 
 onMounted(() => {
   cartStore.loadFromLocalStorage();
+  
   if (cartStore.pickupDate) {
     pickupDate.value = new Date(cartStore.pickupDate).toISOString().split('T')[0];
+  } else {
+    pickupDate.value = minPickupDate.value;
+    cartStore.setPickupDate(new Date(minPickupDate.value));
   }
 });
 
