@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import Client from '../models/ClientModel';
+import Producer from '../models/ProducerModel';
 import Order from '../models/OrderModel';
 import { OrderStatus } from '../types/OrderStatus';
 
@@ -22,11 +23,22 @@ export const createOrder = async (req: Request, res: Response): Promise<void> =>
         console.log('1');
         const client = await Client.findOne({ uid: currentUserUid });
         if (!client) {
-            res.status(404).json({
-              success: false,
-              message: "Client not found",
-            });
-            return;
+            const producer = await Producer.findOne({ uid: currentUserUid });
+            if (producer) {
+                res.status(414).json({
+                    success: false,
+                    message: "A Producer cannot create an order",
+                });
+                console.log('Producer found but cannot create order');
+                return;
+            } else {
+                res.status(413).json({
+                    success: false,
+                    message: "Client not found",
+                });
+                console.log('Client not found');
+                return;
+            }
         }
         console.log('2');
 

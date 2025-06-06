@@ -140,7 +140,7 @@ const confirmOrder = async () => {
     orderNumber.value = result.orderId;
     
   } catch (error) {
-    toast.error(`Errore: ${error.message}`);
+    console.log(`Errore: ${error.message}`);
   } finally {
     isSubmitting.value = false;
   }

@@ -1,8 +1,8 @@
+import router from '@/router';
+import axios from 'axios';
 import { defineStore } from 'pinia';
 import { useToast } from 'vue-toastification';
 import { useUserStore } from './userStore';
-import axios from 'axios';
-import router from '@/router';
 
 export interface CartItem {
   productId: string;
@@ -125,16 +125,28 @@ export const useCartStore = defineStore('cart', {
             Authorization: `Bearer ${userStore.fb_token}`
           }
         });
+        console.log('Order response:', response.status);
         
         // Clear cart after successful order
         this.clearCart();
         
         toast.success('Ordine completato con successo!');
-        return { success: true };
-      } catch (error) {
-        console.error('Error during checkout:', error);
-        toast.error('Errore durante il completamento dell\'ordine');
-        return { success: false, error };
+        return { success: true , orderId: response.data.savedOrder._id };
+      } catch (error) {    
+        if (error.response && error.response.status === 414) {
+          // Crea un toast per errore 414 (URI Too Long)
+          toast.error("Un produttore non può eseguire un ordine")
+        }else if (error.response && error.response.status === 413) {
+          toast.error('Cliente non trovato');
+        }else {
+          toast.error('Errore durante il completamento dell\'ordine');
+        }
+        // console.log("Erroreeee cart store:" + error);
+        // console.log("fine errore");
+
+        // // console.error('Error during checkout:', error.response.status);
+        // // toast.error('Errore durante il completamento dell\'ordine');
+        // return { success: false, error };
       }
     }
   }
