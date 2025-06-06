@@ -323,6 +323,7 @@ p {
   margin-top: 24px;
 }
 .type-card {
+  margin: 10px;
   background: #f7f7f7;
   border: 2px solid #ccc;
   border-radius: 10px;

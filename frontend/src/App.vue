@@ -56,7 +56,16 @@ const navigateToProfile = () => {
     <div class="nav-left">
       <router-link to="/home">Home</router-link>
       <router-link to="/explore-products">Esplora prodotti</router-link>
-      <router-link to="/cart" class="cart-link" v-if="userStore.role !== 'producer'">
+      <router-link to="/your-orders" v-if="isLoggedIn && userStore.role === 'client'"
+        >I tuoi ordini</router-link
+      >
+      <router-link to="/dashboard" v-if="isLoggedIn && userStore.role === 'producer'"
+        >Dashboard</router-link
+      >
+      <router-link to="/admin-feed" v-if="isLoggedIn && userStore.role === 'administrator'"
+        >Dashboard</router-link
+      >
+      <router-link to="/cart" class="cart-link" v-if="userStore.role === 'client'">
         <i class="pi pi-shopping-cart"></i>
         Carrello ({{ cartStore.items.length }})
       </router-link>
@@ -67,12 +76,12 @@ const navigateToProfile = () => {
       <router-link to="/sign-in" v-if="!isLoggedIn" class="sign-in-btn">Sign In</router-link>
       
       <!-- Menu Profilo per utenti loggati -->
-      <div v-if="isLoggedIn" class="profile-menu" @click="navigateToProfile">
+      <!-- <div v-if="isLoggedIn && userStore.role === 'administrator'" class="profile-menu" @click="navigateToProfile">
         <div class="profile-link">
           <i class="pi pi-user"></i>
           <span>Il mio profilo</span>
         </div>
-      </div>
+      </div> -->
       
       <button @click="handleSignOut" v-if="isLoggedIn" class="sign-out-btn">Sign Out</button>
     </div>
