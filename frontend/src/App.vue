@@ -6,10 +6,12 @@ import { useRouter } from "vue-router";
 import { useUserStore } from '@/stores/userStore';
 import ThemeToggle from './components/ThemeToggle.vue';
 import { logoutUser } from "./services/authService";
+import { useCartStore } from '@/stores/cartStore';
 
 const isLoggedIn = ref(false);
 const userStore = useUserStore();
 const router = useRouter();
+const cartStore = useCartStore();
 
 onMounted(() => {
   onAuthStateChanged(auth, (user) => {
@@ -21,6 +23,7 @@ onMounted(() => {
       isLoggedIn.value = false;
     }
   });
+  cartStore.loadFromLocalStorage(); 
 });
 
 const handleSignOut = async () => {
@@ -49,8 +52,8 @@ const handleSignOut = async () => {
     <router-link to="/explore-products">Esplora prodotti</router-link>
     <button @click="handleSignOut" v-if="isLoggedIn">Sign Out</button>
     <router-link to="/cart" class="cart-link">
-      <i class="pi pi-shopping-cart"></i>
-      <span>Carrello</span>
+      <i class="pi pi-shopping-cart"></i> 
+      Carrello ({{ cartStore.items.length }})
     </router-link>
 
    

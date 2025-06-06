@@ -132,21 +132,14 @@ export const useCartStore = defineStore('cart', {
         
         toast.success('Ordine completato con successo!');
         return { success: true , orderId: response.data.savedOrder._id };
-      } catch (error) {    
+      } catch (error: any) {    
         if (error.response && error.response.status === 414) {
-          // Crea un toast per errore 414 (URI Too Long)
           toast.error("Un produttore non può eseguire un ordine")
         }else if (error.response && error.response.status === 413) {
           toast.error('Cliente non trovato');
         }else {
           toast.error('Errore durante il completamento dell\'ordine');
         }
-        // console.log("Erroreeee cart store:" + error);
-        // console.log("fine errore");
-
-        // // console.error('Error during checkout:', error.response.status);
-        // // toast.error('Errore durante il completamento dell\'ordine');
-        // return { success: false, error };
       }
     }
   }
