@@ -130,7 +130,8 @@ watch(pickupDate, (newDate) => {
 });
 
 const increaseItemQuantity = async (item, productId) => {
-  const newQuantity = Math.floor((item.quantity + 0.1) * 10) / 10;
+  const newQuantity = Math.round((item.quantity + 0.1) * 10) / 10;
+  // console.log(`Increasing quantity for ${item.name} to ${newQuantity} kg  - Item quantity: ${item.quantity}`);
   cartStore.updateQuantity(item.productId, newQuantity);
 
   await axios.patch(`${API_BASE_URL}/products/${productId}`, {
@@ -140,7 +141,8 @@ const increaseItemQuantity = async (item, productId) => {
 
 const decreaseItemQuantity = async (item, productId) => {
   if (item.quantity > 0.1) {
-    const newQuantity = Math.floor((item.quantity - 0.1) * 10) / 10;
+    const newQuantity = Math.round((item.quantity - 0.1) * 10) / 10;
+    // console.log(`decrease quantity for ${item.name} to ${newQuantity} kg  - Item quantity: ${item.quantity}`);
     cartStore.updateQuantity(item.productId, newQuantity);
 
     await axios.patch(`${API_BASE_URL}/products/${productId}`, {
