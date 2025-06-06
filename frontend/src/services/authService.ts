@@ -23,8 +23,9 @@ export const loginUser = async (email: string, password: string, redirect?:strin
     role: userData.userRole,
     fb_token: firebaseToken
   });
+  
   if (redirect) {
-    router.push(redirect);
+    window.location.href =redirect;
   }
 };
 

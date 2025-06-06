@@ -9,9 +9,9 @@ import { verifyFirebaseToken } from "../middleware/authMiddleware";
 
 const orderRouter = Router();
 
+orderRouter.get("/:id", verifyFirebaseToken, readOrders);
 orderRouter.post("/", verifyFirebaseToken, createOrder);
 orderRouter.post("/confirm", verifyFirebaseToken, confirmOrder);
 orderRouter.post("/cancel", verifyFirebaseToken, cancelOrder);
-orderRouter.get("/", verifyFirebaseToken, readOrders);
 
 export default orderRouter;

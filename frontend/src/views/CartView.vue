@@ -19,18 +19,19 @@
             <h3>{{ item.name }}</h3>
             <p class="item-producer">{{ item.producer ? item.producer.name : 'Azienda anonima' }}</p>
             <div class="item-quantity">
-              <p>Quantità: {{ item.quantity }} {{ item.unit }}</p>
+              <p>Quantità: {{ item.quantity }} kg</p>
               <div class="quantity-controls">
-                <button @click="decreaseItemQuantity(item)" class="quantity-btn">-</button>
+                <button @click="decreaseItemQuantity(item)" class="quantity-btn" 
+                  :disabled="item.quantity <= 0.1">-</button>
                 <button @click="increaseItemQuantity(item)" class="quantity-btn">+</button>
                 <button @click="cartStore.removeItem(item.productId)" class="remove-btn">Rimuovi</button>
               </div>
             </div>
           </div>
-          
+             
           <div class="item-price">
-            <p class="price">{{ (item.price * item.quantity)  }} €</p>
-            <p class="unit-price">{{ item.price  }} €/{{ item.unit === 'kg' ? 'kg' : 'unità' }}</p>
+            <p class="price">{{ (item.price * item.quantity).toFixed(2)  }} €</p>
+            <p class="unit-price">{{ item.price.toFixed(2) }} €/kg</p>
           </div>
         </div>
       </div>
@@ -39,7 +40,7 @@
         <h2>Riepilogo ordine</h2>
         <div class="summary-row">
           <span>Totale prodotti:</span>
-          <span>{{ cartStore.totalAmount  }} €</span>
+          <span>{{ cartStore.totalAmount.toFixed(2) }} €</span>
         </div>
         
         <div class="pickup-date">
@@ -78,62 +79,44 @@ const toast = useToast();
 const cartStore = useCartStore();
 const pickupDate = ref('');
 
-// Al montaggio del componente, carica il carrello
 onMounted(() => {
   cartStore.loadFromLocalStorage();
-  
-  // Se c'è una data di ritiro salvata, impostala
   if (cartStore.pickupDate) {
     pickupDate.value = new Date(cartStore.pickupDate).toISOString().split('T')[0];
   }
 });
 
-// Calcola la data minima per il ritiro (almeno domani)
+
 const minPickupDate = computed(() => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   return tomorrow.toISOString().split('T')[0];
 });
 
-// Osserva i cambiamenti della data di ritiro e aggiorna lo store
+
 watch(pickupDate, (newDate) => {
   if (newDate) {
     cartStore.setPickupDate(new Date(newDate));
   }
 });
 
-// Aumenta la quantità di un prodotto nel carrello
 const increaseItemQuantity = (item) => {
-  if (item.unit === 'kg') {
-    const newQuantity = Math.round((item.quantity + 0.1) * 10) / 10;
-    cartStore.updateQuantity(item.productId, newQuantity);
-  } else {
-    cartStore.updateQuantity(item.productId, item.quantity + 1);
-  }
+  const newQuantity = Math.round((item.quantity + 0.1) * 10) / 10;
+  cartStore.updateQuantity(item.productId, newQuantity);
 };
 
-// Diminuisci la quantità di un prodotto nel carrello
 const decreaseItemQuantity = (item) => {
-  const minValue = item.unit === 'kg' ? 0.1 : 1;
-  const decrement = item.unit === 'kg' ? 0.1 : 1;
-  
-  if (item.quantity > minValue) {
-    if (item.unit === 'kg') {
-      const newQuantity = Math.round((item.quantity - decrement) * 10) / 10;
-      cartStore.updateQuantity(item.productId, newQuantity);
-    } else {
-      cartStore.updateQuantity(item.productId, item.quantity - decrement);
-    }
+  if (item.quantity > 0.1) {
+    const newQuantity = Math.round((item.quantity - 0.1) * 10) / 10;
+    cartStore.updateQuantity(item.productId, newQuantity);
   }
 };
 
-// Procedi al checkout
 const proceedToCheckout = () => {
   if (!pickupDate.value) {
     toast.error("Seleziona una data di ritiro");
     return;
   }
-  
   router.push('/order-confirmation');
 };
 </script>

@@ -30,25 +30,32 @@
 
     <!-- Featured Products Section -->
     <section class="featured-products">
-      <h2>Prodotti di Stagione</h2>
-      <div class="product-grid">
-        <div class="product-card" v-for="(product, index) in featuredProducts" :key="index">
-          <div class="product-image">
-            <img :src="product.image" :alt="product.name">
-          </div>
-          <div class="product-info">
-            <h3>{{ product.name }}</h3>
-            <p class="producer">{{ product.producer }}</p>
-            <p class="price">{{ product.price }} €</p>
-            <button class="add-to-cart" 
-                @click="cartStore.addToCart(product, 1, 'unità')" >
-                <!-- v-if="isAvailable(product)" -->
-                Aggiungi 
-            </button>
-          </div>
+    <h2>Prodotti di Stagione</h2>
+    <div class="product-grid">
+      <div class="product-card" v-for="(product, index) in featuredProducts" :key="index">
+        <div class="product-image">
+          <img :src="product.image" :alt="product.name">
+        </div>
+        <div class="product-info">
+          <h3>{{ product.name }}</h3>
+          <p class="producer">{{ product.producer }}</p>
+          <p class="price">{{ product.price }} €/kg</p>
+          <button class="add-to-cart" 
+              @click="cartStore.addToCart({
+                productId: index,
+                name: product.name, 
+                price: parseFloat(product.price), 
+                quantity: 0.5, 
+                unit: 'kg',
+                image: product.image,
+                producer: product.producer
+              })">
+              Aggiungi 0.5 kg
+          </button>
         </div>
       </div>
-    </section>
+    </div>
+  </section>
 
     <!-- Why Choose Us Section -->
     <section class="why-choose-us">
@@ -168,7 +175,15 @@ export default {
     addToCart(productId) {
       const product = this.featuredProducts.find(p => p._id === productId);
       if (product) {
-        this.cartStore.addToCart(product, 1, 'unità');
+        this.cartStore.addToCart({
+          productId: product._id,
+          name: product.name,
+          price: product.price,
+          quantity: 0.5, // Default to 0.5 kg
+          unit: 'kg',
+          image: product.image,
+          producer: product.producer
+        });
       }
     }
   }

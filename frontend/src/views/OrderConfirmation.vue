@@ -29,14 +29,14 @@
           <div v-for="item in cartStore.items" :key="item.productId" class="order-item">
             <div class="item-name">{{ item.name }}</div>
             <div class="item-quantity">{{ item.quantity }} {{ item.unit }}</div>
-            <div class="item-price">{{ (item.price * item.quantity)  }}€</div>
+            <div class="item-price">{{ (item.price * item.quantity).toFixed(2) }}€</div>
           </div>
         </div>
         
         <div class="order-summary">
           <div class="summary-row total">
             <span>Totale:</span>
-            <span>{{ cartStore.totalAmount  }}€</span>
+            <span>{{ cartStore.totalAmount.toFixed(2) }}€</span>
           </div>
           
           <div class="summary-row">
@@ -126,12 +126,10 @@ const confirmOrder = async () => {
       return;
     }
     
-    // Usa il metodo checkout dello store
     const result = await cartStore.checkout();
     
     if (!result.success) {
       if (result.requiresLogin) {
-        // La redirezione la gestisce già il metodo checkout
         return;
       }
       throw new Error(result.error || 'Errore durante la creazione dell\'ordine');

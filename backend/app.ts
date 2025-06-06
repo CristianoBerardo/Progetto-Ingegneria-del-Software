@@ -10,6 +10,9 @@ import productRouter from "./routes/ProductRouter";
 import productRouterWithAuth from "./routes/ProductRouterWithAuth";
 import orderRouter from "./routes/OrderRoutes";
 
+// import { deleteAllUsers } from "./config/firebase";
+// import { setAdminClaims } from "./controllers/auth/AdminClaims";
+
 const app = express();
 const port = process.env.PORT || 3000;
 

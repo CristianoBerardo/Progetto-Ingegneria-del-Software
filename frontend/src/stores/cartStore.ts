@@ -9,7 +9,7 @@ export interface CartItem {
   name: string;
   price: number;
   quantity: number;
-  unit: string;
+  unit: 'kg';
   image?: string;
   producer?: any;
 }
@@ -36,6 +36,7 @@ export const useCartStore = defineStore('cart', {
   
   actions: {
     addToCart(item: CartItem) {
+      item.unit = 'kg'; // Ensure unit is set to 'kg'
       const existingItem = this.items.find(i => i.productId === item.productId);
       
       if (existingItem) {
@@ -88,6 +89,9 @@ export const useCartStore = defineStore('cart', {
         const parsedData = JSON.parse(cartData);
         this.items = parsedData.items || [];
         this.pickupDate = parsedData.pickupDate ? new Date(parsedData.pickupDate) : null;
+        this.items.forEach(item => {
+          item.unit = 'kg';
+        });      
       }
     },
     
@@ -109,18 +113,18 @@ export const useCartStore = defineStore('cart', {
       }
       
       try {
-        // Create the order using the API
-        // const response = await axios.post('http://localhost:3000/api/v1/orders', {
-        //   products: this.items.map(item => ({
-        //     productId: item.productId,
-        //     quantity: item.quantity
-        //   })),
-        //   pickupDate: this.pickupDate,
-        // }, {
-        //   headers: {
-        //     Authorization: `Bearer ${userStore.fb_token}`
-        //   }
-        // });
+        const response = await axios.post('http://localhost:3000/api/v1/orders', {
+          products: this.items.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity
+          })),
+          totalPrice: this.totalAmount,
+          pickupDate: this.pickupDate,
+        }, {
+          headers: {
+            Authorization: `Bearer ${userStore.fb_token}`
+          }
+        });
         
         // Clear cart after successful order
         this.clearCart();
