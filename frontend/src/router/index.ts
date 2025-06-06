@@ -1,7 +1,8 @@
 import { auth } from "@/firebase";
+import { useUserStore } from "@/stores/userStore";
 import { onAuthStateChanged } from "firebase/auth";
 import { createRouter, createWebHistory } from "vue-router";
-import { useUserStore } from "@/stores/userStore";
+import { useToast } from "vue-toastification";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -83,20 +84,28 @@ const getCurrentUser = () => {
 };
 
 router.beforeEach(async (to, from, next) => {
+  const toast = useToast();
+
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (await getCurrentUser()) {
       // Controlla se la rotta richiede privilegi admin
       if (to.matched.some((record) => record.meta.requiresAdmin)) {
         const userStore = useUserStore();
-        if (userStore.role !== 'administrator') {
-          alert("Accesso negato: solo gli amministratori possono accedere a questa pagina");
+        if (userStore.role !== "administrator") {
+          toast.error("Accesso negato: solo gli amministratori possono accedere a questa pagina", {
+            closeOnClick: true,
+          });
+
           next("/home");
           return;
         }
       }
       next();
     } else {
-      alert("You must be signed in to view this page");
+      toast.error("Devi effettuare il login per accedere a questa pagina", {
+        closeOnClick: true,
+      });
+
       next("/sign-in");
     }
   } else {

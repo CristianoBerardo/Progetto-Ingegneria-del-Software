@@ -20,10 +20,10 @@
               <input
                 v-model.number="form.price"
                 type="number"
-                step="0.1"
+                step="0.01"
                 required
-                placeholder="0.0"
-                min="0.1"
+                placeholder="0.00"
+                min="0.01"
               />
             </div>
             <div class="form-group">
@@ -85,7 +85,7 @@
               </div>
               <div class="form-group">
                 <label>Quantità (Kg)*</label>
-                <input v-model.number="editForm.available" type="number" required />
+                <input v-model.number="editForm.available" type="number" step="0.1" required />
               </div>
             </div>
             <div class="form-group">

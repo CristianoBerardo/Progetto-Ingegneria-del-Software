@@ -1,7 +1,7 @@
 <template>
   <div class="client-feed">
     <!-- Producer selection section -->
-    <div class="producer-selection">
+    <!-- <div class="producer-selection">
       <h2>Select a Producer:</h2>
       <DropDown
         :options="producerList"
@@ -10,7 +10,7 @@
         @change="onProducerSelected"
       />
       <p v-if="selectedProducerName">You selected: {{ selectedProducerName }}</p>
-    </div>
+    </div> -->
 
     <!-- Orders section -->
     <div class="orders-section">
@@ -45,9 +45,9 @@
           </div>
 
           <div class="order-actions">
-            <button class="view-details-btn" @click="viewOrderDetails(order._id)">
+            <!-- <button class="view-details-btn" @click="viewOrderDetails(order._id)">
               Visualizza dettaglio
-            </button>
+            </button> -->
             <button
               v-if="order.status === 'pending'"
               class="cancel-btn"
