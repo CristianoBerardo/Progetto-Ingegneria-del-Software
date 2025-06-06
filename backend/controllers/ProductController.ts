@@ -400,7 +400,7 @@ export const searchProducts = async (
       producer,
       sort = "name:asc",
       page = 1,
-      limit = 10,
+      limit = 9,
     } = req.query;
 
     console.log("Query parameters:", req.query);
@@ -446,8 +446,10 @@ export const searchProducts = async (
       .limit(parseInt(limit as string));
 
     if (!products || products.length === 0) {
-      res.status(404).json({
-        success: false,
+      res.status(200).json({
+        success: true,
+        data: [],
+        total: 0,
         message: "No products found",
       });
       return;
@@ -456,6 +458,7 @@ export const searchProducts = async (
     res.status(200).json({
       success: true,
       data: products,
+      total: products.length,
       message: "Products retrieved successfully",
     });
   } catch (error) {

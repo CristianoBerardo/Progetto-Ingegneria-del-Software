@@ -1,11 +1,117 @@
 <template>
   <div class="explore-products">
     <h1>Esplora Prodotti</h1>
-    <div class="header-actions">
-      <router-link to="/cart" class="view-cart-btn">
-        <i class="pi pi-shopping-cart"></i>
-        Carrello ({{ cartStore.items.length }})
-      </router-link>
+
+    <!-- Search filters section -->
+    <div class="search-container">
+      <div class="search-row">
+        <!-- Product name search -->
+        <div class="search-field">
+          <label for="nameSearch">Nome prodotto</label>
+          <input
+            type="text"
+            id="nameSearch"
+            v-model="filters.name"
+            placeholder="Cerca per nome..."
+            @input="debounceSearch"
+          />
+        </div>
+
+        <!-- Category dropdown -->
+        <!-- <div class="search-field">
+          <label for="categoryFilter">Categoria</label>
+          <select id="categoryFilter" v-model="filters.category" @change="applyFilters">
+            <option value="">Tutte le categorie</option>
+            <option v-for="category in categories" :key="category" :value="category">
+              {{ category }}
+            </option>
+          </select>
+        </div> -->
+
+        <!-- Producer dropdown -->
+        <div class="search-field">
+          <label for="producerFilter">Produttore</label>
+          <select id="producerFilter" v-model="filters.producer" @change="applyFilters">
+            <option value="">Tutti i produttori</option>
+            <option v-for="producer in producers" :key="producer._id" :value="producer._id">
+              {{ producer.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-row">
+        <!-- Price range -->
+        <div class="price-filter">
+          <label>Fascia di prezzo</label>
+          <div class="price-inputs">
+            <input
+              type="number"
+              v-model.number="filters.minPrice"
+              placeholder="Min €"
+              min="0"
+              @change="applyFilters"
+            />
+            <span>-</span>
+            <input
+              type="number"
+              v-model.number="filters.maxPrice"
+              placeholder="Max €"
+              min="0"
+              @change="applyFilters"
+            />
+          </div>
+        </div>
+
+        <!-- Sort options -->
+        <div class="search-field">
+          <label for="sortOptions">Ordina per</label>
+          <select id="sortOptions" v-model="filters.sort" @change="applyFilters">
+            <option value="name:asc">Nome (A-Z)</option>
+            <option value="name:desc">Nome (Z-A)</option>
+            <option value="price:asc">Prezzo (crescente)</option>
+            <option value="price:desc">Prezzo (decrescente)</option>
+            <option value="available:desc">Disponibilità (decrescente)</option>
+          </select>
+        </div>
+
+        <!-- Items per page -->
+        <div class="search-field">
+          <label for="limitOptions">Elementi per pagina</label>
+          <select id="limitOptions" v-model="filters.limit" @change="applyFilters">
+            <option value="9">9</option>
+            <option value="18">18</option>
+            <option value="27">27</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="search-actions">
+        <button class="filter-btn" @click="applyFilters">Applica filtri</button>
+        <button class="reset-btn" @click="resetFilters">Azzera filtri</button>
+      </div>
+    </div>
+
+    <!-- Pagination info and navigation -->
+    <div class="pagination-info" v-if="totalProducts > 0">
+      <span>Mostra {{ startItem }}-{{ endItem }} di {{ totalProducts }} prodotti</span>
+      <div class="pagination-controls">
+        <button
+          @click="changePage(filters.page - 1)"
+          :disabled="filters.page <= 1"
+          class="page-btn"
+        >
+          &lt; Precedente
+        </button>
+        <span class="page-indicator">{{ filters.page }} / {{ totalPages }}</span>
+        <button
+          @click="changePage(filters.page + 1)"
+          :disabled="filters.page >= totalPages"
+          class="page-btn"
+        >
+          Successivo &gt;
+        </button>
+      </div>
     </div>
 
     <div class="product-grid" v-if="products.length > 0">
@@ -80,45 +186,226 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
+import { ref, onMounted, reactive, computed, watch } from "vue";
 import { API_URL } from "@/constants/API_URL";
 import axios from "axios";
-
 import { useToast } from "vue-toastification";
 import { useCartStore } from "@/stores/cartStore";
+import { useRoute, useRouter } from "vue-router";
+import debounce from "lodash/debounce";
 
 const products = ref([]);
 const quantities = reactive({});
 const toast = useToast();
 const cartStore = useCartStore();
+const route = useRoute();
+const router = useRouter();
 
 const API_BASE_URL = `${API_URL}/api/v1`;
 
+// Filter state
+const filters = reactive({
+  name: "",
+  category: "",
+  minPrice: "",
+  maxPrice: "",
+  producer: "",
+  sort: "name:asc",
+  page: 1,
+  limit: "",
+});
+
+// For filter dropdowns
+const categories = ref([]);
+const producers = ref([]);
+const totalProducts = ref(0);
+const isLoading = ref(false);
+
+// Pagination calculations
+const totalPages = computed(() => Math.ceil(totalProducts.value / filters.limit));
+console.log("Total pages:", totalPages.value);
+
+const startItem = computed(() => (filters.page - 1) * filters.limit + 1);
+
+const endItem = computed(() => Math.min(filters.page * filters.limit, totalProducts.value));
+
+// Initialize from URL parameters
 onMounted(async () => {
+  // Extract query params from URL
+  const queryParams = route.query;
+
+  // Apply query params to filters if they exist
+  if (Object.keys(queryParams).length > 0) {
+    Object.keys(filters).forEach((key) => {
+      if (queryParams[key]) {
+        // Convert numeric strings to numbers
+        if (key === "page" || key === "limit" || key === "minPrice" || key === "maxPrice") {
+          filters[key] = Number(queryParams[key]);
+        } else {
+          filters[key] = queryParams[key];
+        }
+      }
+    });
+  }
+
+  // Fetch available categories and producers for dropdown filters
+  // await fetchCategories();
+  await fetchProducers();
+
+  // Fetch products with current filters
   await fetchProducts();
+
   cartStore.loadFromLocalStorage();
 });
 
-const fetchProducts = async () => {
+// Debounce search input to avoid too many API calls
+const debounceSearch = debounce(() => {
+  filters.page = 1; // Reset to first page on new search
+  applyFilters();
+}, 500);
+
+// Apply filters and update URL
+const applyFilters = () => {
+  filters.page = 1; // Reset to first page when filters change
+  updateUrlParams();
+  fetchProducts();
+};
+
+// Reset all filters to default values
+const resetFilters = () => {
+  Object.assign(filters, {
+    name: "",
+    category: "",
+    minPrice: "",
+    maxPrice: "",
+    producer: "",
+    sort: "name:asc",
+    page: 1,
+    limit: 9,
+  });
+
+  updateUrlParams();
+  fetchProducts();
+};
+
+// Handle pagination
+const changePage = (newPage) => {
+  console.log("Changing page to:", newPage, totalPages.value);
+  if (newPage >= 1 && newPage <= totalPages.value) {
+    filters.page = newPage;
+    updateUrlParams();
+    fetchProducts();
+
+    // Safer scroll - check if element exists first
+    const productGrid = document.querySelector('.product-grid');
+    if (productGrid) {
+      window.scrollTo({
+        top: productGrid.offsetTop - 20,
+        behavior: 'smooth',
+      });
+    } else {
+      // Fallback to top of container
+      const container = document.querySelector('.explore-products');
+      if (container) {
+        window.scrollTo({
+          top: container.offsetTop,
+          behavior: 'smooth',
+        });
+      }
+    }
+  }
+};
+
+// Update URL with current filter parameters
+const updateUrlParams = () => {
+  const queryParams = {};
+
+  // Only add non-empty/default parameters
+  Object.keys(filters).forEach((key) => {
+    const value = filters[key];
+
+    // Skip empty strings or default values
+    if (
+      value !== "" &&
+      !(key === "sort" && value === "name:asc") &&
+      !(key === "page" && value === 1) &&
+      !(key === "limit" && value === 9)
+    ) {
+      queryParams[key] = value;
+    }
+  });
+
+  router.replace({ query: queryParams });
+};
+
+// Fetch product categories
+// const fetchCategories = async () => {
+//   try {
+//     const response = await axios.get(`${API_BASE_URL}/products/categories`);
+//     if (response.data.success) {
+//       categories.value = response.data.data;
+//     }
+//   } catch (err) {
+//     console.error("Error fetching categories:", err);
+//   }
+// };
+
+// Fetch producers
+const fetchProducers = async () => {
   try {
-    const result = await axios.get(`${API_BASE_URL}/products`);
-    // const result = await response.json();
-    console.log(result);
+    const response = await axios.get(`${API_BASE_URL}/producers`);
+    if (response.data.success) {
+      producers.value = response.data.data;
+    }
+  } catch (err) {
+    console.error("Error fetching producers:", err);
+  }
+};
+
+// Fetch products with filters
+const fetchProducts = async () => {
+  isLoading.value = true;
+  try {
+    // Build query parameters
+    const params = {};
+    Object.keys(filters).forEach((key) => {
+      if (filters[key] !== "") {
+        params[key] = filters[key];
+      }
+    });
+
+    const result = await axios.get(`${API_BASE_URL}/products`, { params });
+    console.log("Fetched products:", result.data);
 
     if (result.data.success) {
       products.value = result.data.data;
-
+      
+      // Fix: Add fallback and proper type conversion
+      totalProducts.value = typeof result.data.total === 'number' ? 
+        result.data.total : 
+        result.data.data.length;
+      
+      console.log("Total products:", totalProducts.value);
+      console.log("Total pages calculated:", Math.round(totalProducts.value / filters.limit));
+      
       // Initialize quantities for each product
       products.value.forEach((product) => {
-        quantities[product._id] = 0.1; // Default 0.1 kg
+        quantities[product._id] = 0.1;
       });
     } else {
-      console.error(result.message || "Errore nel recupero dei prodotti");
+      products.value = [];
+      totalProducts.value = 0;
     }
   } catch (err) {
-    console.error("Errore nel recupero dei prodotti:", err);
+    console.error("Error fetching products:", err);
+    products.value = [];
+    totalProducts.value = 0;
+    toast.error("Errore nel caricamento dei prodotti. Riprova più tardi.");
+  } finally {
+    isLoading.value = false;
   }
 };
+
 const isAvailable = (product) => {
   return product.available >= 0.1;
 };
@@ -172,7 +459,6 @@ const addToCart = async (productId, quantity) => {
       });
 
       fetchProducts(); // Refresh products after updating availability
-      
 
       cartStore.addToCart(cartItem);
       quantities[productId] = 0.1;
@@ -200,6 +486,134 @@ h1 {
   margin-bottom: 2rem;
   font-size: 2rem;
   color: #9f9f9f;
+}
+
+.search-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.search-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-field label,
+.price-filter label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: 500;
+}
+
+.search-field input,
+.search-field select {
+  width: 100%;
+  height: 42px;
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.price-filter {
+  flex: 1;
+  min-width: 250px;
+}
+
+.price-inputs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.price-inputs input {
+  flex: 1;
+  padding: 0.7rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.search-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.filter-btn,
+.reset-btn {
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+}
+
+.filter-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.filter-btn:hover {
+  background-color: #45a049;
+}
+
+.reset-btn {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.reset-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.pagination-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.page-btn {
+  background-color: #f5f5f5;
+  color: #333;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+}
+
+.page-btn:disabled {
+  color: #aaa;
+  cursor: not-allowed;
+}
+
+.page-btn:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.page-indicator {
+  font-weight: 500;
 }
 
 .product-grid {
@@ -493,6 +907,16 @@ h1 {
   .quantity-btn {
     width: 28px;
     height: 28px;
+  }
+
+  .search-row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .pagination-info {
+    flex-direction: column;
+    gap: 1rem;
   }
 }
 </style>
