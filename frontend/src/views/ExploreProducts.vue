@@ -11,7 +11,12 @@
       <div class="product-grid" v-if="products.length > 0">
         <div class="product-card" :class="{ 'product-unavailable': !isAvailable(product) }" v-for="product in products" :key="product._id">
           <div class="product-image">
-            <img v-if="product.image" :src="product.image" :alt="product.name">
+            <img 
+              v-if="productImage = getImageForProduct(product)"
+              :src="productImage"
+              :alt="product.name"
+            > 
+            <!-- DA CAMBIARE QUA IMMAGINE -->
             <div v-else class="placeholder-image">
               <span>Immagine non disponibile</span>
             </div>
@@ -64,12 +69,11 @@ import { ref, onMounted, reactive } from 'vue';
 import { API_URL } from '@/constants/API_URL';  
 import axios from 'axios';
 
-import { useToast } from 'vue-toastification';
 import { useCartStore } from '@/stores/cartStore';
+import { getProductImage } from '@/utils/imageMapper';
 
   const products = ref([]);
   const quantities = reactive({});
-  const toast = useToast();
   const cartStore = useCartStore();
 
   const API_BASE_URL = `${API_URL}/api/v1`;
@@ -78,6 +82,12 @@ import { useCartStore } from '@/stores/cartStore';
     await fetchProducts();
     cartStore.loadFromLocalStorage(); 
   });
+
+const getImageForProduct = (product) => {
+  const imagePath = getProductImage(product.name);
+  console.log(`Product: ${product.name}, Image path: ${imagePath}`);
+  return getProductImage(product.name);
+};
   
   const fetchProducts = async () => {
     try {
@@ -134,13 +144,10 @@ const addToCart = (productId, quantity) => {
     price: product.price,
     quantity: quantity,
     unit: 'kg',
-    image: product.image,
+    image: getImageForProduct(product),
     producer: product.producer
   };
-  console.log("Aggiunta al carrello:", cartItem);
-
   cartStore.addToCart(cartItem);
-  console.log("Carrello aggiornato:", cartStore.items);
   quantities[productId] = 0.1;
 };
 </script>
@@ -249,7 +256,6 @@ const addToCart = (productId, quantity) => {
   }
   
   .quantity-input {
-    -moz-appearance: textfield; /* Firefox */
     width: 50px;
     text-align: center;
     margin: 0 8px;
