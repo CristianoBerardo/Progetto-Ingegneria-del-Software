@@ -23,10 +23,11 @@ export const useUserStore = defineStore("user", {
       localStorage.setItem('user_role', user.role);
       localStorage.setItem('user_token', user.fb_token || '');
     },
-    setToken(token: string) {
-      this.fb_token = token;
-      localStorage.setItem('token', token);
-    },
+    //? Serviva?
+    // setToken(token: string) {
+    //   this.fb_token = token;
+    //   localStorage.setItem('token', token);
+    // },
     clearUser() {
       this.name = "";
       this.uid = "";
@@ -37,6 +38,7 @@ export const useUserStore = defineStore("user", {
       localStorage.removeItem('user_uid');
       localStorage.removeItem('user_role');
       localStorage.removeItem('user_token');
+      localStorage.removeItem('token');
     }
   }
 });

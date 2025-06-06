@@ -121,7 +121,7 @@ export default {
   methods: {
     headers() {
       const userStore = useUserStore();
-      const token = userStore.token || localStorage.getItem('token');
+      const token = userStore.fb_token;
       return token ? { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' } : { 'Content-Type': 'application/json' };
     },
     handleApiError(error, defaultMessage) {
