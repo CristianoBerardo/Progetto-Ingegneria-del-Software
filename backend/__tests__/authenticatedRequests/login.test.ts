@@ -5,7 +5,7 @@ import { TEST_USERS } from "../utils/loginUsers";
 import { getFirebaseToken } from "../utils/getFirebaseToken";
 
 describe("Client, Producer and Administrator login", () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await startServer();
   });
 
