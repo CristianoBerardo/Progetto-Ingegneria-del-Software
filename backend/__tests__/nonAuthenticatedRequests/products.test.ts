@@ -29,6 +29,39 @@ describe("Product API Tests without Authentication", () => {
     return response;
   });
 
+  test("POST /api/v1/products/ should return an error - Enter a fake producer ID", async () => {
+    const response = await request(app)
+      .post("/api/v1/products/")
+      .send({
+        name: "Test Product",
+        description: "This is a test product",
+        price: "100",
+        available: "50",
+        producer: "Fake Producer ID",
+      })
+      .set("Accept", "application/json");
+
+    expect(response.status).toBe(500);
+    expect(response.body.success).toBe(false);
+    return response;
+  });
+
+  test("POST /api/v1/products/ should return an error - No name", async () => {
+    const response = await request(app)
+      .post("/api/v1/products/")
+      .send({
+        description: "This is a test product",
+        price: "100",
+        available: "50",
+        producer: productId,
+      })
+      .set("Accept", "application/json");
+
+    expect(response.status).toBe(500);
+    expect(response.body.success).toBe(false);
+    return response;
+  });
+
   test("GET /api/v1/products/ should return a list of products", async () => {
     const response = await request(app)
       .get("/api/v1/products/")
@@ -48,6 +81,16 @@ describe("Product API Tests without Authentication", () => {
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty("data");
     expect(response.body.success).toBe(true);
+    return response;
+  });
+
+  test("GET /api/v1/products/:id should return an error - Fake productId", async () => {
+    const response = await request(app)
+      .get(`/api/v1/products/fakeProductId`)
+      .set("Accept", "application/json");
+
+    expect(response.status).toBe(500);
+    expect(response.body.success).toBe(false);
     return response;
   });
 
@@ -91,7 +134,7 @@ describe("Product API Tests without Authentication", () => {
     return response;
   });
 
-  test("GET /api/v1/products/:id should return an empty list after deletion", async () => {
+  test("GET /api/v1/products/:id should retun an error - product deleted", async () => {
     const response = await request(app)
       .get(`/api/v1/products/${productId}`)
       .set("Accept", "application/json");

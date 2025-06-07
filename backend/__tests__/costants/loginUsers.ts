@@ -1,11 +1,11 @@
 export const TEST_USERS = {
   client: {
-    email: "cri@gmail.com",
-    password: "cristiano123",
+    email: "cliente.test@gmail.com",
+    password: "cliente.test@gmail.com",
   },
   producer: {
-    email: "az1@gmail.com",
-    password: "az1@gmail.com",
+    email: "azienda.test@gmail.com",
+    password: "azienda.test@gmail.com",
   },
   admin: {
     email: "admin@admin.it",
