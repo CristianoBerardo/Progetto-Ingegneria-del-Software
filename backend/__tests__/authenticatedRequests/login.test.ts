@@ -1,7 +1,7 @@
 import request from "supertest";
 import app from "../../app";
 import { startServer } from "../../connections/mongoDB/connections";
-import { TEST_USERS } from "../costants/loginUsers";
+import { TEST_USERS } from "../utils/loginUsers";
 import { getFirebaseToken } from "../utils/getFirebaseToken";
 
 describe("Client, Producer and Administrator login", () => {
