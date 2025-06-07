@@ -63,7 +63,7 @@ const userType = ref(null);
 const username = ref("");
 const phone = ref("");
 const address = ref("");
-const API_BASE_URL = `${API_URL}/api/v1`;
+const API_BASE_URL = API_URL;
 
 function selectType(type) {
   userType.value = type;
