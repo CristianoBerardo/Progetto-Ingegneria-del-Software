@@ -1,20 +1,14 @@
 import { Router } from "express";
 import {
   completeUpdateProduct,
-  completeUpdateProductV2,
   createProduct,
-  createProductV2,
   deleteProduct,
-  deleteProductV2,
   partialUpdateProduct,
-  partialUpdateProductV2,
   readProduct,
   readProducts,
 } from "../controllers/ProductController";
-import { verifyFirebaseToken } from "../middleware/authMiddleware";
 
 const productRouter = Router();
-
 
 productRouter.post("/", createProduct);
 productRouter.get("/", readProducts);
@@ -26,7 +20,6 @@ productRouter.put("/:id", completeUpdateProduct);
 productRouter.patch("/:id", partialUpdateProduct);
 
 export default productRouter;
-
 
 // const productRouter = Router();
 

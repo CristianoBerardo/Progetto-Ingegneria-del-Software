@@ -7,7 +7,7 @@ import { sendPasswordResetEmail, signInWithEmailAndPassword } from "firebase/aut
 export const loginUser = async (email: string, password: string, redirect?:string) => {
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
   const firebaseToken = await userCredential.user.getIdToken();
-  console.log("Firebase Token:", firebaseToken);
+  // console.log("Firebase Token:", firebaseToken);
 
   const res = await axios.post(
     `${API_URL}/auth/login`,
