@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { loginController } from "../controllers/auth/LoginController";
 import { registerClientController } from "../controllers/auth/RegisterClientController";
-import { registerProducerController } from "../controllers/auth/registerProducerController";
+import { registerProducerController } from "../controllers/auth/RegisterProducerController";
 import { verifyFirebaseToken } from "../middleware/authMiddleware";
 import { auth } from "firebase-admin";
 
