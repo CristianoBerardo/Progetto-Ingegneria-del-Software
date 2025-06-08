@@ -1,33 +1,71 @@
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
+import { useUserStore } from "@/stores/userStore";
+import { onAuthStateChanged } from "firebase/auth";
 import { createRouter, createWebHistory } from "vue-router";
+import { useToast } from "vue-toastification";
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
-    { path: "/", name: "home", component: () => import("../views/Home.vue") },
+    { path: "/home", name: "home", component: () => import("../views/Home.vue") },
+    { path: "/", redirect: "/home" },
     { path: "/register", name: "register", component: () => import("../views/Register.vue") },
     { path: "/sign-in", name: "signin", component: () => import("../views/SignIn.vue") },
+    { path: "/login", redirect: "/sign-in" },
     {
-      path: "/feed",
-      name: "feed",
-      component: () => import("../views/Feed.vue"),
+      path: "/reset-password",
+      name: "resetPassword",
+      component: () => import("../views/ResetPassword.vue"),
+    },
+    {
+      path: "/explore-products",
+      name: "exploreProducts",
+      component: () => import("../views/ExploreProducts.vue"),
+    },
+    { path: "/cart", name: "cart", component: () => import("../views/CartView.vue") },
+    {
+      path: "/order-confirmation",
+      name: "order-confirmation",
+      component: () => import("../views/OrderConfirmation.vue"),
+    },
+
+    {
+      path: "/dashboard",
+      name: "dashboard",
+      component: () => import("../views/ProducerFeed.vue"),
       meta: {
         requiresAuth: true,
       },
     },
     {
+      path: "/your-orders",
+      name: "your-orders",
+      component: () => import("../views/ClientFeed.vue"),
+      meta: {
+        requiresAuth: true,
+      },
+    },
+    {
+      path: "/admin-feed",
+      name: "admin-feed",
+      component: () => import("../views/AdminFeed.vue"),
+      meta: {
+        requiresAuth: true,
+        requiresAdmin: true,
+      },
+    },
+    // Redirect delle vecchie rotte verso ProducerFeed
+    {
       path: "/add-product",
-      name: "addProduct",
-      component: () => import("../views/AddProduct.vue"),
+      redirect: "/dashboard",
     },
     {
-      path: "/delete-product/",
-      name: "deleteProduct",
-      component: () => import("../views/DeleteProduct.vue"),
+      path: "/delete-product",
+      redirect: "/dashboard",
     },
     {
-      path: "/modify-product/",
-      name: "modifyProduct",
-      component: () => import("../views/ModifyProduct.vue"),
+      path: "/modify-product",
+      redirect: "/dashboard",
     },
   ],
 });
@@ -35,7 +73,7 @@ const router = createRouter({
 const getCurrentUser = () => {
   return new Promise((resolve, reject) => {
     const removeListener = onAuthStateChanged(
-      getAuth(),
+      auth,
       (user) => {
         removeListener();
         resolve(user);
@@ -46,11 +84,28 @@ const getCurrentUser = () => {
 };
 
 router.beforeEach(async (to, from, next) => {
+  const toast = useToast();
+
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (await getCurrentUser()) {
+      // Controlla se la rotta richiede privilegi admin
+      if (to.matched.some((record) => record.meta.requiresAdmin)) {
+        const userStore = useUserStore();
+        if (userStore.role !== "administrator") {
+          toast.error("Accesso negato: solo gli amministratori possono accedere a questa pagina", {
+            closeOnClick: true,
+          });
+
+          next("/home");
+          return;
+        }
+      }
       next();
     } else {
-      alert("You must be signed in to view this page");
+      toast.error("Devi effettuare il login per accedere a questa pagina", {
+        closeOnClick: true,
+      });
+
       next("/sign-in");
     }
   } else {

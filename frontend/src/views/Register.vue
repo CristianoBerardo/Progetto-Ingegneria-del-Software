@@ -5,17 +5,13 @@
       <div class="type-selection">
         <div class="type-card" @click="selectType('cliente')">
           <div class="type-img cliente-img">
-            <img src="@/assets/icon_client.jpg" alt="Cliente" style="width: 48px; height: 48px" />
+            <img src="@/assets/icon_client.png" alt="Cliente" style="width: 48px; height: 48px" />
           </div>
           <div class="type-label">Cliente</div>
         </div>
         <div class="type-card" @click="selectType('azienda')">
           <div class="type-img azienda-img">
-            <img
-              src="@/assets/icon_farmer_market.jpg"
-              alt="Azienda"
-              style="width: 48px; height: 48px"
-            />
+            <img src="@/assets/icon_producer.png" alt="Azienda" style="width: 48px; height: 48px" />
           </div>
           <div class="type-label">Azienda</div>
         </div>
@@ -40,8 +36,8 @@
       </p>
       <p v-if="errMsg" class="error-message">{{ errMsg }}</p>
       <p>
-        <button v-if="userType === 'cliente'" @click="registerClient">Submit</button>
-        <button v-else @click="registerProducer">Submit</button>
+        <button v-if="userType === 'cliente'" @click="registerClient">Crea</button>
+        <button v-else @click="registerProducer">Crea</button>
       </p>
       <p class="back-link"><a href="#" @click.prevent="userType = null">Torna indietro</a></p>
     </div>
@@ -50,10 +46,13 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import { useRouter } from "vue-router";
 import axios from "axios";
+import { auth } from "@/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { loginUser } from "@/services/authService";
+import { API_URL } from "@/constants/API_URL";
 
 const email = ref("");
 const password = ref("");
@@ -64,6 +63,7 @@ const userType = ref(null);
 const username = ref("");
 const phone = ref("");
 const address = ref("");
+const API_BASE_URL = API_URL;
 
 function selectType(type) {
   userType.value = type;
@@ -81,7 +81,7 @@ const registerClient = async () => {
     return;
   }
   if (!email.value) {
-    errMsg.value = "Inserisci una email";
+    errMsg.value = "Indirizzo email mancante";
     return;
   }
   if (!password.value) {
@@ -89,11 +89,10 @@ const registerClient = async () => {
     return;
   }
 
-  const auth = getAuth();
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     console.log("Client registered on Firebase:", userCredential.user);
-    const idToken = await userCredential.user.getIdToken();
+    const firebaseToken = await userCredential.user.getIdToken();
 
     console.log("Sending data to backend:", {
       username: username.value,
@@ -101,15 +100,29 @@ const registerClient = async () => {
     });
 
     // Send data to backend
-    const res = await axios.post(`http://localhost:3000/auth/register/client/${idToken}`, {
-      username: username.value,
-      email: email.value,
-    });
+    // const res = await axios.post(`${API_BASE_URL}/auth/register/client/${idToken}`, {
+    //   username: username.value,
+    //   email: email.value,
+    // });
 
-    console.log("Backend token response:", res.data.token);
+    // ! meglio metterlo nell'header Authorization
+    // idToken obtained from Firebase successful sign-up/sign-in
+    const res = await axios.post(
+      `${API_BASE_URL}/auth/clients`,
+      {
+        username: username.value,
+        email: email.value,
+      },
+      {
+        headers: { Authorization: `Bearer ${firebaseToken}` },
+      },
+    );
+    console.log("Risposta dal backend:", res.data);
     // Save JWT token inside localStorage
-    localStorage.setItem("token", res.data.token);
-    router.push("/feed");
+    // localStorage.setItem("token", res.data.data.token);
+    // localStorage.setItem("userRole", res.data.data.userRole);
+    await loginUser(email.value, password.value);
+    router.push("/your-orders");
   } catch (error) {
     console.error("Error during Firebase registration:", error);
     if (error.code === "auth/email-already-in-use") {
@@ -146,7 +159,6 @@ const registerProducer = async () => {
     return;
   }
 
-  const auth = getAuth();
   try {
     const userCredential = await createUserWithEmailAndPassword(auth, email.value, password.value);
     console.log("Producer registered on Firebase:", userCredential.user);
@@ -160,16 +172,35 @@ const registerProducer = async () => {
     });
 
     // Send data to backend
-    const res = await axios.post(`http://localhost:3000/auth/register/producer/${idToken}`, {
-      name: username.value,
-      phone: phone.value,
-      address: address.value,
-      email: email.value,
-    });
-    console.log("Backend token response:", res.data.token);
+    // const res = await axios.post(`${API_BASE_URL}/auth/register/producer/${idToken}`, {
+    //   name: username.value,
+    //   phone: phone.value,
+    //   address: address.value,
+    //   email: email.value,
+    // });
+
+    // idToken obtained from Firebase successful sign-up/sign-in
+    const res = await axios.post(
+      `${API_BASE_URL}/auth/producers`,
+      {
+        name: username.value,
+        phone: phone.value,
+        address: address.value,
+        email: email.value,
+      },
+      {
+        headers: { Authorization: `Bearer ${idToken}` },
+      },
+    );
+
+    console.log("Risposta dal backend:", res.data);
     // Save JWT token inside localStorage
-    localStorage.setItem("token", res.data.token);
-    router.push("/feed");
+    // localStorage.setItem("token", res.data.data.token);
+    // localStorage.setItem("userRole", res.data.data.userRole);
+
+    // --- LOGIN ---
+    await loginUser(email.value, password.value);
+    router.push("/dashboard");
   } catch (error) {
     console.error("Error during Firebase registration:", error);
     if (error.code === "auth/email-already-in-use") {
@@ -190,18 +221,10 @@ body {
   min-height: 100vh;
   margin: 0;
   background: #f7f7f7;
-  font-family: "Quicksand", Arial, sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-.register-container,
-input,
-button,
-h3,
-p {
-  font-family: "Quicksand", Arial, sans-serif;
 }
 h3 {
   text-align: center;
@@ -236,22 +259,22 @@ button {
   width: 80%;
   padding: 10px;
   margin-bottom: 10px;
-  background: #145300; /* theme color */
+  background: #2b6c18; /* theme color */
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 0.8em;
+  font-size: 0.9em;
   cursor: pointer;
   transition: background 0.2s;
 }
 button:hover {
-  background: #0b2f00;
+  background: #194f08;
 }
 .sign-in-google {
   width: 80%;
   padding: 10px;
   margin-bottom: 10px;
-  background: #577c41; /* theme color */
+  background: #577c41;
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -260,7 +283,7 @@ button:hover {
   transition: background 0.2s;
 }
 .sign-in-google:hover {
-  background: #1a4301;
+  background: #171a16;
 }
 p {
   text-align: center;
@@ -276,7 +299,7 @@ p {
   font-size: 1em;
 }
 .signin-link a {
-  color: #577c41;
+  color: #80a469;
   font-weight: bold;
   text-decoration: none;
   transition: color 0.2s;
@@ -285,7 +308,6 @@ p {
   color: #145300;
   text-decoration: underline;
 }
-/* ...existing code... */
 .choose-type-container {
   background: #fff;
   border-radius: 12px;
@@ -301,6 +323,7 @@ p {
   margin-top: 24px;
 }
 .type-card {
+  margin: 10px;
   background: #f7f7f7;
   border: 2px solid #ccc;
   border-radius: 10px;
@@ -313,23 +336,19 @@ p {
   cursor: pointer;
   transition:
     border 0.2s,
-    box-shadow 0.2s;
+    box-shadow 1.2s;
 }
 .type-card:hover {
-  border: 2px solid #577c41;
+  border: 3px solid #577c41;
   box-shadow: 0 2px 8px rgba(87, 124, 65, 0.08);
 }
 .type-img {
-  width: 60px;
-  height: 60px;
-  background: #e0e0e0;
-  border-radius: 50%;
+  width: 40px;
+  height: 40px;
   margin-bottom: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5em;
-  color: #888;
 }
 .type-label {
   font-size: 1.1em;

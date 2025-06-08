@@ -1,14 +1,17 @@
 import { Router } from "express";
-import {
-  registerClient,
-  registerProducer,
-  loginWithFirebase,
-} from "../controllers/AuthController";
+import { loginController } from "../controllers/auth/LoginController";
+import { registerClientController } from "../controllers/auth/RegisterClientController";
+import { registerProducerController } from "../controllers/auth/registerProducerController";
+import { verifyFirebaseToken } from "../middleware/authMiddleware";
+import { auth } from "firebase-admin";
 
 const authRouter = Router();
 
-authRouter.post("/register/client/:idToken", registerClient);
-authRouter.post("/register/producer/:idToken", registerProducer);
-authRouter.post("/login/:idToken", loginWithFirebase);
+authRouter.use(verifyFirebaseToken);
+
+authRouter.post("/clients/", registerClientController);
+authRouter.post("/producers/", registerProducerController);
+
+authRouter.post("/login/", loginController);
 
 export default authRouter;
