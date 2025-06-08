@@ -42,7 +42,7 @@ watch(
 );
 
 const handleChange = (event: Event) => {
-  const target = event.target;
+  const target = event.target as HTMLSelectElement;
   const value = target.value;
   console.log("Selected value:", target);
   selectedValue.value = value;
