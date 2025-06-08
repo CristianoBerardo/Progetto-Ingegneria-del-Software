@@ -12,9 +12,9 @@ import { verifyFirebaseToken } from "../middleware/authMiddleware";
 const productRouterWithAuth = Router();
 
 productRouterWithAuth.post("/", verifyFirebaseToken, createProductV2);
-productRouterWithAuth.get("/", readProducts);
+// productRouterWithAuth.get("/", readProducts);
 
-productRouterWithAuth.get("/:id", readProduct);
+// productRouterWithAuth.get("/:id", readProduct);
 productRouterWithAuth.put("/:id", verifyFirebaseToken, completeUpdateProductV2);
 productRouterWithAuth.patch("/:id", verifyFirebaseToken, partialUpdateProductV2);
 productRouterWithAuth.delete("/:id", verifyFirebaseToken, deleteProductV2);

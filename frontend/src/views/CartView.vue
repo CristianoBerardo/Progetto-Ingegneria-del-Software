@@ -1,102 +1,127 @@
 <template>
   <div class="cart-container">
     <h1>Il tuo carrello</h1>
-    
+
     <div v-if="cartStore.items.length === 0" class="empty-cart">
       <p>Il tuo carrello è vuoto</p>
-      <router-link to="/explore-products" class="continue-shopping">Continua lo shopping</router-link>
+      <router-link to="/explore-products" class="continue-shopping"
+        >Continua lo shopping</router-link
+      >
     </div>
-    
+
     <div v-else class="cart-content">
       <div class="cart-items">
         <div v-for="item in cartStore.items" :key="item.productId" class="cart-item">
           <div class="item-image">
-            <img v-if="item.image" :src="item.image" :alt="item.name">
+            <img v-if="item.image" :src="item.image" :alt="item.name" />
             <div v-else class="placeholder-image">Immagine non disponibile</div>
           </div>
-          
+
           <div class="item-details">
             <h3>{{ item.name }}</h3>
-            <p class="item-producer">{{ item.producer ? item.producer.name : 'Azienda anonima' }}</p>
+            <p class="item-producer">
+              {{ item.producer ? item.producer.name : "Azienda anonima" }}
+            </p>
             <div class="item-quantity">
-              <p>Quantità: {{ item.quantity }} kg</p>
+              <p>Quantità: {{ Math.floor(item.quantity * 10) / 10 }} kg</p>
+              <!-- <p>Quantità: {{ item.quantity }} kg</p> -->
               <div class="quantity-controls">
-                <button @click="decreaseItemQuantity(item)" class="quantity-btn" 
-                  :disabled="item.quantity <= 0.1">-</button>
-                <button @click="increaseItemQuantity(item)" class="quantity-btn">+</button>
-                <button @click="cartStore.removeItem(item.productId)" class="remove-btn">Rimuovi</button>
+                <button
+                  @click="decreaseItemQuantity(item, item.productId)"
+                  class="quantity-btn"
+                  :disabled="item.quantity <= 0.1"
+                >
+                  -
+                </button>
+                <button @click="increaseItemQuantity(item, item.productId)" class="quantity-btn">+</button>
+                <button
+                  @click="removeItem(item.productId, Math.floor(item.quantity * 10) / 10)"
+                  class="remove-btn"
+                >
+                  Rimuovi
+                </button>
               </div>
             </div>
           </div>
-             
+
           <div class="item-price">
-            <p class="price">{{ (item.price * item.quantity).toFixed(2)  }} €</p>
+            <p class="price">
+              {{
+                (
+                  Math.round(((item.price * Math.floor(item.quantity * 10)) / 10) * 100) / 100
+                ).toFixed(2)
+              }}
+              €
+            </p>
             <p class="unit-price">{{ item.price.toFixed(2) }} €/kg</p>
           </div>
         </div>
       </div>
-      
+
       <div class="cart-summary">
         <h2>Riepilogo ordine</h2>
         <div class="summary-row">
           <span>Totale prodotti:</span>
           <span>{{ cartStore.totalAmount.toFixed(2) }} €</span>
         </div>
-        
+
         <div class="pickup-date">
           <label for="pickup-date">Seleziona una data di ritiro:</label>
-          <input 
-            type="date" 
-            id="pickup-date" 
-            v-model="pickupDate"
-            :min="minPickupDate"
-            required
-          >
+          <input type="date" id="pickup-date" v-model="pickupDate" :min="minPickupDate" required />
         </div>
-        
-        <button 
-          @click="proceedToCheckout" 
-          class="checkout-btn"
-          :disabled="!pickupDate"
-        >
+
+        <button @click="proceedToCheckout" class="checkout-btn" :disabled="!pickupDate">
           Procedi all'ordine
         </button>
-        
-        <router-link to="/explore-products" class="continue-shopping">Continua lo shopping</router-link>
+
+        <router-link to="/explore-products" class="continue-shopping"
+          >Continua lo shopping</router-link
+        >
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { useCartStore } from '@/stores/cartStore';
-import { computed, onMounted, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
-import { useToast } from 'vue-toastification';
+import { useCartStore } from "@/stores/cartStore";
+import { computed, onMounted, ref, watch } from "vue";
+import { useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
+import axios from "axios";
+import { API_URL } from "@/constants/API_URL";
 
 const router = useRouter();
 const toast = useToast();
 const cartStore = useCartStore();
-const pickupDate = ref('');
+const pickupDate = ref("");
+
+const API_BASE_URL = `${API_URL}/api/v1`;
 
 onMounted(() => {
   cartStore.loadFromLocalStorage();
-  
+
   if (cartStore.pickupDate) {
-    pickupDate.value = new Date(cartStore.pickupDate).toISOString().split('T')[0];
+    pickupDate.value = new Date(cartStore.pickupDate).toISOString().split("T")[0];
   } else {
     pickupDate.value = minPickupDate.value;
     cartStore.setPickupDate(new Date(minPickupDate.value));
   }
 });
 
-
 const minPickupDate = computed(() => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split('T')[0];
+  return tomorrow.toISOString().split("T")[0];
 });
 
+const removeItem = async (productId, quantityToAdd) => {
+  cartStore.removeItem(productId);
+  toast.success("Prodotto rimosso dal carrello");
+
+  await axios.patch(`${API_BASE_URL}/products/${productId}`, {
+    $inc: { available: quantityToAdd },
+  });
+};
 
 watch(pickupDate, (newDate) => {
   if (newDate) {
@@ -104,15 +129,25 @@ watch(pickupDate, (newDate) => {
   }
 });
 
-const increaseItemQuantity = (item) => {
+const increaseItemQuantity = async (item, productId) => {
   const newQuantity = Math.round((item.quantity + 0.1) * 10) / 10;
+  // console.log(`Increasing quantity for ${item.name} to ${newQuantity} kg  - Item quantity: ${item.quantity}`);
   cartStore.updateQuantity(item.productId, newQuantity);
+
+  await axios.patch(`${API_BASE_URL}/products/${productId}`, {
+    $inc: { available: -0.1 },
+  });
 };
 
-const decreaseItemQuantity = (item) => {
+const decreaseItemQuantity = async (item, productId) => {
   if (item.quantity > 0.1) {
     const newQuantity = Math.round((item.quantity - 0.1) * 10) / 10;
+    // console.log(`decrease quantity for ${item.name} to ${newQuantity} kg  - Item quantity: ${item.quantity}`);
     cartStore.updateQuantity(item.productId, newQuantity);
+
+    await axios.patch(`${API_BASE_URL}/products/${productId}`, {
+    $inc: { available: 0.1 },
+  });
   }
 };
 
@@ -121,7 +156,7 @@ const proceedToCheckout = () => {
     toast.error("Seleziona una data di ritiro");
     return;
   }
-  router.push('/order-confirmation');
+  router.push("/order-confirmation");
 };
 </script>
 <style scoped>
@@ -351,20 +386,20 @@ h1 {
   .cart-content {
     grid-template-columns: 1fr;
   }
-  
+
   .cart-item {
     flex-direction: column;
   }
-  
+
   .item-image {
     width: 100%;
     height: 150px;
   }
-  
+
   .item-details {
     padding: 1rem 0;
   }
-  
+
   .item-price {
     width: 100%;
     text-align: left;

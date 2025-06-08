@@ -11,11 +11,7 @@
         </div>
         <div class="type-card" @click="selectType('azienda')">
           <div class="type-img azienda-img">
-            <img
-              src="@/assets/icon_producer.png"
-              alt="Azienda"
-              style="width: 48px; height: 48px"
-            />
+            <img src="@/assets/icon_producer.png" alt="Azienda" style="width: 48px; height: 48px" />
           </div>
           <div class="type-label">Azienda</div>
         </div>
@@ -52,11 +48,11 @@
 <script setup>
 import axios from "axios";
 import { auth } from "@/firebase";
-import { createUserWithEmailAndPassword} from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { loginUser } from "@/services/authService";
-import {API_URL} from "@/constants/API_URL";
+import { API_URL } from "@/constants/API_URL";
 
 const email = ref("");
 const password = ref("");
@@ -67,7 +63,7 @@ const userType = ref(null);
 const username = ref("");
 const phone = ref("");
 const address = ref("");
-const API_BASE_URL = `${API_URL}/api/v1`;
+const API_BASE_URL = API_URL;
 
 function selectType(type) {
   userType.value = type;
@@ -126,7 +122,7 @@ const registerClient = async () => {
     // localStorage.setItem("token", res.data.data.token);
     // localStorage.setItem("userRole", res.data.data.userRole);
     await loginUser(email.value, password.value);
-    router.push("/client-feed");
+    router.push("/your-orders");
   } catch (error) {
     console.error("Error during Firebase registration:", error);
     if (error.code === "auth/email-already-in-use") {
@@ -204,7 +200,7 @@ const registerProducer = async () => {
 
     // --- LOGIN ---
     await loginUser(email.value, password.value);
-    router.push("/producer-feed");
+    router.push("/dashboard");
   } catch (error) {
     console.error("Error during Firebase registration:", error);
     if (error.code === "auth/email-already-in-use") {
@@ -327,6 +323,7 @@ p {
   margin-top: 24px;
 }
 .type-card {
+  margin: 10px;
   background: #f7f7f7;
   border: 2px solid #ccc;
   border-radius: 10px;

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import Product from "../models/ProductModel";
 import Producer from "../models/ProducerModel";
+import Product from "../models/ProductModel";
 
 // V1 Functions (from dev branch - no authentication)
 export const createProduct = async (
@@ -50,7 +50,7 @@ export const createProductV2 = async (
     await Producer.findByIdAndUpdate(
       producer._id,
       { $push: { products: newProduct._id } },
-      { new: true }
+      { new: true },
     );
 
     res.status(201).json({
@@ -187,7 +187,7 @@ export const deleteProductV2 = async (
     await Producer.findByIdAndUpdate(
       product.producer._id,
       { $pull: { products: productId } },
-      { new: true }
+      { new: true },
     );
 
     const deletedProduct = await Product.findByIdAndDelete(productId);
@@ -280,7 +280,7 @@ export const completeUpdateProductV2 = async (
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     res.status(200).json({
@@ -370,7 +370,7 @@ export const partialUpdateProductV2 = async (
       {
         new: true,
         runValidators: true,
-      }
+      },
     );
 
     res.status(200).json({
@@ -399,8 +399,8 @@ export const searchProducts = async (
       maxPrice,
       producer,
       sort = "name:asc",
-      page = 1,
-      limit = 10,
+      // page = 1,
+      // limit = 9,
     } = req.query;
 
     console.log("Query parameters:", req.query);
@@ -441,13 +441,15 @@ export const searchProducts = async (
 
     const products = await Product.find(query)
       .sort(sortOption)
-      .populate("producer", "_id name")
-      .skip((parseInt(page as string) - 1) * parseInt(limit as string))
-      .limit(parseInt(limit as string));
+      .populate("producer", "_id name");
+    // .skip((parseInt(page as string) - 1) * parseInt(limit as string))
+    // .limit(parseInt(limit as string));
 
     if (!products || products.length === 0) {
-      res.status(404).json({
-        success: false,
+      res.status(200).json({
+        success: true,
+        data: [],
+        total: 0,
         message: "No products found",
       });
       return;
@@ -456,6 +458,7 @@ export const searchProducts = async (
     res.status(200).json({
       success: true,
       data: products,
+      total: products.length,
       message: "Products retrieved successfully",
     });
   } catch (error) {

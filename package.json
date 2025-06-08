@@ -10,9 +10,16 @@
     "format": "prettier --write ./**/*ts"
   },
   "devDependencies": {
+    "@types/chai": "^5.2.2",
+    "@types/jest": "^29.5.14",
+    "@types/mocha": "^10.0.10",
+    "@types/supertest": "^6.0.3",
+    "chai": "^5.2.0",
     "@types/node": "^22.15.30",
     "concurrently": "^8.2.2",
-    "prettier": "3.5.3"
+    "mocha": "^11.5.0",
+    "prettier": "3.5.3",
+    "supertest": "^7.1.1"
   },
   "dependencies": {
     "primeicons": "^7.0.0",
