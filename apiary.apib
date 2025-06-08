@@ -12,7 +12,9 @@ AgriTrento mette a disposizione le seguenti API.
 
 ## Produttori [/api/v1/producers]
 
-### Lettura produttori[GET /]
+CRUD sulle risorse produttori
+
+### Lettura produttori [GET /api/v1/producers]
 
 + Response 200 (application/json)
 
@@ -46,8 +48,88 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Producers retrieved successfully"
                 }
             ]
+
+### Ricerca produttori [GET /api/v1/producers?name=Azienda 1]
+
++ Response 200 (application/json)
+
+            [
+                {
+                "success": true,
+                "data": [
+                    {
+                        "_id": "6829d852f157077cbf886a50",
+                        "name": "Azienda 1",
+                        "email": "azienda1@azienda1.it",
+                        "phone": "+39 3771954812",
+                        "address": "Via Carlo Magno, 17, Caldonazzo, Trento, Italia",
+                        "products": [
+                            "68250af830cf8930e4cd9222"
+                        ],
+                        "__v": 0
+                    }
+                ],
+                "message": "Producers retrieved successfully"
+                }
+            ]
+            
+### Lettura prodotti di un dato produttore [GET /api/v1/producers/:id/products]
+
++ Response 200 (application/json)
+
+            {
+                "success": true,
+                "data": [
+                    {
+                        "_id": "6842b79046519ddb7febaed6",
+                        "name": "Carote",
+                        "description": "carote trentine",
+                        "price": 6.59,
+                        "available": 50,
+                        "producer": "6842af718df9bccc89e20488",
+                        "__v": 0
+                    },
+                    {
+                        "_id": "6842e34628298882cfa79dde",
+                        "name": "Pomodoro",
+                        "description": "Pomodoro Bio Trentino",
+                        "price": 4,
+                        "available": 50,
+                        "producer": "6842af718df9bccc89e20488",
+                        "__v": 0
+                    },
+                    {
+                        "_id": "6842e91828298882cfa79ecf",
+                        "name": "Lattuga gentile",
+                        "description": "Lattuga verace",
+                        "price": 3.99,
+                        "available": 10,
+                        "producer": "6842af718df9bccc89e20488",
+                        "__v": 0
+                    },
+                    {
+                        "_id": "684358b841d9ab20481051ec",
+                        "name": "Asparagi",
+                        "description": "Asparagi di lago",
+                        "price": 15,
+                        "available": 140,
+                        "producer": "6842af718df9bccc89e20488",
+                        "__v": 0
+                    },
+                    {
+                        "_id": "68446070a300df796145e04a",
+                        "name": "Fichi",
+                        "description": "Fichi Siciliani",
+                        "price": 10,
+                        "available": 60,
+                        "producer": "6842af718df9bccc89e20488",
+                        "__v": 0
+                    }
+                ],
+                "message": "Found 5 products for producer Azienda Trento"
+            }
         
-###  Lettura nomi produttori[GET /names]
+###  Lettura nomi produttori[GET /api/v1/producers/names]
 
 + Response 200 (application/json)
 
@@ -68,7 +150,7 @@ AgriTrento mette a disposizione le seguenti API.
                 }
             ]
         
-###  Lettura produttore[GET /6829d852f157077cbf886a50]
+###  Lettura produttore[GET /api/v1/producers/:id]
 
 + Response 200 (application/json)
 
@@ -89,7 +171,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Producers retrieved successfully"
             }
 
-### Create produttore [POST /]
+### Create produttore [POST /api/v1/producers/]
 
 + Request (application/json)
 
@@ -119,7 +201,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Producer created successfully"
             }
             
-### Elimina produttore [DELETE /682b32359e2b5e805fdb2fce]
+### Elimina produttore [DELETE /api/v1/producers/:id]
 
 + Response 200 (application/json)
     
@@ -139,7 +221,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Producer and relative products are deleted successfully"
             }
             
-### Aggiornamento completo produttore [PUT /682b32359e2b5e805fdb2fce]
+### Aggiornamento completo produttore [PUT /api/v1/producers/:id]
 
 + Request (application/json)
 
@@ -173,7 +255,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Producer updated successfully"
             }
 
-### Aggiornamento parziale produttore [PATCH /682b32359e2b5e805fdb2fce]
+### Aggiornamento parziale produttore [PATCH /api/v1/producers/:id]
 
 + Request (application/json)
 
@@ -203,7 +285,9 @@ AgriTrento mette a disposizione le seguenti API.
             
 ## Prodotti [/api/v1/products]
 
-### Lettura prodotti[GET /]
+CRUD sulle risorse prodotti
+
+### Lettura prodotti[GET /api/v1/products/]
 
 + Response 200 (application/json)
 
@@ -233,8 +317,31 @@ AgriTrento mette a disposizione le seguenti API.
                     "message": "Products retrieved successfully"
                 }
             ]
+            
+### Ricerca prodotti[GET /api/v1/products?name=Zucchina&minPrice=2]
+
++ Response 200 (application/json)
+
+            [
+                {
+                    "success": true,
+                    "data": [
+                        {
+                            "_id": "682a43f39ce62815f3f88802",
+                            "name": "Zucchina",
+                            "description": "Zucchina di Trento",
+                            "price": 6,
+                            "available": 125,
+                            "producer": "682b32359e2b5e805fdb2fce",
+                            "__v": 0
+                        }
+                    ],
+                    "total": 1,
+                    "message": "Products retrieved successfully"
+                }
+            ]
         
-### Lettura prodotto[GET /682a43f39ce62815f3f88802]
+### Lettura prodotto[GET /api/v1/products/:id]
 
 + Response 200 (application/json)
 
@@ -246,7 +353,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "producer": "6829d852f157077cbf886a50"
             }
         
-### Create prodotto [POST /]
+### Create prodotto [POST /api/v1/products/]
 
 + Request (application/json)
 
@@ -276,7 +383,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Product created successfully"
             }
 
-### Elimina prodotto [DELETE /682b3c08a10424f6de694ce5]
+### Elimina prodotto [DELETE /api/v1/products/:id]
 
 + Response 200 (application/json)
     
@@ -296,7 +403,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Product deleted successfully"
             }
         
-### Aggiornamento completo prodotto [PUT /682b3c08a10424f6de694ce5]
+### Aggiornamento completo prodotto [PUT /api/v1/products/:id]
 
 + Request (application/json)
 
@@ -326,7 +433,7 @@ AgriTrento mette a disposizione le seguenti API.
             }
         
 
-### Aggiornamento parziale produttore [PATCH /682b3c08a10424f6de694ce5]
+### Aggiornamento parziale produttore [PATCH /api/v1/products/:id]
 
 + Request (application/json)
 
@@ -354,7 +461,9 @@ AgriTrento mette a disposizione le seguenti API.
 
 ## Clienti [/api/v1/clients]
 
-### Lettura cliente[GET /]
+CRUD sulle risorse clienti
+
+### Lettura cliente[GET /api/v1/clients/]
 
 + Response 200 (application/json)
 
@@ -375,7 +484,7 @@ AgriTrento mette a disposizione le seguenti API.
                 }
             ]
         
-### Lettura cliente[GET /682b41a64f824f4cb9774470]
+### Lettura cliente[GET /api/v1/clients/:id]
 
 + Response 200 (application/json)
 
@@ -392,7 +501,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Client retrieved successfully"
             }
         
-### Create cliente [POST /]
+### Create cliente [POST /api/v1/clients/]
 
 + Request (application/json)
 
@@ -420,7 +529,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Client created successfully"
             }
 
-### Elimina cliente [DELETE /682b41a64f824f4cb9774470]
+### Elimina cliente [DELETE /api/v1/clients/:id]
 
 + Response 200 (application/json)
     
@@ -439,7 +548,7 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Client retrieved successfully"
             }
         
-### Aggiornamento completo cliente [PUT /682b41a64f824f4cb9774470]
+### Aggiornamento completo cliente [PUT /api/v1/clients/:id]
 
 + Request (application/json)
 
@@ -468,7 +577,7 @@ AgriTrento mette a disposizione le seguenti API.
             }
         
 
-### Aggiornamento parziale cliente [PATCH /682b41a64f824f4cb9774470]
+### Aggiornamento parziale cliente [PATCH /api/v1/clients/:id]
 
 + Request (application/json)
 
@@ -493,22 +602,38 @@ AgriTrento mette a disposizione le seguenti API.
                 "message": "Client partially updated successfully"
             }
 
-## Auth [/auth]
+## Autenticazione e Registrazione [/auth]
 
-### Login cliente [POST /login/eyJhbGciOiJSUzI1NiIsImtpZCI6IjY3ZDh...]
+Tutti i ruoli presenti nell'applicazione (Cliente, Produttore e Amministratore) utilizzano questo endpoint.
 
+Il Login permette di decodificare il token ricevuto da Firebase, verificare i Custom Claims, ovvero durante la creazione di un nuovo utente, verrà
+inserito in firebase il suo ruolo nell'applicazione. 
+
+Questo ruolo qui viene verificato se corrisponde anche a quanto inserito nel Database.
+
+### Login [POST /auth/login/]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
 
 + Response 201 (application/json)
 
     + Body
 
             {
-              "success": true,
-              "token": "eyJhbGciOiJSUzI1NiIsImtpZCI6IjY3ZDh...",
-              "message": "Login effettuato con successo"
+                "success": true,
+                "message": "Login successful <client, producer, administrator>",
+                "data": {
+                        "customToken": "...",
+                        "uid": "...",
+                        "userRole": "<client, producer, administrator>",
+                    },
             }
             
-### Registra cliente [POST /register/client/eyJhbGciOiJSUzI1NiIsImtpZ...]
+### Registra cliente [POST /register/clients/]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
 
 + Request (application/json)
 
@@ -522,12 +647,18 @@ AgriTrento mette a disposizione le seguenti API.
     + Body
 
             {
-              success: true,
-              token: "eyJhbGciOiJSUzI1NiIsImtpZ..."
-              message: 'Registration successful'
+                "success": true,
+                "message": "Registration successful",
+                "data": {
+                    "token": "...",
+                    "userRole": "client",
+                    },
             }
             
-### Registra produttore [POST /register/producer/eyJhbGciOiJIUzI1Ni...]
+### Registra produttore [POST /register/producer/]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
 
 + Request (application/json)
 
@@ -543,16 +674,266 @@ AgriTrento mette a disposizione le seguenti API.
     + Body
 
             {
-              "success": "true",
-              "token": "eyJhbGciOiJIUzI1Ni"
-              "message": "Registration successful"
+                "success": true,
+                "message": "Producer registration successful",
+                "data": {
+                    "token": "...",
+                    "userRole": "producer",
+                    },
+            }
+
+## Ordini con token JWT [/api/v1/orders]
+
+Utilizzando questi endpoint verrà verificato, attraverso l'utilizzo di Bearer token, se il cliente (solo lui) può modificare le risorse.
+
+Essendo che il token contiene UID del cliente, chi manda la richiesta potrà solo modificare i propri ordini.
+
+### Crea ordine [POST /api/v1/orders]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
+
++ Request Crea Ordine (application/json)
+
+    + Body
+
+            {
+                "products": [{
+                    "productId": "6842b79046519ddb7febaed6",
+                    "quantity": 100
+                }],
+                "totalPrice": 100,
+                "pickupDate": "07/07/2025"
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Order created successfully",
+                "savedOrder": {
+                    "clientId": "6842af138df9bccc89e20482",
+                    "products": [
+                        {
+                            "productId": "6842b79046519ddb7febaed6",
+                            "quantity": 100
+                        }
+                    ],
+                    "totalPrice": 100,
+                    "pickupDate": "2025-07-06T22:00:00.000Z",
+                    "_id": "68445b64a300df796145e03b",
+                    "orderDate": "2025-06-07T15:31:48.934Z",
+                    "__v": 0
+                }
+            }
+            
+### Leggi ordini [GET /api/v1/orders]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Orders fetched successfully",
+                "orders": [
+                    {
+                        "_id": "68431f4a221adf2d3fd06b94",
+                        "totalPrice": 17215.393000000015,
+                        "status": "pending",
+                        "pickupDate": "2025-06-07T00:00:00.000Z"
+                    },
+                    {
+                        "_id": "68443709f2d1e2024963b6a8",
+                        "totalPrice": 150,
+                        "status": "pending",
+                        "pickupDate": "2025-06-08T00:00:00.000Z"
+                    },
+                    {
+                        "_id": "68445b64a300df796145e03b",
+                        "totalPrice": 100,
+                        "status": "pending",
+                        "pickupDate": "2025-07-06T22:00:00.000Z"
+                    }
+                ]
+            }
+            
+### Elimina ordine [DELETE /api/v1/orders/:id]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
+
+
++ Response 200 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "message": "Order cancelled successfully"
+            }
+
+## Prodotti con token JWT [/api/v2]
+
+Utilizzando questi endpoint verrà verificato, attraverso l'utilizzo di Bearer token, se il produttore (solo lui) può modificare le risorse.
+
+Essendo che il token contiene UID del produttore, chi manda la richiesta potrà solo modificare i propri prodotti.
+
+### Crea prodotto [POST /api/v2/products]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "name": "Fichi",
+                "description": "Fichi Siciliani",
+                "price": "6",
+                "available": "60"
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "name": "Fichi",
+                    "description": "Fichi Siciliani",
+                    "price": 6,
+                    "available": 60,
+                    "producer": "6842af718df9bccc89e20488",
+                    "_id": "68446070a300df796145e04a",
+                    "__v": 0
+                },
+                "message": "Product created successfully"
+            }
+            
+### Modifica parziale prodotto [PATCH /api/v2/products/:id]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "price": "10",
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "68446070a300df796145e04a",
+                    "name": "Fichi",
+                    "description": "Fichi Siciliani",
+                    "price": 10,
+                    "available": 60,
+                    "producer": "6842af718df9bccc89e20488",
+                    "__v": 0
+                },
+                "message": "Product partially updated successfully"
+            }
+            
+### Modifica totale prodotto [PUT /api/v2/products/:id]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
+
++ Request (application/json)
+
+    + Body
+
+            {
+                "name": "Fichi Verdi",
+                "description": "Fichi Verdi Siciliani",
+                "price": "15",
+                "available": "30"
+            }
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "6843591c41d9ab20481051f5",
+                    "name": "Fichi Verdi",
+                    "description": "Fichi Verdi Siciliani",
+                    "price": 15,
+                    "available": 30,
+                    "producer": "6842af718df9bccc89e20488",
+                    "__v": 0
+                },
+                "message": "Product updated successfully"
+            }
+            
+### Elimina prodotto [DELETE /api/v2/products/:id]
+
++ Parameters
+    + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
+
++ Response 201 (application/json)
+
+    + Body
+
+            {
+                "success": true,
+                "data": {
+                    "_id": "6843591c41d9ab20481051f5",
+                    "name": "Fichi Verdi",
+                    "description": "Fichi Verdi Siciliani",
+                    "price": 15,
+                    "available": 30,
+                    "producer": "6842af718df9bccc89e20488",
+                    "__v": 0
+                },
+                "message": "Product deleted successfully"
             }
 
 ## API [/api]
 
+Permette di visualizzare tutti gli endpoint dell'applicazione
+
+### Mappa delle API [GET /api/]
+
 + Response 200 (application/json)
 
             [
+                {
+                    "path": "/api/v1/admin",
+                    "methods": [
+                        "POST"
+                    ],
+                    "middlewares": [
+                        "createAdministrator"
+                    ]
+                },
+                {
+                    "path": "/api/v1/admin/:id",
+                    "methods": [
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "readAdministrator"
+                    ]
+                },
                 {
                     "path": "/api/v1/producers",
                     "methods": [
@@ -573,12 +954,21 @@ AgriTrento mette a disposizione le seguenti API.
                     ]
                 },
                 {
+                    "path": "/api/v1/producers/:id/products",
+                    "methods": [
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "getProductsByProducerId"
+                    ]
+                },
+                {
                     "path": "/api/v1/producers/:id",
                     "methods": [
                         "GET",
-                        "DELETE",
                         "PUT",
-                        "PATCH"
+                        "PATCH",
+                        "DELETE"
                     ],
                     "middlewares": [
                         "readProducer"
@@ -629,30 +1019,73 @@ AgriTrento mette a disposizione le seguenti API.
                     ]
                 },
                 {
-                    "path": "/auth/register/client/:idToken",
+                    "path": "/api/v2/products",
                     "methods": [
                         "POST"
                     ],
                     "middlewares": [
-                        "registerClient"
+                        "verifyFirebaseToken",
+                        "createProductV2"
                     ]
                 },
                 {
-                    "path": "/auth/register/producer/:idToken",
+                    "path": "/api/v2/products/:id",
                     "methods": [
-                        "POST"
+                        "PUT",
+                        "PATCH",
+                        "DELETE"
                     ],
                     "middlewares": [
-                        "registerProducer"
+                        "verifyFirebaseToken",
+                        "completeUpdateProductV2"
                     ]
                 },
                 {
-                    "path": "/auth/login/:idToken",
+                    "path": "/auth/clients/",
                     "methods": [
                         "POST"
                     ],
                     "middlewares": [
-                        "loginWithFirebase"
+                        "registerClientController"
+                    ]
+                },
+                {
+                    "path": "/auth/producers/",
+                    "methods": [
+                        "POST"
+                    ],
+                    "middlewares": [
+                        "registerProducerController"
+                    ]
+                },
+                {
+                    "path": "/auth/login/",
+                    "methods": [
+                        "POST"
+                    ],
+                    "middlewares": [
+                        "loginController"
+                    ]
+                },
+                {
+                    "path": "/api/v1/orders",
+                    "methods": [
+                        "POST",
+                        "GET"
+                    ],
+                    "middlewares": [
+                        "verifyFirebaseToken",
+                        "createOrder"
+                    ]
+                },
+                {
+                    "path": "/api/v1/orders/:orderId",
+                    "methods": [
+                        "DELETE"
+                    ],
+                    "middlewares": [
+                        "verifyFirebaseToken",
+                        "deleteOrder"
                     ]
                 },
                 {

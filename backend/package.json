@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "nodemon app.ts",
     "build": "tsc",
+    "start": "node dist/app.js",
     "format": "prettier --write ./**/*ts",
     "test": "jest --setupFiles dotenv/config"
   },
