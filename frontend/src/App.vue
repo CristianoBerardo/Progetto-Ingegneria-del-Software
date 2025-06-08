@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
 import { auth } from "@/firebase";
-import { onAuthStateChanged } from "firebase/auth";
-import { useRouter } from "vue-router";
+import { useCartStore } from "@/stores/cartStore";
 import { useUserStore } from "@/stores/userStore";
+import { onAuthStateChanged } from "firebase/auth";
+import { onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import ThemeToggle from "./components/ThemeToggle.vue";
 import { logoutUser } from "./services/authService";
-import { useCartStore } from "@/stores/cartStore";
 
 const isLoggedIn = ref(false);
 const userStore = useUserStore();
@@ -38,12 +38,12 @@ const handleSignOut = async () => {
 };
 
 const navigateToProfile = () => {
-  if (userStore.role === 'client') {
-    router.push('/your-orders');
-  } else if (userStore.role === 'producer') {
-    router.push('/dashboard');
-  } else if (userStore.role === 'administrator') {
-    router.push('/admin-feed');
+  if (userStore.role === "client") {
+    router.push("/your-orders");
+  } else if (userStore.role === "producer") {
+    router.push("/dashboard");
+  } else if (userStore.role === "administrator") {
+    router.push("/admin-feed");
   }
 };
 </script>
@@ -65,7 +65,7 @@ const navigateToProfile = () => {
       <router-link to="/admin-feed" v-if="isLoggedIn && userStore.role === 'administrator'"
         >Dashboard</router-link
       >
-      <router-link to="/cart" class="cart-link" v-if="userStore.role === 'client'">
+      <router-link to="/cart" class="cart-link">
         <i class="pi pi-shopping-cart"></i>
         Carrello ({{ cartStore.items.length }})
       </router-link>
@@ -74,7 +74,7 @@ const navigateToProfile = () => {
     <div class="nav-auth">
       <router-link to="/register" v-if="!isLoggedIn" class="register-btn">Register</router-link>
       <router-link to="/sign-in" v-if="!isLoggedIn" class="sign-in-btn">Sign In</router-link>
-      
+
       <!-- Menu Profilo per utenti loggati -->
       <!-- <div v-if="isLoggedIn && userStore.role === 'administrator'" class="profile-menu" @click="navigateToProfile">
         <div class="profile-link">
@@ -82,7 +82,7 @@ const navigateToProfile = () => {
           <span>Il mio profilo</span>
         </div>
       </div> -->
-      
+
       <button @click="handleSignOut" v-if="isLoggedIn" class="sign-out-btn">Sign Out</button>
     </div>
   </nav>
