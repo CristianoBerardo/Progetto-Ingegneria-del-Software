@@ -175,12 +175,10 @@ import { API_URL } from "@/constants/API_URL";
 import { useCartStore } from "@/stores/cartStore";
 import axios from "axios";
 import debounce from "lodash/debounce";
-import { onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
 import { ref, onMounted, reactive } from 'vue';
 
-import { useCartStore } from '@/stores/cartStore';
 import { getProductImage } from '@/utils/imageMapper';
 
 const products = ref([]);
