@@ -114,62 +114,47 @@
       </div>
     </div> -->
 
-    <div class="product-grid" v-if="products.length > 0">
-      <div
-        class="product-card"
-        :class="{ 'product-unavailable': !isAvailable(product) }"
-        v-for="product in products"
-        :key="product._id"
-      >
-        <div class="product-image">
-          <img v-if="product.image" :src="product.image" :alt="product.name" />
-          <div v-else class="placeholder-image">
-            <span>Immagine non disponibile</span>
-          </div>
-        </div>
-        <div class="product-info">
-          <h3>{{ product.name }}</h3>
-          <p class="producer" v-if="product.producer">{{ product.producer.name }}</p>
-          <p v-else>{{ "azienda anonima" }}</p>
-          <p class="description" v-if="product.description">{{ product.description }}</p>
-          <p
-            class="availability"
-            :class="{ available: isAvailable(product), unavailable: !isAvailable(product) }"
-          >
-            {{ isAvailable(product) ? "Prodotto disponibile" : "Prodotto esaurito" }}:
-            {{ Math.floor(product.available * 10) / 10 }} kg
-          </p>
-          <p class="price">{{ product.price }} €/kg</p>
-
-          <div class="quantity-container" v-if="isAvailable(product)">
-            <p class="quantity-label">Quantità (kg):</p>
-            <div class="quantity-selector">
-              <button
-                @click="decreaseQuantity(product._id)"
-                class="quantity-btn"
-                :disabled="getQuantity(product._id) <= 0.1"
-              >
-                -
-              </button>
-              <input
-                type="number"
-                step="0.1"
-                min="0.1"
-                :max="product.available"
-                v-model.number="quantities[product._id]"
-                class="quantity-input"
-              />
-              <button
-                @click="increaseQuantity(product._id, product.available)"
-                class="quantity-btn"
-              >
-                +
-              </button>
+      <div class="product-grid" v-if="products.length > 0">
+        <div class="product-card" :class="{ 'product-unavailable': !isAvailable(product) }" v-for="product in products" :key="product._id">
+          <div class="product-image">
+            <img 
+              v-if="productImage = getImageForProduct(product)"
+              :src="productImage"
+              :alt="product.name"
+            > 
+            <!-- DA CAMBIARE QUA IMMAGINE -->
+            <div v-else class="placeholder-image">
+              <span>Immagine non disponibile</span>
             </div>
           </div>
-
-          <button
-            class="add-to-cart"
+          <div class="product-info">
+            <h3>{{ product.name }}</h3>
+            <p class="producer" v-if="product.producer" >{{ product.producer.name }}</p>
+            <p v-else >{{ "azienda anonima" }}</p> 
+            <p class="description" v-if="product.description">{{ product.description }}</p>
+            <p class="availability" :class="{ 'available': isAvailable(product), 'unavailable': !isAvailable(product) }">
+              {{ isAvailable(product) ? 'Prodotto disponibile' : 'Prodotto esaurito' }}:
+              {{ Math.floor(product.available * 10) / 10 }} kg
+            </p>
+            <p class="price">{{ product.price }} €/kg</p>
+            
+            <div class="quantity-container" v-if="isAvailable(product)">
+              <p class="quantity-label">Quantità (kg):</p>
+              <div class="quantity-selector">
+                <button @click="decreaseQuantity(product._id)" class="quantity-btn" 
+                  :disabled="getQuantity(product._id) <= 0.1">-</button>
+                <input 
+                  type="number" 
+                  step="0.1"
+                  min="0.1"
+                  :max="product.available" 
+                  v-model.number="quantities[product._id]" 
+                  class="quantity-input">
+                <button @click="increaseQuantity(product._id, product.available)" class="quantity-btn">+</button>
+              </div>
+            </div>
+            
+            <button class="add-to-cart" 
             @click="addToCart(product._id, quantities[product._id], 'kg')"
             v-if="isAvailable(product)"
           >
@@ -190,9 +175,11 @@ import { API_URL } from "@/constants/API_URL";
 import { useCartStore } from "@/stores/cartStore";
 import axios from "axios";
 import debounce from "lodash/debounce";
-import { onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { useToast } from "vue-toastification";
+import { ref, onMounted, reactive } from 'vue';
+
+import { getProductImage } from '@/utils/imageMapper';
 
 const products = ref([]);
 const quantities = reactive({});
@@ -257,6 +244,13 @@ onMounted(async () => {
 
   cartStore.loadFromLocalStorage();
 });
+
+
+const getImageForProduct = (product) => {
+  const imagePath = getProductImage(product.name);
+  console.log(`Product: ${product.name}, Image path: ${imagePath}`);
+  return getProductImage(product.name);
+};
 
 // Debounce search input to avoid too many API calls
 const debounceSearch = debounce(() => {
@@ -448,7 +442,7 @@ const addToCart = async (productId, quantity) => {
       price: product.price,
       quantity: quantity,
       unit: "kg",
-      image: product.image,
+      image: getImageForProduct(product),
       producer: product.producer,
     };
     console.log("Aggiunta al carrello:", cartItem);
