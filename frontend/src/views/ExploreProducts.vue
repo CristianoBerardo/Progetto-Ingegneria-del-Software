@@ -76,14 +76,14 @@
         </div>
 
         <!-- Items per page -->
-        <div class="search-field">
+        <!-- <div class="search-field">
           <label for="limitOptions">Elementi per pagina</label>
           <select id="limitOptions" v-model="filters.limit" @change="applyFilters">
             <option value="9">9</option>
             <option value="18">18</option>
             <option value="27">27</option>
           </select>
-        </div>
+        </div> -->
       </div>
 
       <div class="search-actions">
@@ -93,7 +93,7 @@
     </div>
 
     <!-- Pagination info and navigation -->
-    <div class="pagination-info" v-if="totalProducts > 0">
+    <!-- <div class="pagination-info" v-if="totalProducts > 0">
       <span>Mostra {{ startItem }}-{{ endItem }} di {{ totalProducts }} prodotti</span>
       <div class="pagination-controls">
         <button
@@ -112,7 +112,7 @@
           Successivo &gt;
         </button>
       </div>
-    </div>
+    </div> -->
 
     <div class="product-grid" v-if="products.length > 0">
       <div
@@ -186,13 +186,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, computed, watch } from "vue";
 import { API_URL } from "@/constants/API_URL";
-import axios from "axios";
-import { useToast } from "vue-toastification";
 import { useCartStore } from "@/stores/cartStore";
-import { useRoute, useRouter } from "vue-router";
+import axios from "axios";
 import debounce from "lodash/debounce";
+import { onMounted, reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useToast } from "vue-toastification";
 
 const products = ref([]);
 const quantities = reactive({});
@@ -211,23 +211,23 @@ const filters = reactive({
   maxPrice: "",
   producer: "",
   sort: "name:asc",
-  page: 1,
-  limit: "",
+  // page: 1,
+  // limit: "",
 });
 
 // For filter dropdowns
-const categories = ref([]);
+
 const producers = ref([]);
-const totalProducts = ref(0);
+// const totalProducts = ref(0);
 const isLoading = ref(false);
 
 // Pagination calculations
-const totalPages = computed(() => Math.ceil(totalProducts.value / filters.limit));
-console.log("Total pages:", totalPages.value);
+// const totalPages = computed(() => Math.ceil(totalProducts.value / filters.limit));
+// console.log("Total pages:", totalPages.value);
 
-const startItem = computed(() => (filters.page - 1) * filters.limit + 1);
+// const startItem = computed(() => (filters.page - 1) * filters.limit + 1);
 
-const endItem = computed(() => Math.min(filters.page * filters.limit, totalProducts.value));
+// const endItem = computed(() => Math.min(filters.page * filters.limit, totalProducts.value));
 
 // Initialize from URL parameters
 onMounted(async () => {
@@ -239,7 +239,7 @@ onMounted(async () => {
     Object.keys(filters).forEach((key) => {
       if (queryParams[key]) {
         // Convert numeric strings to numbers
-        if (key === "page" || key === "limit" || key === "minPrice" || key === "maxPrice") {
+        if (key === "page" || key === "minPrice" || key === "maxPrice") {
           filters[key] = Number(queryParams[key]);
         } else {
           filters[key] = queryParams[key];
@@ -260,13 +260,13 @@ onMounted(async () => {
 
 // Debounce search input to avoid too many API calls
 const debounceSearch = debounce(() => {
-  filters.page = 1; // Reset to first page on new search
+  // filters.page = 1; // Reset to first page on new search
   applyFilters();
 }, 500);
 
 // Apply filters and update URL
 const applyFilters = () => {
-  filters.page = 1; // Reset to first page when filters change
+  // filters.page = 1; // Reset to first page when filters change
   updateUrlParams();
   fetchProducts();
 };
@@ -280,8 +280,8 @@ const resetFilters = () => {
     maxPrice: "",
     producer: "",
     sort: "name:asc",
-    page: 1,
-    limit: 9,
+    // page: 1,
+    // limit: 9,
   });
 
   updateUrlParams();
@@ -289,32 +289,32 @@ const resetFilters = () => {
 };
 
 // Handle pagination
-const changePage = (newPage) => {
-  console.log("Changing page to:", newPage, totalPages.value);
-  if (newPage >= 1 && newPage <= totalPages.value) {
-    filters.page = newPage;
-    updateUrlParams();
-    fetchProducts();
+// const changePage = (newPage) => {
+//   console.log("Changing page to:", newPage, totalPages.value);
+//   if (newPage >= 1 && newPage <= totalPages.value) {
+//     filters.page = newPage;
+//     updateUrlParams();
+//     fetchProducts();
 
-    // Safer scroll - check if element exists first
-    const productGrid = document.querySelector('.product-grid');
-    if (productGrid) {
-      window.scrollTo({
-        top: productGrid.offsetTop - 20,
-        behavior: 'smooth',
-      });
-    } else {
-      // Fallback to top of container
-      const container = document.querySelector('.explore-products');
-      if (container) {
-        window.scrollTo({
-          top: container.offsetTop,
-          behavior: 'smooth',
-        });
-      }
-    }
-  }
-};
+//     // Safer scroll - check if element exists first
+//     const productGrid = document.querySelector('.product-grid');
+//     if (productGrid) {
+//       window.scrollTo({
+//         top: productGrid.offsetTop - 20,
+//         behavior: 'smooth',
+//       });
+//     } else {
+//       // Fallback to top of container
+//       const container = document.querySelector('.explore-products');
+//       if (container) {
+//         window.scrollTo({
+//           top: container.offsetTop,
+//           behavior: 'smooth',
+//         });
+//       }
+//     }
+//   }
+// };
 
 // Update URL with current filter parameters
 const updateUrlParams = () => {
@@ -379,27 +379,27 @@ const fetchProducts = async () => {
 
     if (result.data.success) {
       products.value = result.data.data;
-      
+
       // Fix: Add fallback and proper type conversion
-      totalProducts.value = typeof result.data.total === 'number' ? 
-        result.data.total : 
-        result.data.data.length;
-      
-      console.log("Total products:", totalProducts.value);
-      console.log("Total pages calculated:", Math.round(totalProducts.value / filters.limit));
-      
+      // totalProducts.value = typeof result.data.total === 'number' ?
+      //   result.data.total :
+      //   result.data.data.length;
+
+      // console.log("Total products:", totalProducts.value);
+      // console.log("Total pages calculated:", Math.round(totalProducts.value / filters.limit));
+
       // Initialize quantities for each product
       products.value.forEach((product) => {
         quantities[product._id] = 0.1;
       });
     } else {
       products.value = [];
-      totalProducts.value = 0;
+      // totalProducts.value = 0;
     }
   } catch (err) {
     console.error("Error fetching products:", err);
     products.value = [];
-    totalProducts.value = 0;
+    // totalProducts.value = 0;
     toast.error("Errore nel caricamento dei prodotti. Riprova più tardi.");
   } finally {
     isLoading.value = false;
