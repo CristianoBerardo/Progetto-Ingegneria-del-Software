@@ -44,7 +44,7 @@
             <h3>{{ product.name }}</h3>
             <p class="producer">{{ product.producer }}</p>
             <p class="price">{{ product.price }} €/kg</p>
-            <button
+            <!-- <button
               class="add-to-cart"
               @click="
                 cartStore.addToCart({
@@ -59,7 +59,7 @@
               "
             >
               Aggiungi 0.5 kg
-            </button>
+            </button> -->
           </div>
         </div>
       </div>
