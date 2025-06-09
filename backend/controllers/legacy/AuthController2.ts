@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import admin from "../../config/firebase";
 import Client from "../../models/ClientModel";
 import Producer from "../../models/ProducerModel";
-import { auth } from "../../config/firebase"; e
+import { auth } from "../../config/firebase";
 
 // export const registerClientController = async (
 //   req: Request,

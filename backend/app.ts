@@ -21,7 +21,17 @@ const port = process.env.PORT || 3000;
 // setAdminClaims("admin@admin.it")
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173", // Dev environment
+      "https://agritrento-rhzf.onrender.com", // Production frontend
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
 
 app.use("/api/v1/admin", administratorRouter);
 app.use("/api/v1/producers", producerRouter);

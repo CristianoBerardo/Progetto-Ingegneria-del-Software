@@ -3,6 +3,7 @@ import axios from 'axios';
 import { defineStore } from 'pinia';
 import { useToast } from 'vue-toastification';
 import { useUserStore } from './userStore';
+import { API_URL } from '@/constants/API_URL';
 
 export interface CartItem {
   productId: string;
@@ -113,7 +114,7 @@ export const useCartStore = defineStore('cart', {
       }
       
       try {
-        const response = await axios.post('http://localhost:3000/api/v1/orders', {
+        const response = await axios.post(`${API_URL}/api/v1/orders`, {
           products: this.items.map(item => ({
             productId: item.productId,
             quantity: item.quantity

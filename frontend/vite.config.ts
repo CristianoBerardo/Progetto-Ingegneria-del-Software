@@ -13,6 +13,8 @@ export default defineConfig({
     },
   },
   server: {
-    open: '/home'
-  }
+    port: 4173,
+    open: "/home",
+  },
+  base: "./",
 });
