@@ -1,17 +1,20 @@
 <div align="center">
-  <img src="./Deliverables/Logo/AgriTrentoSlogan.svg" alt="Alt text">
+  <img src="./Deliverables/Logo/AgriTrentoSlogan.svg" alt="Logo di AgriTrento" width="400">
   <p> 
    <div align="center">
-      <strong>AgriTrento</strong> una piattaforma web che facilita la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.
+      <strong><a href="https://agritrento-rhzf.onrender.com/home">AgriTrento</a></strong> una piattaforma web che facilita la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.
    </div>
 </div>
 
-## Prerequisiti
+<br><br>
+
+# Prerequisiti
 
 - [Node.js](https://nodejs.org/en/) v20.17.0
 - [npm](https://www.npmjs.com/) v10.8.2
 
-### Come eseguire sulla tua macchina locale
+
+# Istruzioni per l'esecuzione in locale
 
 1. Assicurati di aver installato Node e npm. Puoi verificarlo eseguendo il seguente comando nel tuo terminale:
 
@@ -77,3 +80,13 @@
    ```
 
 3. Controlla la console, apri il tuo browser e vai su [http://localhost:5173/](http://localhost:5173/) per vedere il progetto in esecuzione.
+
+<br>
+
+# Diagramma del deployment
+
+
+<div align="center">
+  <img src="./Deliverables/fourth-deliverable/img/DiagrammaAgriTrento.drawio.svg" alt="Diagramma del deployment">
+  <p>Diagramma del deployment di AgriTrento</p>
+</div>
