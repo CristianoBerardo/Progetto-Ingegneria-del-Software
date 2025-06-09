@@ -1,5 +1,5 @@
 FORMAT: 1A
-HOST: http://localhost:3000
+HOST: https://agritrento.onrender.com/
 
 # AgriTrento
 
@@ -49,7 +49,7 @@ CRUD sulle risorse produttori
                 }
             ]
 
-### Ricerca produttori [GET /api/v1/producers?name=Azienda 1]
+### Ricerca produttori [GET /api/v1/producers?name=Azi]
 
 + Response 200 (application/json)
 
@@ -73,7 +73,7 @@ CRUD sulle risorse produttori
                 }
             ]
             
-### Lettura prodotti di un dato produttore [GET /api/v1/producers/:id/products]
+### Lettura prodotti di un dato produttore [GET /api/v1/producers/6842af718df9bccc89e20488/products]
 
 + Response 200 (application/json)
 
@@ -150,7 +150,7 @@ CRUD sulle risorse produttori
                 }
             ]
         
-###  Lettura produttore[GET /api/v1/producers/:id]
+###  Lettura produttore[GET /api/v1/producers/6842af718df9bccc89e20488]
 
 + Response 200 (application/json)
 
@@ -176,11 +176,12 @@ CRUD sulle risorse produttori
 + Request (application/json)
 
             {
-                "name": "Azienda 3",
-                "email": "azienda3@azienda3.it",
-                "phone": "+39 3771954812",
-                "address": "Via Cesare Battisti, 17, Levico, Trento, Italia",
-                "products": []
+                "name": "cancella",
+                "uid": "cancella",
+                "email": "cancella",
+                "phone": "cancella",
+                "address": "cancella",
+                "products": ["682506cce8e7949a2d078b1c"]
             }
 
 + Response 201 (application/json)
@@ -201,7 +202,7 @@ CRUD sulle risorse produttori
                 "message": "Producer created successfully"
             }
             
-### Elimina produttore [DELETE /api/v1/producers/:id]
+### Elimina produttore [DELETE /api/v1/producers/684733fc25f3ec8ac3234f0a]
 
 + Response 200 (application/json)
     
@@ -221,7 +222,7 @@ CRUD sulle risorse produttori
                 "message": "Producer and relative products are deleted successfully"
             }
             
-### Aggiornamento completo produttore [PUT /api/v1/producers/:id]
+### Aggiornamento completo produttore [PUT /api/v1/producers/684733fc25f3ec8ac3234f0a]
 
 + Request (application/json)
 
@@ -255,7 +256,7 @@ CRUD sulle risorse produttori
                 "message": "Producer updated successfully"
             }
 
-### Aggiornamento parziale produttore [PATCH /api/v1/producers/:id]
+### Aggiornamento parziale produttore [PATCH /api/v1/producers/684733fc25f3ec8ac3234f0a]
 
 + Request (application/json)
 
@@ -341,7 +342,7 @@ CRUD sulle risorse prodotti
                 }
             ]
         
-### Lettura prodotto[GET /api/v1/products/:id]
+### Lettura prodotto[GET /api/v1/products/6842b79046519ddb7febaed6]
 
 + Response 200 (application/json)
 
@@ -383,7 +384,7 @@ CRUD sulle risorse prodotti
                 "message": "Product created successfully"
             }
 
-### Elimina prodotto [DELETE /api/v1/products/:id]
+### Elimina prodotto [DELETE /api/v1/products/684734fc25f3ec8ac3234f18]
 
 + Response 200 (application/json)
     
@@ -403,7 +404,7 @@ CRUD sulle risorse prodotti
                 "message": "Product deleted successfully"
             }
         
-### Aggiornamento completo prodotto [PUT /api/v1/products/:id]
+### Aggiornamento completo prodotto [PUT /api/v1/products/684734fc25f3ec8ac3234f18]
 
 + Request (application/json)
 
@@ -412,6 +413,7 @@ CRUD sulle risorse prodotti
                 "description": "Cipolla di Trento",
                 "price": 12,
                 "available": 24,
+                "producer": "6829d852f157077cbf886a50"
             }
 
 + Response 200 (application/json)
@@ -433,7 +435,7 @@ CRUD sulle risorse prodotti
             }
         
 
-### Aggiornamento parziale produttore [PATCH /api/v1/products/:id]
+### Aggiornamento parziale produttore [PATCH /api/v1/products/684734fc25f3ec8ac3234f18]
 
 + Request (application/json)
 
@@ -463,7 +465,7 @@ CRUD sulle risorse prodotti
 
 CRUD sulle risorse clienti
 
-### Lettura cliente[GET /api/v1/clients/]
+### Lettura clienti [GET /api/v1/clients/]
 
 + Response 200 (application/json)
 
@@ -484,7 +486,7 @@ CRUD sulle risorse clienti
                 }
             ]
         
-### Lettura cliente[GET /api/v1/clients/:id]
+### Lettura cliente[GET /api/v1/clients/6842aea18df9bccc89e20476]
 
 + Response 200 (application/json)
 
@@ -506,10 +508,13 @@ CRUD sulle risorse clienti
 + Request (application/json)
 
             {
-              "username": "Melania",
-              "email": "melania@melania.it",
-              "phone": "+39 5771284351",
-              "shippingAddress": "Via Tolomeo, 2, Lavis, Trento, Italia"
+                "uid": "cliente1",
+                "username": "cliente",
+                "email": "email",
+                "phone": "2313",
+                "shippingAddress": "string",
+                "roles": "client",
+                "orders": []
             }
 
 + Response 201 (application/json)
@@ -517,19 +522,22 @@ CRUD sulle risorse clienti
     + Body
 
             {
-                "success": true,
-                "data": {
-                    "username": "Melania",
-                    "email": "melania@melania.it",
-                    "phone": "+39 5771284351",
-                    "shippingAddress": "Via Tolomeo, 2, Lavis, Trento, Italia",
-                    "_id": "682b41a64f824f4cb9774470",
-                    "__v": 0
-                },
-                "message": "Client created successfully"
+              "success": true,
+              "data": {
+                "uid": "cliente1",
+                "username": "cliente",
+                "email": "email",
+                "phone": "2313",
+                "shippingAddress": "string",
+                "roles": "client",
+                "orders": [],
+                "_id": "6847364d25f3ec8ac3234f26",
+                "__v": 0
+              },
+              "message": "Client created successfully"
             }
 
-### Elimina cliente [DELETE /api/v1/clients/:id]
+### Elimina cliente [DELETE /api/v1/clients/6847364d25f3ec8ac3234f26]
 
 + Response 200 (application/json)
     
@@ -548,7 +556,7 @@ CRUD sulle risorse clienti
                 "message": "Client retrieved successfully"
             }
         
-### Aggiornamento completo cliente [PUT /api/v1/clients/:id]
+### Aggiornamento completo cliente [PUT /api/v1/clients/6847364d25f3ec8ac3234f26]
 
 + Request (application/json)
 
@@ -577,7 +585,7 @@ CRUD sulle risorse clienti
             }
         
 
-### Aggiornamento parziale cliente [PATCH /api/v1/clients/:id]
+### Aggiornamento parziale cliente [PATCH /api/v1/clients/6847364d25f3ec8ac3234f26]
 
 + Request (application/json)
 
@@ -688,7 +696,7 @@ Utilizzando questi endpoint verrà verificato, attraverso l'utilizzo di Bearer t
 
 Essendo che il token contiene UID del cliente, chi manda la richiesta potrà solo modificare i propri ordini.
 
-### Crea ordine [POST /api/v1/orders]
+### Crea ordine [POST /api/v2/orders]
 
 + Parameters
     + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
@@ -764,7 +772,7 @@ Essendo che il token contiene UID del cliente, chi manda la richiesta potrà sol
                 ]
             }
             
-### Elimina ordine [DELETE /api/v1/orders/:id]
+### Elimina ordine [DELETE /api/v2/orders/:id]
 
 + Parameters
     + Authorization: `Bearer <IL_TUO_TOKEN_JWT>`
