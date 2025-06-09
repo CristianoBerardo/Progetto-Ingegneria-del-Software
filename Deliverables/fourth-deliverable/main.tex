@@ -1,0 +1,250 @@
+\documentclass{scrartcl}
+\usepackage[a4paper,top=2cm,bottom=2.5cm,left=2.5cm,right=2.5cm,marginparwidth=0cm]{geometry}
+\usepackage[english]{babel}
+\usepackage[linguistics]{forest}
+
+\usepackage[
+    doi=true,
+    language=english,
+    natbib=true,
+    sortcites,
+    style=unified,
+    useprefix=true,
+    ]{biblatex}
+
+
+% Fonts, languages
+\usepackage[warnings-off={mathtools-colon, mathtools-overbracket}]{unicode-math}
+\usepackage{fontspec}
+\defaultfontfeatures{Ligatures=TeX}
+\usepackage[sb]{libertinus-otf}
+\usepackage[scale=MatchLowercase]{FiraMono}
+\usepackage{fontawesome5}
+
+% Nicer tables
+\usepackage{booktabs}
+\usepackage[table]{xcolor}
+\usepackage{colortbl}
+\usepackage[nopatch=footnote]{microtype}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage[section]{placeins}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{array}
+
+\usepackage[unicode,hidelinks]{hyperref}
+\usepackage[normalem]{ulem} % for strikethrough \sout
+
+\usepackage{scrlayer-scrpage}
+\newpairofpagestyles{titlepage}{%
+    \setkomafont{pageheadfoot}{%
+        \small\normalfont 
+    }
+    \rohead{}
+    \lohead{}
+}
+\pagestyle{scrheadings}
+\setkomafont{pagenumber}{\footnotesize}%\sffamily}
+\setkomafont{pageheadfoot}%
+    {\small\addfontfeature{LetterSpace=10,Numbers=OldStyle}\scshape\sffamily}
+\clearpairofpagestyles{}
+\cfoot[\pagemark]{\pagemark}
+% \rohead{\MakeLowercase{\emph{\shorttitle}}}
+%\lohead{\MakeLowercase{\authorlast}}
+
+
+% Titlepage
+\setkomafont{author}{\large\sffamily}
+
+
+% Chapter/section headings
+\setcounter{secnumdepth}{3}
+
+% Linguistics
+\usepackage{langsci-gb4e}
+\newcommand{\judgement}[1]{\makebox[0pt][r]{#1}}
+
+
+
+\usepackage{cleveref}
+\usepackage{enumitem}
+
+%% Line breaks
+\widowpenalty=10000
+\clubpenalty=10000
+
+% useful 
+\usepackage{orcidlink}
+\newcommand{\email}[1]{\href{mailto:#1}{#1}}
+
+% copyright notice at end
+\usepackage[framemethod=TikZ]{mdframed}
+\newenvironment{ccnotice}[1]{%
+    \begin{mdframed}[%
+        linewidth=0pt,
+        leftmargin=1pt,
+        rightmargin=1pt,
+        backgroundcolor=gray!10!white,
+        font=\sffamily,
+    ]\relax%
+}{\end{mdframed}}
+
+
+\usepackage[autostyle=true,english=american]{csquotes}
+\renewcommand*{\mkccitation}[1]{ (#1)}
+
+\usepackage{xcolor}
+\usepackage{titlesec}
+\definecolor{mycolor}{HTML}{2e6a1e}
+\titleformat{\section}
+              {\normalfont\Large\bfseries\color{mycolor}} % Formatting
+              {\thesection}            % Label
+              {2em}                   % Space after label
+              {}  
+\titleformat{\subsection}{\normalfont\large\bfseries\color{mycolor}}{\thesubsection}{1.2em}{} 
+\titleformat{\subsubsection}{\normalfont\normalsize\bfseries\color{mycolor}}{\thesubsubsection}{1em}{} 
+\titleformat{\paragraph}
+  {\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+
+
+% title page
+
+\title{\fulltitle}
+\date{}
+
+
+\urlstyle{same}
+
+\usepackage{svg}
+\usepackage{amsmath}
+
+\usepackage{pdflscape}
+
+\hypersetup{
+    colorlinks=false,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Deliverable-D4-Gruppo3},
+    pdfpagemode=FullScreen,
+    }
+\newcommand{\fulltitle}{
+                        \includesvg[width=0.6\linewidth]{../Logo/AgriTrentoSlogan.svg} \\
+                        \vspace{3.4cm}
+                        \color{mycolor}Deliverable D4 - Gruppo 3
+                        }
+
+
+\newenvironment{objitem}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{O\arabic{enumi}}}
+}
+{\end{enumerate}}
+
+\newenvironment{rfenum}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{RF\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{RF\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{RF\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+    
+}
+{\end{enumerate}}
+
+\newenvironment{rnfenum}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{RNF\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{RNF\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{RNF\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+}
+{\end{enumerate}}
+
+\newenvironment{attori}{
+    \begin{enumerate}
+    \renewcommand{\labelenumi}{\textbf{2.\arabic{enumi}}}    
+    \renewcommand{\labelenumii}{2.\arabic{enumi}.\arabic{enumii}}
+    \renewcommand{\labelenumiii}{2.\arabic{enumi}.\arabic{enumii}.\arabic{enumiii}}
+}
+{\end{enumerate}}
+
+
+\author{
+    \href{https://www.linkedin.com/in/cristianoberardo/}{Cristiano Berardo} - 234428 - \href{https://github.com/CristianoBerardo}{\footnotesize \faGithub \ GitHub}\\
+    \href{https://www.linkedin.com/in/martina-de-piccoli-957602353/}{Martina De Piccoli} - 235165 - \href{https://github.com/martinadep}{\footnotesize \faGithub \ GitHub}\\
+    \href{https://www.linkedin.com/in/giacomo-vettore-62b571233/}{Giacomo Vettore} - 240396 - \href{https://github.com/giacomovettore02}{\footnotesize \faGithub \ GitHub}\\
+}
+
+% --------------- Start Document  -----------------------------
+
+\begin{document}
+
+
+\maketitle
+\thispagestyle{titlepage}
+
+\begin{center}
+
+    \href{https://github.com/CristianoBerardo/Progetto-Ingegneria-del-Software}{ \faGithub \ \Large Progetto-Ingegneria-del-Software repository GitHub}
+    
+    \vspace{0.25cm}
+    \href{https://agritrento.docs.apiary.io/}{\faLink \ \Large agritrento.docs.apiary.io}
+    
+    \vspace{0.25cm}
+    \href{https://agritrento-rhzf.onrender.com}{\faLink \ \Large agritrento-rhzf.onrender.com}
+
+    \vspace{0.25cm}
+    \href{https://agritrento.onrender.com/api}{\faLink \ \Large agritrento.onrender.com/api (BE)}
+    
+    \vspace{0.25cm}
+    \href{https://stats.uptimerobot.com/udFxPl75LM/800696152}{\faLink \ \Large Monitor Up-Time Backend}
+    
+    % \vspace{5.4cm}
+
+\vspace{0.5cm}
+\underline{\textbf{NOTA IMPORTANTE: se non vengono visualizzati i prodotti bisogna triggerare }} \\
+\underline{\textbf{\href{https://agritrento.onrender.com/api}{agritrento.onrender.com/api}}}
+
+\end{center}
+\vspace{1.1cm}
+% \begin{table}[h!]
+%     \centering
+%     \begin{tabular}{c|c|c}
+%         Nome utente & Password & Note\\
+%         \hline
+%         cliente@cliente.it & cliente@cliente.it & \\
+%         produttore@produttore.it &  produttore@produttore.it & \\
+%         amministratore@amministratore.it&  amministratore@amministratore.it & \\
+%     \end{tabular}
+% \end{table}
+
+
+\begin{table}[h!]
+    \renewcommand{\arraystretch}{1.2} 
+    \centering
+    \begin{tabular}{c|c|c}
+        \textbf{Ruolo} & \textbf{Nome utente e Password} & \textbf{Note}\\
+        \hline
+        Cliente & cliente@cliente.it & Nuovo account\\
+        Produttore& az1@gmail.com & Sono già presenti alcuni prodotti\\
+        Amministratore & admin@admin.it & Puramente UI
+    \end{tabular}
+\end{table}
+
+\vspace{1.7cm}
+\begin{abstract}
+    \centering
+    \noindent
+    \textbf{Idea di progetto:} \textit{sviluppare una piattaforma web che faciliti la prenotazione e la vendita di frutta e verdura del mercato contadino di Trento, incentivando il consumo di prodotti stagionali locali, favorendo pratiche sostenibili e nel rispetto del nostro territorio.}
+\end{abstract}
+
+
+\input{Deliverables/fourth-deliverable/SezioneGenerale}
+\input{Deliverables/fourth-deliverable/SezioneSprint}
+\input{Deliverables/fourth-deliverable/TestCases}
+\input{Deliverables/fourth-deliverable/SezioneFinale}
+
+
+
+
+\end{document}
