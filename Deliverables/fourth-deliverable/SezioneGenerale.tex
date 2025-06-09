@@ -1,0 +1,199 @@
+\section*{Strategia di Branching}
+
+Per la gestione del codice sorgente di questo progetto, adotteremo la strategia di branching \textbf{Feature Branch Workflow}.
+Ogni nuova funzionalità verrà sviluppata in un branch dedicato, \verb|feature branch|, creato a partire dal branch principale, \verb|main|, sempre aggiornato.
+
+Al completamento, il codice viene sottoposto a revisione tramite \textit{pull request} e, solo dopo approvazione, integrato nel branch main.
+
+Questo approccio garantisce stabilità e qualità del codice durante lo sviluppo incrementale previsto dalla metodologia SCRUM.
+
+\section*{Product backlog}
+
+\vspace{-1cm}
+
+\renewcommand{\arraystretch}{2} 
+\begin{center}
+\centering
+\begin{longtable}{
+  >{\centering\arraybackslash}p{0.5cm}|
+  >{\raggedright\arraybackslash}m{2.7cm}|
+  >{\raggedright\arraybackslash}m{3.5cm}|
+  >{\centering\arraybackslash}p{1.2cm}|
+  >{\centering\arraybackslash}p{0.9cm}|
+  >{\centering\arraybackslash}p{0.9cm}|
+  >{\raggedright\arraybackslash}m{3.5cm}
+}
+  \caption{Tabella Product Backlog }\label{tab:ProductBackLogTable}\\
+  \hline
+  ID & Nome & User Story & Priorità & Story & Impor &How \\
+     &      & &          &points &tanza  & to demo\\
+  \hline
+  \endfirsthead
+
+  \hline
+  ID & Nome & User Story& Priorità & Story & Impor &How \\
+     &      & &          &points &tanza  & to demo\\
+  \hline
+  \endhead
+
+  29 & Creazione database
+     & Come team, dobbiamo creare un database, così da poter memorizzare i dati richiesti
+     & Critica  & 3   & 433  & Accedere con username e password al portale di mongoDB \\
+  31 & Creazione repository GitHub
+     & Come team, dobbiamo creare una repo GitHub e inizializzarla, in modo da facilitare lo sviluppo dell'applicazione
+     & Critica  & 5   & 260  & Visionare la presenza della repo su GitHub dai link sopra riportati \\
+  14 & Inserimento prodotto
+     & come produttore, vorrei poter aggiungere un nuovo prodotto con descrizione, quantità e prezzo, così da metterlo in vendita sulla piattaforma
+     & Critica  & 13  & 100  & Il produttore troverà un form dove inserire i prodotti \\
+  15 & Rimozione prodotto
+     & come produttore, vorrei poter rimuovere un prodotto dalla lista, così da non renderlo più disponibile per l'acquisto
+     & Bassa    & 3   & 100  &  Il produttore troverà un'icona cestino o una scritta da cliccare per eliminare il prodotto\\
+  20 & Aggiornamento prodotto
+     & come produttore, vorrei poter aggiornare le informazioni di un prodotto esistente, come prezzo, descrizione e quantità, così da mantenere l'offerta aggiornata
+     & Alta     & 8   & 100  &  Il produttore troverà un'icona matita o una scritta da cliccare per aggiornare il prodotto\\
+  2  & Autenticazione cliente/produttore
+     & come cliente/produttore, vorrei potermi autenticare per accedere ai miei dati salvati
+     & Critica  & 21  & 61   &  L'utente troverà un bottone di login per accedere alla piattaforma\\
+  30 & Servizio di autenticazione
+     & Come team, dobbiamo creare e capire come funziona Google OAuth, così da permettere il SSO e la gestione degli account
+     & Critica  & 21  & 61   &  Visionare se è stato implementato il bottone che permetta di autenticarsi con Google\\
+  32 & Studiare i framework e tool necessari
+     & Come team, dobbiamo capire meglio come utilizzare al meglio i framework e tool, così da realizzare al meglio l'applicazione
+     & Critica  & 21  & 61   &  Visionare il lavoro svolto durante i due sprint\\
+  16 & Visualizzazione prodotti
+     & come produttore, vorrei poter visualizzare la lista dei prodotti che ho già aggiunto, così da gestire facilmente il mio inventario
+     & Alta     & 13  & 61   & Il produttore troverà uno spazio dedicato, intera pagina o una parte di essa, dove poter visualizzare tutti i prodotti messi a disposizione \\
+  18 & Notifica ordini
+     & come produttore, vorrei ricevere una notifica quando viene effettuato un ordine, così da poterlo gestire tempestivamente
+     & Alta     & 13  & 61   & Dopo che un utente ha effettuato un ordine deve ricevere una notifica via mail dell'ordine da preparare \\
+  10 & Conferma ordine
+     & come cliente, vorrei ricevere una conferma d'ordine con i dettagli, il metodo di pagamento e le istruzioni per il ritiro, così da sapere che il mio ordine è stato registrato
+     & Media    & 13  & 38   &  Dopo aver pagato l'ordine al cliente verrà inviata una mail con la conferma e il riepilogo dell'ordine \\
+  26 & Gestione segnalazioni
+     & come amministratore, vorrei poter ricevere e gestire segnalazioni di problemi o anomalie dagli utenti, così da risolvere rapidamente eventuali disservizi
+     & Media    & 13  & 38   & Creare una segnalazione e verificare che questa venga ricevuta come mail dall'amministartore \\
+  1  & Registrazione cliente/produttore
+     & come cliente/produttore, vorrei potermi registrare nell'applicazione, per salvare i miei dati
+     & Critica  & 34  & 38   &  Dopo aver compilato il form di registrazione, provare a fare il logout e successivamente il login e vedere se i dati sono rimasti\\
+  5  & Ricerca prodotti
+     & come cliente, vorrei poter cercare prodotti usando parole chiave e filtri per categoria, prezzo e disponibilità, così da trovare facilmente ciò che mi serve
+     & Critica  & 34  & 38   & Provare a ricercare utilizzando la barra ricera presente nella home page e verificare la correttezza dei risultati \\
+  4  & Recupero password
+     & come cliente/produttore, vorrei poter recuperare la password del mio account
+     & Alta     & 21  & 38   & Durante il login cliccare il pulsante recupera password e seguire le istruzioni e verificare se la password viene effettivamente cambiata\\
+  7  & Visualizza dettaglio
+     & come utente, vorrei poter visualizzare il dettaglio di un prodotto (Descrizione, prezzo e disponibilità)
+     & Bassa    & 8   & 37   & Verificare se esiste una schermata che permetta all'utente di visualizzare i prodotti \\
+  3  & Eliminazione cliente/produttore
+     & come cliente/produttore, vorrei poter eliminare il mio account
+     & Media    & 21  & 23   &  Nella pagina dedicata al profilo dovrà comparire un bottone "elimina account" che se cliccato elimina tutti i dati relativi a quell'account\\
+  9  & Checkout ordine
+     & come cliente, vorrei poter concludere il processo di checkout con un riepilogo dettagliato dell'ordine, così da verificare tutte le informazioni prima della conferma
+     & Media    & 21  & 23   & Prima della transazione economica si deve visualizzare una schermata di riepilogo oridne \\
+  17 & Visualizza ordini
+     & come produttore, vorrei poter visualizzare gli ordini effettuati presso la mia azienda agricola, così da poterli preparare ed evadere entro le scadenze.
+     & Media    & 21  & 23   &  Verificare che nella schermata del produttore sia presente una pagina, o parte di essa, predisposta per la visualizzazione degli ordini effettuati dai clienti\\
+  8  & Aggiunta al carrello
+     & come cliente, vorrei poter scegliere i prodotti desiderati e specificare le quantità da aggiungere al carrello, così da preparare il mio ordine
+     & Alta     & 34  & 23   & Cercare un prodotto desiderato e selezionare aggiunti al carrello specificando la quantità \\
+  22 & Gestione promozioni
+     & come produttore, vorrei poter impostare promozioni e sconti temporanei sui prodotti, così da incentivare gli acquirenti ad acquistare di più
+     & Bassa    & 13  & 23   &  Verificare che il produttore possa inserire sconti ai prodotti sia non ancora inseriti che inseriti in precedenza\\
+  27 & Monitoraggio performance
+     & come amministratore, vorrei avere strumenti per monitorare in tempo reale le performance dell'applicazione e i flussi di traffico, così da individuare e gestire anomalie
+     & Bassa    & 21  & 14   &  Nella schermata amministratore si dovrà avere una dashboard dove quando un cliente ha fatto un ordine si aggiorni nel giro di qualche minuto\\
+  6  & Ricerca produttore
+     & come utente, vorrei poter cercare un produttore dalla lista per accedere al suo catalogo di prodotti
+     & Media    & 55  & 9    & Nella schermata verrà visualizzata una barra di ricera del produttore verificare se questa funzioni \\
+  11 & Cronologia ordini
+     & come cliente, vorrei poter accedere a una sezione “I miei ordini” per visualizzare la cronologia degli ordini effettuati, con dettagli e stato aggiornato
+     & Bassa    & 55  & 5    & Verificare se è presente una sezione "I miei ordini" e che essa contenga lo storico \\
+  13 & Recensioni prodotti
+     & come cliente, vorrei poter lasciare recensioni e valutazioni sui prodotti acquistati, così da condividere la mia esperienza con gli altri utenti
+     & Minore   & 55  & 3    &  Provare ad inserire una recensione dei prodotti e verificare che essa compaia\\
+  12 & Esegui pagamento online
+     & come cliente, vorrei poter pagare il mio ordine direttamente sulla piattaforma, così da velocizzare il ritiro
+     & Bassa    & 89  & 3    &  Provare ad eseguire un ordine di pagamento online \\
+  19 & Ricevi pagamento online
+     & come produttore, vorrei poter ricevere pagamenti digitali sicuri in anticipo, così da essere certo di ricevere il pagamento prima della consegna
+     & Bassa    & 89  & 3    &  Verificare che il produttore possa accettare il pagamento anticipato della merce\\
+  24 & Gestione account
+     & come amministratore, vorrei poter visualizzare, modificare e gestire tutti gli account registrati, così da mantenere il controllo sugli utenti della piattaforma
+     & Bassa    & 89  & 3    & Nella scheda dedicata verificare se compare la possibilità di modifica, eliminazione di un account \\
+  21 & Dashboard statistiche
+     & come produttore, vorrei poter consultare una dashboard con statistiche su vendite e ordini, così da monitorare l'andamento della mia attività
+     & Minore   & 89  & 2    &  Verificare la presenza di una pagina dedicata con le statistiche di vendita \\
+  28 & Generazione report
+     & come amministratore, vorrei poter generare report aggregati su vendite, ordini e statistiche d'uso della piattaforma, così da analizzare le performance e l'utilizzo del servizio
+     & Bassa    & 144 & 2    &  Bottone dedicato per la generazione di un report, e verifica dello stesso dopo la generazione\\
+  23 & Report vendite personale
+     & come produttore, vorrei poter generare un report con statistiche sull'andamento delle mie vendite, così da analizzare le performance dei miei prodotti
+     & Minore   & 144 & 1    &  Bottone dedicato per la generazione di un report, e verifica dello stesso dopo la generazione\\
+  25 & Monitoraggio transazioni e ordini
+     & come amministratore, vorrei disporre di strumenti per monitorare le transazioni e gli ordini effettuati, così da garantire il corretto funzionamento del sistema
+     & Minore   & 144 & 1    &  Pagina dedicata che mostra tutte le transazioni ed ordini effettuati\\
+  \hline
+\end{longtable}
+\end{center}
+
+\vspace{-0.5cm}
+
+\paragraph{ID} L'ID incrementale unico è il codice numerico che identifica una specifica User Story.
+
+\paragraph{Nome} Il nome riassume la User Story
+
+\paragraph{Priorità} Abbiamo deciso di utilizzare dei nomi per indicare la priorità così da migliorare la lettura e la comprensione della stessa.
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{c|c|c|c|c}
+        \hline
+        \multicolumn{5}{c}{Valori utilizzati}\\
+        \hline
+        Critico & Alta  & Media & Bassa & Minore\\
+        13 & 8  & 5 & 3 & 2\\
+    \end{tabular}
+\end{table}
+
+% \vspace{-0.7cm}
+
+\paragraph{Story points} Abbiamo deciso di utilizzare una simil serie di Fibonacci, con cap a 144, per descrivere la difficoltà che il team pensa di dover affrontare per completare la User Story.
+
+\begin{equation*}
+1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144
+\end{equation*}
+
+% \vspace{-0.7cm}
+
+\paragraph{Importanza}
+
+L'importanza è stata ottenuta mediante il seguente reapporto, moltiplicato poi per un fattore $100$:
+
+\begin{equation*}
+    \frac{\text{Priorità}}{\text{Story points}} \longrightarrow \frac{2}{144} \cdot 100 \approx 1
+\end{equation*}
+
+\paragraph{How to demo} Breve descrizione di come poter testare quella data user story.
+
+\newpage
+
+\newgeometry{
+    margin=1.5cm,
+    noheadfoot, nomarginpar,
+    footskip=1.25em,
+}
+
+\section*{Definition of Done - DoD }
+
+Per il nostro progetto definiamo una User Story completata - \verb|Done| - quando, in ordine, sono soddisfatti i seguenti requisiti: 
+
+\begin{enumerate}
+    \item Il codice è stato revisionato (code review) e testato da almeno un altro membro del team;
+    \item La documentazione risulta aggiornata e completa;
+    \item Il team ha raggiunto il consenso che la storia è completa durante la review;
+    \item La User Story è stata verificata e accettata dal Product Owner;
+    \item I requisiti NON funzionali sono rispettati (performance, sicurezza, affidabilità);
+    \item Tutti i criteri di definiti per la User Story sono stati verificati e soddisfatti;
+    \item Il codice sarebbe potenzialmente vendibile;
+    \item Il codice è stato unito (merged) al branch main della \href{https://github.com/CristianoBerardo/Progetto-Ingegneria-del-Software}{repository GitHub \faGithub };
+\end{enumerate}
